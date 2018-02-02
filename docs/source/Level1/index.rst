@@ -34,15 +34,12 @@ Database レイヤー
 * 静的な構成となっていないか？(IPパスワードのべた書きなど）
 * Dockerfileの記述
 * ステートフルなものについてはコンテナに適したものにする
-  * Hint: 12 app factor
+  * Hint: https://12factor.net/ja/
 * 基本となるコンテナイメージについては DockerHub で探してベースイメージとする
 
-Dockerfile のリファレンス `Dockerfile Reference ファイル <https://dockerhub.com>` _
-
+Dockerfile のリファレンス `Dockerfile Reference ファイル <https://docs.docker.com/engine/reference/builder/>` _
 
 Hint: どうしても進まない場合は `こちら <src/dockerized.rst>`_ をクリック
-
-
 
 コンテナイメージのビルド
 =============================================================
@@ -64,10 +61,10 @@ DockerHub を使う場合
 - docker commit
 - docker push
 
-private registory を使う場合
+private registry を使う場合
 -------------------------------------------------------------
 
-registory ip: 192.168.0.10
+registry ip: 192.168.0.10
 
 - docker commit
 - docker push
