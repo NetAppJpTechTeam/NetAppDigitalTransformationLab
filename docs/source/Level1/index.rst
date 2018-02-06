@@ -32,34 +32,47 @@ Database レイヤー
 
 * アプリケーションの配置
 * 静的な構成となっていないか？(IPパスワードのべた書きなど）
+  * コンテナプラットフォームではIPは不定のため、k8s/OpenShiftでは `Service <https://kubernetes.io/docs/concepts/services-networking/service/>` _ を利用する
 * Dockerfileの記述
 * ステートフルなものについてはコンテナに適したものにする
   * Hint: https://12factor.net/ja/
 * 基本となるコンテナイメージについては DockerHub で探してベースイメージとする
+* コンテナ側でIPを指定する際には基本的には 0.0.0.0 とする。そうしないとコネクションがリセットされる。
+  * ENTRYPOINT ["rails", "server", "-b", "0.0.0.0"]
+
 
 Dockerfile のリファレンス `Dockerfile Reference ファイル <https://docs.docker.com/engine/reference/builder/>` _
 
-Hint: どうしても進まない場合は `こちら <src/dockerized.rst>`_ をクリック
+Hint: どうしても進まない場合は `こちら <src/dockerized.rst>` _ をクリック
 
 コンテナイメージのビルド
 =============================================================
 
 作成した Dockerfileをビルドしてイメージを作成する。
 
-バージョニングを意識してい実施する。
+バージョニングを意識して実施する。::
 
-- docker built -t **** ****
+    $ docker built -t 生成するコンテナイメージ名:バージョン Dockerファイルのパス
+
+
+.. TIP::
+    Docker イメージの生成方法は複数の手法があります。
+    例えば、普通のOSイメージを起動して、ログインしパッケージなどのインストールを行っていく手法があります。
+    メリットとしてはオペレーションで作成したものをイメージとして登録できるため、Dockerfileを作成しなくても良いといメリットがある一方で、
+    コンテナイメージの作成方法が不透明となる可能性もあります。
+
 
 イメージレポジトリに登録
 =============================================================
 
-original or DockerHubは選択いただけます・
+プライベートレジストリ、DockerHubは選択いただけます。
+このラボで作成たイメージを自社などで作成したい場合はDockerHub に push することもできます。
 
 DockerHub を使う場合
 -------------------------------------------------------------
 
-- docker commit
-- docker push
+- docker image commit
+- docker image push
 
 private registry を使う場合
 -------------------------------------------------------------
