@@ -3,28 +3,39 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
+=============================================================
 Data Technology Lab Guide
-===============================================
+=============================================================
 
 
-Contents:
+
+Contents
+=============================================================
 
 .. toctree::
    :maxdepth: 2
 
-   Level1/index.rst
-   Level2/index.rst
-   Level3/index.rst
-   Level4/index.rst
-   Level5/index.rst
+   Level1/index
+   Level2/index
+   Level3/index
+   Level4/index
+   Level5/index
 
 
+やるべきこと一覧
+=============================================================
 
-マルチクラスタ構成時のネットワーク構成について
-マルチテナントはどうする？
+このドキュメント全体のTODOをまとめたもの
+
+:doc:`others/todos`
+
+DesignDoc
+=============================================================
+
+:doc:`others/design`
 
 Indices and tables
-==================
+=============================================================
 
 * :ref:`genindex`
 * :ref:`modindex`
