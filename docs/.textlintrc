@@ -1,0 +1,16 @@
+{
+  "plugins": [
+	  "rst"
+  ],
+  "filters": {},
+  "rules": {
+    "preset-ja-technical-writing": true,
+    "preset-jtf-style": true,
+    "preset-japanese": true,
+    "no-mix-dearu-desumasu": true,
+    "no-double-negative-ja": true,
+    "ja-no-redundant-expression": true,
+    "ja-no-abusage": true,
+    "no-dropping-the-ra": true
+  }
+}
