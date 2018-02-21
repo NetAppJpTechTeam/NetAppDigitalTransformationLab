@@ -1,0 +1,27 @@
+{
+  "name": "docs",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "textlint": "^10.1.4",
+    "textlint-plugin-rst": "^0.1.1",
+    "textlint-rule-ja-no-abusage": "^1.2.1",
+    "textlint-rule-ja-no-redundant-expression": "^2.0.0",
+    "textlint-rule-no-double-negative-ja": "^1.0.5",
+    "textlint-rule-no-dropping-the-ra": "^1.1.2",
+    "textlint-rule-no-mix-dearu-desumasu": "^3.0.3",
+    "textlint-rule-preset-ja-technical-writing": "^2.0.0",
+    "textlint-rule-preset-japanese": "^4.0.0",
+    "textlint-rule-preset-jtf-style": "^2.3.1",
+    "textlint-rule-prh": "^5.0.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "lint": "node_modules/.bin/textlint source/",
+    "fix" : "node_modules/.bin/textlint --fix source/",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}

@@ -5,8 +5,6 @@ Level1: アプリケーションをコンテナ化する
 今回はコンテナに適したアーキテクチャに変更するまえの段階として、
 オンプレミスで仮想マシンで動いているアプリケーションについてコンテナ化をしていきます。
 
-.. todolist::
-
 このレベルで習得するもの
     一般的なコンテナイメージの作成の手法
     基本操作を習得する
@@ -117,9 +115,6 @@ kubernetes 基本操作
 デプロイメント
 -------------------------------------------------------------
 
-
-.. todo:: コマンドライン、出力を実際のイベント時の環境に併せて変更
-
 kubernetes クラスタに作成したコンテナアプリケーションをデプロイするためには 「Deployment」を作成します。
 kubectlを使用して、アプリケーションをデプロイします。::
 
@@ -133,9 +128,49 @@ kubectlを使用して、アプリケーションをデプロイします。::
     kubernetes-bootcamp   1         1         1            1           15m
 
 
+デプロイしたアプリケーションのサービスを確認します。 ::
 
-定義ファイルを利用したデプロイメント
+    $ kubectl get services
+    NAME         TYPE        CLUSTER-IP   EXTERNAL-IP   PORT(S)   AGE
+    kubernetes   ClusterIP   10.96.0.1    <none>        443/TCP   8s
+
+
+外部向けに公開
 -------------------------------------------------------------
+
+外部向けにサービスを公開します。
+公開後、再度サービスを確認します。EXTERNAL-IPにipが付与されます。 ::
+
+    $ kubectl expose deployment/kubernetes-bootcamp --type="NodePort" --port 8080
+    service "kubernetes-bootcamp" exposed
+    $ kubectl get services
+    NAME                  TYPE        CLUSTER-IP    EXTERNAL-IP   PORT(S)          AGE
+    kubernetes            ClusterIP   10.96.0.1     <none>        443/TCP          28s
+    kubernetes-bootcamp   NodePort    10.110.33.1   <none>        8080:30128/TCP   11s
+    $
+
+
+状態を確認します。 ::
+
+    $ kubectl describe services/kubernetes-bootcamp
+    Name:                     kubernetes-bootcamp
+    Namespace:                default
+    Labels:                   run=kubernetes-bootcamp
+    Annotations:              <none>
+    Selector:                 run=kubernetes-bootcamp
+    Type:                     NodePort
+    IP:                       10.110.33.1
+    Port:                     <unset>  8080/TCP
+    TargetPort:               8080/TCP
+    NodePort:                 <unset>  30128/TCP
+    Endpoints:                172.18.0.4:8080
+    Session Affinity:         None
+    External Traffic Policy:  Cluster
+    Events:                   <none>
+
+
+作成した Dockerイメージのデプロイ
+=============================================================
 
 .. todo:: このタイミングでやるかの検討が必要
 
@@ -158,9 +193,11 @@ yaml ファイルを作成する。
 
 デプロイしたアプリケーションにアクセスし、正常稼働しているか確認します。
 
-アクセスするIPについては Serviceを定義します。
+アクセスするIPについてはサービスを取得して確認します。。
 
-
-
+.. TIP::
+k8s 上へのデプロイが非常に手数がかかることが体感できたかと思います。
+実際はパッケージマネージャー Helm 等を使ってデプロイすることが多いかと思います。
+このラボでは仕組みを理解していただき、応用出来ることを目的としています。
 
 ここまでで Level1 は終了です。
