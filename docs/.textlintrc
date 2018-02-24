@@ -2,10 +2,16 @@
   "plugins": [
 	  "rst"
   ],
-  "filters": {},
+ "filters": {},
   "rules": {
     "preset-ja-technical-writing": true,
-    "preset-jtf-style": true,
+    "preset-jtf-style": {
+                "2.2.2.算用数字と漢数字の使い分け": false,
+                "3.1.1.全角文字と半角文字の間": false,
+                "4.2.7.コロン(：)": false,
+                "4.3.6.中かっこ{ }": false,
+                "4.3.7.山かっこ<>": false
+    },
     "preset-japanese": true,
     "no-mix-dearu-desumasu": true,
     "no-double-negative-ja": true,
