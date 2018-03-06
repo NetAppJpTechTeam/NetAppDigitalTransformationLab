@@ -1,3 +1,6 @@
+.. index::
+single: microservice
+
 =============================================================
 Level 5: Microservice化
 =============================================================
@@ -16,7 +19,7 @@ Level 4までで既存のアプリケーションのコンテナ化を実施す�
 * Istio が必要になる理由 -> Linkerd のほうがよい？
 * コンポーネントを分ける
 * スケールアウト、スケールインさせる
-* ConfigMap, Sercretsを活用、ServiceDiscovery
+* ConfigMap, Secretsを活用、ServiceDiscovery
 * CNCF のテクノロジースタックの有効活用
 
 さらなる進化

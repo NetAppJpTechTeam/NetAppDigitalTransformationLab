@@ -7,6 +7,8 @@
 Data Technology Lab Guide
 =============================================================
 
+はじめに
+=============================================================
 
 
 Contents
@@ -21,18 +23,37 @@ Contents
    Level4/index
    Level5/index
 
+Install するもの・あると便利なもの
+=============================================================
+
+.. toctree::
+   :maxdepth: 2
+
+   others/installed
 
 やるべきこと一覧
 =============================================================
 
 このドキュメント全体のTODOをまとめたもの
 
-:doc:`others/todos`
+.. toctree::
+   :maxdepth: 2
+
+   others/todos
 
 DesignDoc
 =============================================================
+.. toctree::
+    :maxdepth: 2
 
-:doc:`others/design`
+    others/design
+
+References
+=============================================================
+.. toctree::
+    :maxdepth: 2
+
+    others/references
 
 Indices and tables
 =============================================================
