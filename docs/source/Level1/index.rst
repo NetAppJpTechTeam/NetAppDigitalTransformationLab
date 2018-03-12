@@ -249,7 +249,17 @@ kubectl delete pvc -l app=wordpress
 
 アクセスするIPについてはサービスを取得して確認します。 ::
 
-    $ kubectl
+    $ kubectl get svc
+
+結果として以下のような出力が得られます。EXTERNAL-IPの項目に表示されているIPにアクセスしてみましょう。 ::
+
+    NAME              TYPE           CLUSTER-IP     EXTERNAL-IP   PORT(S)          AGE
+    kubernetes        ClusterIP      10.51.240.1    <none>        443/TCP          4d
+    wordpress         LoadBalancer   10.51.244.29   <pending>     8080:31658/TCP   41s
+    wordpress-mysql   ClusterIP      None           <none>        3306/TCP         52s
+
+まとめ
+=============================================================
 
 kubectlやyamlを使ってk8sへのデプロイが体感できたかと思います。
 実運用になるとこのyamlをたくさん書くことは負荷になることもあるかもしれません
