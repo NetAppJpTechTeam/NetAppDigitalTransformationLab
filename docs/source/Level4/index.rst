@@ -24,13 +24,21 @@ Level 4: 運用編
 リリース後に問題発生、データをすべて戻す
 =============================================================
 
+アプリケーションはDeploymentでリビジョン管理
+
+データはどうするか？
 
 自律アップグレード
 =============================================================
 
+* Deployment
 
 Workload API を使ってみる
 =============================================================
+
+* ReplicaSet
+* DaemonSet
+* StatefulSet
 
 
 DRをどうするか？
@@ -40,3 +48,4 @@ DRをどうするか？
 
 * Cluster federation
 * CSI (Container Storage Interface)の既存ボリュームのインポートに対応をまつ
+* Heptio ark: git clone git@github.com:heptio/ark.git, https://github.com/heptio/ark + SnapMirror
