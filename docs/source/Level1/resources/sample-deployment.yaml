@@ -1,0 +1,65 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: service_name
+  labels:
+    app: app_name
+spec:
+  ports:
+    - port: number_of_port
+  selector:
+    app: app_name
+    tier: tier_name
+  clusterIP: None
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pv-claim
+  labels:
+    app: app-name
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 20Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deployment_name
+  labels:
+    app: app_name
+spec:
+  selector:
+    matchLabels:
+      app: app_name
+      tier: tier_name
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: app_name
+        tier: tier_name
+    spec:
+      containers:
+      - image: image_name:version
+        name: app_name
+        env:
+        - name: PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: app-pass
+              key: password
+        ports:
+        - containerPort: number_of_port
+          name: app_name
+        volumeMounts:
+        - name: persistent-storage
+          mountPath: /path/to/persistent/storage
+      volumes:
+      - name: persistent-storage
+        persistentVolumeClaim:
+          claimName: pv-claim
