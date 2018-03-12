@@ -15,5 +15,10 @@ Design: kubernetes クラスタの設計要素について
 ストレージ設計
 ==============================================================
 
-* 管理ポートのネットワークはどうするか
+* 管理ポートのネットワークはどうするか？
 * アーキテクチャとして、cluster管理 LIF を公開するか？それともSVM管理LIFか？
+    * マルチテナントを構成するのであれば k8s クラスタ単位にSVMを割り当てるデザインとする。マネジメントもSVMをユーザに渡す。
+* StorageClass までを管理者側で作成
+* PersistentVolumeClaim は開発者が作成するが、ある程度のパターンはカタログ化して提供する。
+* 無制限に作られてしまうと困るので、k8s 側で Storage Quota を設定、Namespace 毎に指定。ストレージ側では設定なし。 https://kubernetes.io/docs/concepts/policy/resource-quotas/
+
