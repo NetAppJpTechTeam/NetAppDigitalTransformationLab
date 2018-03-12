@@ -11,6 +11,11 @@ References
 * OracleRAC https://github.com/Seth-Miller/12c-rac-docker
 * kubernetes examples https://github.com/kubernetes/examples
 
+
+Kubernetes Helm
+=============================================================
+* Helm chart集 https://github.com/kubernetes/charts/tree/master/stable
+
 Test tools
 =============================================================
 
@@ -27,7 +32,12 @@ NetApp demo
 CNCF のテクノロジースタックの活用
 =============================================================
 
+* Istio サービスメッシュ
 
+コンテナデザインパターン
+=============================================================
+
+* Google paper
 
 コンテナストレージの選択
 =============================================================
@@ -35,11 +45,11 @@ CNCF のテクノロジースタックの活用
 * https://blog.architecting.it/no-block-persistent-container-storage/
 
 
-バックアップの検討
+バックアップ・DRの検討
 =============================================================
 
 * https://blog.architecting.it/container-backup/
-
+* https://heptio.github.io/ark/master/#
 
 Data Mobility
 =============================================================

@@ -15,8 +15,9 @@ Level 1: アプリケーションをコンテナ化する
 コンテナ化の準備
 =============================================================
 
+本ラボでは以下のイメージはキャッシュされているのでイメージのpullが高速になります。
 
-本ラボでは以下のイメージを準備しています。
+Web/AP レイヤー
 
 * nginx
 * apache
@@ -36,38 +37,37 @@ Databaseレイヤー
 
 留意点としては以下の通りです。
 
-* アプリケーションの配置
+.. todo:: 文章がまとまっていないので個々で言いたいことを、伝えたいことをはっきりさせ記載、コンテナイメージ作成時の注意点はtips的に別セクションへ。
 
-* 静的な構成となっていないか(IPパスワードのべた書きなど)
-    * コンテナプラットフォームではIPは不定のため、k8s/OpenShiftでは `Service <https://kubernetes.io/docs/concepts/services-networking/service/>`_ を利用する
-* ステートフルなものについてはコンテナに適したものにする
-    * Hint:  https://12factor.net/ja/
+* アプリケーションの配置をDockerfile内に配置
 * 基本となるコンテナイメージについてはDockerHubで探してベースイメージとする
-* コンテナ側でIPを指定する際には基本的には 0.0.0.0 とする
-    * ENTRYPOINT ["rails", "server", "-b", "0.0.0.0"]
-    * 上記の通りにしないとコネクションがリセットされる
+* 静的な構成となっていないか(IPパスワードのべた書きなど)
+* ステートフルなものについてはコンテナに適したものにする
 
+    * データ永続化についてはLevel2にて実施
+
+* コンテナ側でIPを指定する際には基本的には 0.0.0.0 とする
+
+    * 例: ENTRYPOINT ["rails", "server", "-b", "0.0.0.0"]
 
 Dockerfile のリファレンス `Dockerfile Reference ファイル <https://docs.docker.com/engine/reference/builder/>`_
 
-Hint: どうしても進まない場合は こちら :doc:`../examples/level1_sampledockerfile`  をクリックしてください。
+.. hint::
+    どうしても進まない場合は こちら :doc:`resources/level1_sampledockerfile`  をクリックしてください。
 
 コンテナイメージのビルド
 =============================================================
 
-作成した Dockerfileをビルドしてイメージを作成する。
+作成した Dockerfileをビルドしてイメージを作成します。
 
 バージョニングを意識してコンテナイメージを作成します、コンテナイメージに明示的にバージョンを指定します。 ::
 
     $ docker built -t 生成するコンテナイメージ名:バージョン Dockerファイルのパス
 
-
-.. TIP::
-    Docker イメージの生成方法は複数の手法があります。
-    例えば、普通のOSイメージを起動して、ログインしパッケージなどのインストールを行っていく手法があります。
-    メリットとしてはオペレーションで作成したものをイメージとして登録できるため、Dockerfileを作成しなくても良いといメリットがある一方で、
-    コンテナイメージの作成方法が不透明となる可能性もあります。
-
+Dockerイメージの生成方法は複数の手法があります。
+例えば、普通のOSイメージを起動して、ログインしパッケージなどのインストールを行っていく手法があります。
+メリットとしてはオペレーションで作成したものをイメージとして登録できるため、Dockerfileを作成しなくても良いといメリットがある一方で、
+コンテナイメージの作成方法が不透明となる可能性もあります。
 
 イメージレポジトリに登録
 =============================================================
@@ -81,24 +81,25 @@ DockerHub を使う場合
 DockerHubにアカウントがあることが前提です。 ::
 
     $ docker login
-    $ docker image push　accountname/container_image_name:tag
+    $ docker image push accountname/container_image_name:tag
 
 private registry を使う場合
 -------------------------------------------------------------
 
 
 プライベートレジストリのIPは以下の通りです。
-registry ip: 192.168.0.10
 
-レジストリは共通に準備しているので、Docker image を push する際にレジストリのIPを指定してください。 ::
+* registry ip: 192.168.10.10
+
+レジストリは共通に準備しているので、Docker imageをpushする際にレジストリのIPを指定してください。 ::
 
     $ docker push registry_ip:port/accoutname/container_image_name:tag
 
 
-kubernetes にデプロイ
+kubernetesにデプロイ
 =============================================================
 
-kubernetes 基本操作
+kubernetes基本操作
 -------------------------------------------------------------
 
 .. todo:: 出力を実際のイベント時の環境に併せて変更
@@ -118,10 +119,10 @@ kubernetes 基本操作
 デプロイメント
 -------------------------------------------------------------
 
-kubernetes クラスタに作成したコンテナアプリケーションをデプロイするためには 「Deployment」を作成します。
+kubernetesクラスタに作成したコンテナアプリケーションをデプロイするためには 「Deployment」を作成します。
 kubectlを使用して、アプリケーションをデプロイします。
 
-以下では kubectl run を実行するとDeploymentが作成されます。 ::
+以下では ``kubectl run`` を実行すると「Deployment」が作成されます。 ::
 
     $ kubectl run deployment_name --image=上記で作成したイメージ --port=公開ポート
 
@@ -173,41 +174,66 @@ kubectlを使用して、アプリケーションをデプロイします。
     External Traffic Policy:  Cluster
     Events:                   <none>
 
+クリーンアップ
+-------------------------------------------------------------
 
-作成したアプリケーションを yaml で定義してデプロイ
+.. todo:: ジェネラルに使える内容とする。
+
+ここまでで一旦コマンドラインの操作は完了です。
+一旦デプロイを削除します。 ::
+
+    $ kubectl delete deployment deployment_name
+    $ kubectl delete svc service_name
+    $ kubectl delete pv pv_name
+
+
+
+kubectl delete pvc -l app=wordpress
+.. tip:: kubectlの操作を容易にする
+
+    kubectlのオペレーションの簡易化のためlabelをつけることをおすすめします。
+    `k8s label <https://kubernetes.io/docs/concepts/configuration/overview/#using-labels>`_
+    ``kubectl get pods -l app=nginx`` などのようにlabelがついているPod一覧を取得といったことが簡単にできます。
+    ほかにも、
+    ``kubectl delete deployment -l app=app_label``
+    ``kubectl delete service -l app=app_label``
+
+
+作成したアプリケーションをyamlで定義してデプロイ
 =============================================================
 
 
-ここまではコマンドラインで作成作成してきました。
-ここからは yaml ファイルを作成します。
+ここまではコマンドラインで作成してきましたが yaml ファイルで１サービスをまとめてデプロイ出来るようにします。
 
+ファイル全体の流れとしては以下の通りです。
 
-全体の流れとしては以下の通りです。
-
-Deployment 作成 - Service作成
+* Service
+* PersistentVolumeClaim
+* Deployment
 
 サンプルファイルは以下の通りです。
 
-サンプル ::
+.. literalinclude:: resources/mysql-deployment.yaml
+    :language: yaml
+    :linenos:
+    :caption: mysqlをデプロイする定義ファイル
 
-    apiversion: 1.0
 
-    サンプル提示
-
-
-(Option) Workload API を使えるようであれば使いましょう。
+.. cauntion:: 本番運用に関して
+    Level4 運用編にてシングルではなく本番運用する際の考慮点等をまとめました。
+    Workload APIを使う方法で可用性を高めることができます。
 
 
 アプリケーションの稼働確認
 =============================================================
 
-デプロイしたアプリケーションにアクセスし、正常稼働しているか確認します。
+デプロイしたアプリケーションにアクセスし正常稼働しているか確認します。
 
 アクセスするIPについてはサービスを取得して確認します。
 
-.. TIP::
-    k8s 上へのデプロイが非常に手数がかかることが体感できたかと思います。
-    実際はパッケージマネージャー Helm 等を使ってデプロイすることが多いかと思います。
-    このラボでは仕組みを理解していただき、応用出来ることを目的としています。
+kubectlやyamlを使ってk8sへのデプロイが体感できたかと思います。
+実運用になるとこのyamlをたくさん書くことは負荷になることもあるかもしれません
+その解決のためにパッケージマネージャーHelm 等を使ってデプロイすることが多いかと思います。
+このラボでは仕組みを理解していただき、応用出来ることを目的としています。
 
 ここまでで Level1 は終了です。
