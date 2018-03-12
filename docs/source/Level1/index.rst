@@ -15,7 +15,7 @@ Level 1: アプリケーションをコンテナ化する
 コンテナ化の準備
 =============================================================
 
-本ラボでは以下のイメージはキャッシュされているのでイメージのpullが高速になります。
+本ラボでは以下のイメージをキャッシュしているのでイメージのpullが高速になります。
 
 Web/AP レイヤー
 
@@ -35,25 +35,24 @@ Databaseレイヤー
 
 想定するアプリケーションのコンテナイメージを作成します。
 
-留意点としては以下の通りです。
+Dockerfile のリファレンス `Dockerfile Reference ファイル <https://docs.docker.com/engine/reference/builder/>`_
 
-.. todo:: 文章がまとまっていないので個々で言いたいことを、伝えたいことをはっきりさせ記載、コンテナイメージ作成時の注意点はtips的に別セクションへ。
+留意点としては以下の通りです。
 
 * アプリケーションの配置をDockerfile内に配置
 * 基本となるコンテナイメージについてはDockerHubで探してベースイメージとする
 * 静的な構成となっていないか(IPパスワードのべた書きなど)
+
+    * 環境変数で設定出来るよう設計する。のちほどk8sのSecretなどでパスワードを保存
+
+* 冪等性はコンテナイメージ側で対応する。責任範囲を明確にしてイメージを作成
 * ステートフルなものについてはコンテナに適したものにする
 
-    * データ永続化についてはLevel2にて実施
-
-* コンテナ側でIPを指定する際には基本的には 0.0.0.0 とする
-
-    * 例: ENTRYPOINT ["rails", "server", "-b", "0.0.0.0"]
-
-Dockerfile のリファレンス `Dockerfile Reference ファイル <https://docs.docker.com/engine/reference/builder/>`_
+    * データ永続化については :doc:`../Level2/index` にて実施
 
 .. hint::
-    どうしても進まない場合は こちら :doc:`resources/level1_sampledockerfile`  をクリックしてください。
+どうしても進まない場合は :doc:`resources/level1_sampledockerfile`  をクリックしてください。
+
 
 コンテナイメージのビルド
 =============================================================
@@ -88,6 +87,8 @@ private registry を使う場合
 
 
 プライベートレジストリのIPは以下の通りです。
+
+.. todo:: IPアドレス確認。そもそもここに記載するかは検討が必要。
 
 * registry ip: 192.168.10.10
 
@@ -141,6 +142,12 @@ kubectlを使用して、アプリケーションをデプロイします。
     kubernetes   ClusterIP   10.96.0.1    <none>        443/TCP   8s
 
 
+デプロイに失敗するようであれが以下のコマンドで状態を確認します。 ::
+
+    $ kubectl describe deploy deploy_name
+    $ kubectl describe -f deploy.yaml
+    $ kubectl describe -l label
+
 外部向けに公開
 -------------------------------------------------------------
 
@@ -174,6 +181,10 @@ kubectlを使用して、アプリケーションをデプロイします。
     External Traffic Policy:  Cluster
     Events:                   <none>
 
+.. tip::
+
+    ``kubectl create deploy`` の際に --expose オプションを指定すると自動的にServiceを作成することができます。
+
 クリーンアップ
 -------------------------------------------------------------
 
@@ -192,11 +203,14 @@ kubectl delete pvc -l app=wordpress
 .. tip:: kubectlの操作を容易にする
 
     kubectlのオペレーションの簡易化のためlabelをつけることをおすすめします。
-    `k8s label <https://kubernetes.io/docs/concepts/configuration/overview/#using-labels>`_
+
+    * 参考URL: `k8s label <https://kubernetes.io/docs/concepts/configuration/overview/#using-labels>`_
+
     ``kubectl get pods -l app=nginx`` などのようにlabelがついているPod一覧を取得といったことが簡単にできます。
-    ほかにも、
-    ``kubectl delete deployment -l app=app_label``
-    ``kubectl delete service -l app=app_label``
+    ほかにも以下の様なことが可能となります。
+
+        * ``kubectl delete deployment -l app=app_label``
+        * ``kubectl delete service -l app=app_label``
 
 
 作成したアプリケーションをyamlで定義してデプロイ
@@ -214,15 +228,18 @@ kubectl delete pvc -l app=wordpress
 サンプルファイルは以下の通りです。
 (https://kubernetes.io/docs/tutorials/stateful-application/mysql-wordpress-persistent-volume/ を参考としています。）
 
-.. literalinclude:: resources/mysql-deployment.yaml
+.. literalinclude:: resources/sample-deployment.yaml
     :language: yaml
-    :linenos:
-    :caption: mysqlをデプロイする定義ファイル
+    :caption: アプリケーションをデプロイする定義ファイルの例 deployment.yaml
 
 
 .. cauntion:: 本番運用に関して
     Level4 運用編にてシングル構成ではなく本番運用する際の考慮点等をまとめました。
     Workload APIを使う方法で可用性を高めることができます。
+
+以下のコマンドを実行してデプロイしましょう。 ::
+
+    $ kubectl create -f deployment.yaml
 
 
 アプリケーションの稼働確認
@@ -230,7 +247,9 @@ kubectl delete pvc -l app=wordpress
 
 デプロイしたアプリケーションにアクセスし正常稼働しているか確認します。
 
-アクセスするIPについてはサービスを取得して確認します。
+アクセスするIPについてはサービスを取得して確認します。 ::
+
+    $ kubectl
 
 kubectlやyamlを使ってk8sへのデプロイが体感できたかと思います。
 実運用になるとこのyamlをたくさん書くことは負荷になることもあるかもしれません
