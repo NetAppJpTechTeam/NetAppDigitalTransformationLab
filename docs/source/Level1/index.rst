@@ -212,6 +212,7 @@ kubectl delete pvc -l app=wordpress
 * Deployment
 
 サンプルファイルは以下の通りです。
+(https://kubernetes.io/docs/tutorials/stateful-application/mysql-wordpress-persistent-volume/ を参考としています。）
 
 .. literalinclude:: resources/mysql-deployment.yaml
     :language: yaml
@@ -220,7 +221,7 @@ kubectl delete pvc -l app=wordpress
 
 
 .. cauntion:: 本番運用に関して
-    Level4 運用編にてシングルではなく本番運用する際の考慮点等をまとめました。
+    Level4 運用編にてシングル構成ではなく本番運用する際の考慮点等をまとめました。
     Workload APIを使う方法で可用性を高めることができます。
 
 
