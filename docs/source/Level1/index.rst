@@ -51,7 +51,8 @@ Dockerfile のリファレンス `Dockerfile Reference ファイル <https://doc
     * データ永続化については :doc:`../Level2/index` にて実施
 
 .. hint::
-どうしても進まない場合は :doc:`resources/level1_sampledockerfile`  をクリックしてください。
+
+    どうしても進まない場合は :doc:`resources/level1_sampledockerfile`  をクリックしてください。
 
 
 コンテナイメージのビルド
@@ -199,19 +200,21 @@ kubectlを使用して、アプリケーションをデプロイします。
 
 
 
-kubectl delete pvc -l app=wordpress
-.. tip:: kubectlの操作を容易にする
 
-    kubectlのオペレーションの簡易化のためlabelをつけることをおすすめします。
 
-    * 参考URL: `k8s label <https://kubernetes.io/docs/concepts/configuration/overview/#using-labels>`_
+kubectlの操作を容易にする
+-------------------------------------------------------------
 
-    ``kubectl get pods -l app=nginx`` などのようにlabelがついているPod一覧を取得といったことが簡単にできます。
-    ほかにも以下の様なことが可能となります。
+kubectlのオペレーションの簡易化のためlabelをつけることをおすすめします。
 
-        * ``kubectl delete deployment -l app=app_label``
-        * ``kubectl delete service -l app=app_label``
+* 参考URL: `k8s label <https://kubernetes.io/docs/concepts/configuration/overview/#using-labels>`_
 
+``kubectl get pods -l app=nginx`` などのようにlabelがついているPod一覧を取得といったことが簡単にできます。
+ほかにも以下の様なことが可能となります。
+
+* ``kubectl delete deployment -l app=app_label``
+* ``kubectl delete service -l app=app_label``
+* ``kubectl delete pvc -l app=wordpress``
 
 作成したアプリケーションをyamlで定義してデプロイ
 =============================================================
@@ -233,7 +236,7 @@ kubectl delete pvc -l app=wordpress
     :caption: アプリケーションをデプロイする定義ファイルの例 deployment.yaml
 
 
-.. cauntion:: 本番運用に関して
+.. caution:: 本番運用に関して
     Level4 運用編にてシングル構成ではなく本番運用する際の考慮点等をまとめました。
     Workload APIを使う方法で可用性を高めることができます。
 
