@@ -88,12 +88,21 @@ Level1 のときに作成した yaml に PVC の項目を追加し、永続化�
 永続化されていることを確認するため、一度アプリケーションを停止します。
 可能であればアプリケーションのバージョンアップを行う。
 
-ここでは通常運用のリリースに想定するオペレーションをして、しっかりデータが残っていることを確認します。
 
 再デプロイメント
 =============================================================
 
-永続化したデータが参照できることを確認しましょう。
+通常運用のリリースに想定するオペレーションをして、外部ストレージにデータ永続化されていることを確認します。
+動的にボリュームが作成されていることを確認します。 ::
 
+
+    $ ssh admin@192.168.20.20 vol show -vserver tridentsvm
+    Password:
+    Vserver   Volume       Aggregate    State      Type       Size  Available Used%
+    --------- ------------ ------------ ---------- ---- ---------- ---------- -----
+    tridentsvm root        aggr1        online     RW          1GB    972.2MB    5%
+    tridentsvm trident_trident aggr1    online     RW       1.86GB     1.77GB    5%
+    tridentsvm trident_trident_basic_f4048 aggr1 online RW     1GB    972.4MB    5%
+    3 entries were displayed.
 
 ここまでで Level2 は終了です。
