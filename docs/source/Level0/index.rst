@@ -61,7 +61,7 @@ kubectlを使用して、アプリケーションをデプロイします。
     kubernetes   ClusterIP   10.96.0.1    <none>        443/TCP   8s
 
 
-デプロイに失敗するようであれが以下のコマンドで状態を確認します。 ::
+デプロイに失敗するようであれば以下のコマンドで状態を確認します。 ::
 
     $ kubectl describe deploy deploy_name
     $ kubectl describe -f deploy.yaml
