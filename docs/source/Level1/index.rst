@@ -98,129 +98,12 @@ private registry を使う場合
     $ docker push registry_ip:port/accoutname/container_image_name:tag
 
 
-kubernetesにデプロイ
-=============================================================
-
-kubernetes基本操作
--------------------------------------------------------------
-
-.. todo:: 出力を実際のイベント時の環境に併せて変更
-
-必要となるコマンドラインツールがインストールされていることを確認します。 ::
-
-    $ kubectl version
-    Client Version: version.Info{Major:"1", Minor:"8", GitVersion:"v1.8.0", GitCommit:"6e937839ac04a38cac63e6a7a306c5d035fe7b0a", GitTreeState:"clean", BuildDate:"2017-09-28T22:57:57Z", GoVersion:"go1.8.3", Compiler:"gc", Platform:"linux/amd64"}
-    Server Version: version.Info{Major:"1", Minor:"5", GitVersion:"v1.5.2", GitCommit:"08e099554f3c31f6e6f07b448ab3ed78d0520507", GitTreeState:"clean", BuildDate:"1970-01-01T00:00:00Z", GoVersion:"go1.7.1", Compiler:"gc", Platform:"linux/amd64
-
-次にクラスタを形成するノードを確認します。 ::
-
-    $ kubectl get nodes
-    NAME      STATUS    ROLES     AGE       VERSION
-    host01    Ready     <none>    2m        v1.5.2
-
-デプロイメント
--------------------------------------------------------------
-
-kubernetesクラスタに作成したコンテナアプリケーションをデプロイするためには 「Deployment」を作成します。
-kubectlを使用して、アプリケーションをデプロイします。
-
-以下では ``kubectl run`` を実行すると「Deployment」が作成されます。 ::
-
-    $ kubectl run deployment_name --image=上記で作成したイメージ --port=公開ポート
-
-
-デプロイが完了したら以下のコマンドで状況を確認します。 ::
-
-    $ kubectl get deployments
-    NAME                  DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
-    kubernetes-bootcamp   1         1         1            1           15m
-
-
-デプロイしたアプリケーションのサービスを確認します。 ::
-
-    $ kubectl get services
-    NAME         TYPE        CLUSTER-IP   EXTERNAL-IP   PORT(S)   AGE
-    kubernetes   ClusterIP   10.96.0.1    <none>        443/TCP   8s
-
-
-デプロイに失敗するようであれが以下のコマンドで状態を確認します。 ::
-
-    $ kubectl describe deploy deploy_name
-    $ kubectl describe -f deploy.yaml
-    $ kubectl describe -l label
-
-外部向けに公開
--------------------------------------------------------------
-
-外部向けにサービスを公開します。
-公開後、再度サービスを確認します。 ::
-
-    $ kubectl expose deployment/kubernetes-bootcamp --type="NodePort" --port 8080
-    service "kubernetes-bootcamp" exposed
-    $ kubectl get services
-    NAME                  TYPE        CLUSTER-IP    EXTERNAL-IP   PORT(S)          AGE
-    kubernetes            ClusterIP   10.96.0.1     <none>        443/TCP          28s
-    kubernetes-bootcamp   NodePort    10.110.33.1   <none>        8080:30128/TCP   11s
-    $
-
-
-状態を確認します。 ::
-
-    $ kubectl describe services/kubernetes-bootcamp
-    Name:                     kubernetes-bootcamp
-    Namespace:                default
-    Labels:                   run=kubernetes-bootcamp
-    Annotations:              <none>
-    Selector:                 run=kubernetes-bootcamp
-    Type:                     NodePort
-    IP:                       10.110.33.1
-    Port:                     <unset>  8080/TCP
-    TargetPort:               8080/TCP
-    NodePort:                 <unset>  30128/TCP
-    Endpoints:                172.18.0.4:8080
-    Session Affinity:         None
-    External Traffic Policy:  Cluster
-    Events:                   <none>
-
-.. tip::
-
-    ``kubectl create deploy`` の際に --expose オプションを指定すると自動的にServiceを作成することができます。
-
-クリーンアップ
--------------------------------------------------------------
-
-.. todo:: ジェネラルに使える内容とする。
-
-ここまでで一旦コマンドラインの操作は完了です。
-一旦デプロイを削除します。 ::
-
-    $ kubectl delete deployment deployment_name
-    $ kubectl delete svc service_name
-    $ kubectl delete pv pv_name
-
-
-
-
-
-kubectlの操作を容易にする
--------------------------------------------------------------
-
-kubectlのオペレーションの簡易化のためlabelをつけることをおすすめします。
-
-* 参考URL: `k8s label <https://kubernetes.io/docs/concepts/configuration/overview/#using-labels>`_
-
-``kubectl get pods -l app=nginx`` などのようにlabelがついているPod一覧を取得といったことが簡単にできます。
-ほかにも以下の様なことが可能となります。
-
-* ``kubectl delete deployment -l app=app_label``
-* ``kubectl delete service -l app=app_label``
-* ``kubectl delete pvc -l app=wordpress``
 
 作成したアプリケーションをyamlで定義してデプロイ
 =============================================================
 
 
-ここまではコマンドラインで作成してきましたが yaml ファイルで１サービスをまとめてデプロイ出来るようにします。
+Level0ではコマンドラインで作成してきましたがyamlファイルで１サービスをまとめてデプロイ出来るようにします。
 
 ファイル全体の流れとしては以下の通りです。
 
@@ -239,6 +122,20 @@ kubectlのオペレーションの簡易化のためlabelをつけることを�
 .. caution:: 本番運用に関して
     Level4 運用編にてシングル構成ではなく本番運用する際の考慮点等をまとめました。
     Workload APIを使う方法で可用性を高めることができます。
+
+kubectlの操作を容易にする
+-------------------------------------------------------------
+
+kubectlのオペレーションの簡易化のためlabelをつけることをおすすめします。
+
+* 参考URL: `k8s label <https://kubernetes.io/docs/concepts/configuration/overview/#using-labels>`_
+
+``kubectl get pods -l app=nginx`` などのようにlabelがついているPod一覧を取得といったことが簡単にできます。
+ほかにも以下の様なことが可能となります。
+
+* ``kubectl delete deployment -l app=app_label``
+* ``kubectl delete service -l app=app_label``
+* ``kubectl delete pvc -l app=wordpress``
 
 以下のコマンドを実行してデプロイしましょう。 ::
 
