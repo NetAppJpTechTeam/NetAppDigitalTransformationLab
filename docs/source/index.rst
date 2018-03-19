@@ -17,12 +17,28 @@ Data Technology Lab Guide
 * 特定のシナリオに沿った関連技術の組み合わせ検証
 * Labを通じての技術者コミュニティの創出
 
+連絡方法
+------------------------------------------------------------
+
+連絡先は以下を準備しています。
+
+* 本ドキュメントのリポジトリにIssueまたはPull-request
+
+  * https://github.com/NetAppJpTechTeam/DataTechnologyLab
+
+* Twitter:
+
+  * `@NetAppJPTech <https://twitter.com/NetAppJPTech>`_
+
+* Slack: TBD
+
 Contents
 =============================================================
 
 .. toctree::
    :maxdepth: 2
 
+   Level0/index
    Level1/index
    Level2/index
    Level3/index
