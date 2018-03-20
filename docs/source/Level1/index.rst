@@ -8,8 +8,7 @@ Level 1: アプリケーションをコンテナ化する
 このレベルで習得できるもの
 =============================================================
 
-* 一般的なコンテナイメージの作成の手法
-* 基本操作を習得する
+* 一般的なコンテナイメージの作成の手法 (Docker image)
 * デプロイメント方法の習得
 
 コンテナ化の準備
@@ -37,6 +36,7 @@ Databaseレイヤー
 
 Dockerfile のリファレンス `Dockerfile Reference ファイル <https://docs.docker.com/engine/reference/builder/>`_
 
+
 留意点としては以下の通りです。
 
 * アプリケーションの配置をDockerfile内に配置
@@ -62,7 +62,7 @@ Dockerfile のリファレンス `Dockerfile Reference ファイル <https://doc
 
 バージョニングを意識してコンテナイメージを作成します、コンテナイメージに明示的にバージョンを指定します。 ::
 
-    $ docker built -t 生成するコンテナイメージ名:バージョン Dockerファイルのパス
+    $ docker build -t 生成するコンテナイメージ名:タグ名 Dockerファイルのパス
 
 Dockerイメージの生成方法は複数の手法があります。
 例えば、普通のOSイメージを起動して、ログインしパッケージなどのインストールを行っていく手法があります。
@@ -81,7 +81,7 @@ DockerHub を使う場合
 DockerHubにアカウントがあることが前提です。 ::
 
     $ docker login
-    $ docker image push accountname/container_image_name:tag
+    $ docker image push アカウント名/コンテナイメージ名:タグ名
 
 private registry を使う場合
 -------------------------------------------------------------
@@ -91,11 +91,11 @@ private registry を使う場合
 
 .. todo:: IPアドレス確認。そもそもここに記載するかは検討が必要。
 
-* registry ip: 192.168.10.10
+* registry ip: 192.168.1.XX
 
 レジストリは共通に準備しているので、Docker imageをpushする際にレジストリのIPを指定してください。 ::
 
-    $ docker push registry_ip:port/accoutname/container_image_name:tag
+    $ docker push レジストリIP:ポート/アカウント名/コンテナイメージ名:タグ名
 
 
 
@@ -103,16 +103,21 @@ private registry を使う場合
 =============================================================
 
 
-Level0ではコマンドラインで作成してきましたがyamlファイルで１サービスをまとめてデプロイ出来るようにします。
+:doc:`../Level0/index` ではコマンドラインで作成してきましたがyamlファイルで１サービスをまとめてデプロイ出来るようにします。
 
-ファイル全体の流れとしては以下の通りです。
+ファイルのセクション構成としては以下の通りです。
 
 * Service
 * PersistentVolumeClaim
 * Deployment
 
-サンプルファイルは以下の通りです。
+サンプルファイルを準備しましたのでそれぞれの項目の意味を考え作成してみましょう。
+
 (https://kubernetes.io/docs/tutorials/stateful-application/mysql-wordpress-persistent-volume/ を参考としています。）
+
+
+.. todo:: NodePortの書き方を追加するか否か
+
 
 .. literalinclude:: resources/sample-deployment.yaml
     :language: yaml
@@ -120,7 +125,7 @@ Level0ではコマンドラインで作成してきましたがyamlファイル�
 
 
 .. caution:: 本番運用に関して
-    Level4 運用編にてシングル構成ではなく本番運用する際の考慮点等をまとめました。
+    :doc:`../Level4/index` にてシングル構成ではなく本番運用する際の考慮点等をまとめました。
     Workload APIを使う方法で可用性を高めることができます。
 
 kubectlの操作を容易にする

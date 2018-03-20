@@ -7,6 +7,8 @@
 Data Technology Lab Guide
 =============================================================
 
+[![Build Status](https://travis-ci.org/NetAppJpTechTeam/DataTechnologyLab.svg?branch=master)](https://travis-ci.org/NetAppJpTechTeam/DataTechnologyLab)
+
 はじめに
 =============================================================
 

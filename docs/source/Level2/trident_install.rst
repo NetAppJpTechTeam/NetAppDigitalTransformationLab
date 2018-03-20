@@ -47,10 +47,10 @@ Tridentインストール
     {
         "version": 1,
         "storageDriverName": "ontap-nas",
-        "managementLIF": "10.0.1.146",
-        "dataLIF": "10.0.1.178",
-        "svm": "svm_k8s_demo",
-        "username": "admin",
+        "managementLIF": "192.168.XX.200",
+        "dataLIF": "192.168.XX.200",
+        "svm": "svmXX",
+        "username": "vsadmin",
         "password": "netapp123"
     }
     $ ./install_trident.sh -n trident
@@ -62,13 +62,21 @@ Tridentインストール
     NAME                READY     STATUS    RESTARTS   AGE
     trident-ephemeral   1/1       Running   0          58s
 
+
 上記の状態で止まってしまう場合は、 ``trident-installer/`` 配下に ``tridentctl`` というtridentのコマンドラインユーティリティが同梱されています。
 このツールを使って状況を確認します。 ::
+
+tridentctlはパスの通った場所に配置します。 ::
+
+    $ sudo cp tridentctl /usr/local/bin
+
+以下のようにtridentに関するログをまとめて確認することが出来るようになります。::
 
     $ ./tridentctl -n trident logs
     time="2018-02-15T03:32:35Z" level=error msg="API invocation failed. Post https://10.0.1.146/servlets/netapp.servlets.admin.XMLrequest_filer: dial tcp 10.0.1.146:443: getsockopt: connection timed out"
     time="2018-02-15T03:32:35Z" level=error msg="Problem initializing storage driver: 'ontap-nas' error: Error initializing ontap-nas driver. Could not determine Data ONTAP API version. Could not read ONTAPI version. Post https://10.0.1.146/servlets/netapp.servlets.admin.XMLrequest_filer: dial tcp 10.0.1.146:443: getsockopt: connection timed out" backend= handler=AddBackend
     time="2018-02-15T03:32:35Z" level=info msg="API server REST call." duration=2m10.64501326s method=POST route=AddBackend uri=/trident/v1/backend
+
 
 Tridentへバックエンドストレージの登録
 =============================================================
