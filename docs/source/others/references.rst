@@ -14,6 +14,7 @@ References
 
 Kubernetes Helm
 =============================================================
+
 * Helm chart集 https://github.com/kubernetes/charts/tree/master/stable
 
 Test tools
@@ -21,6 +22,11 @@ Test tools
 
 * https://opensource.googleblog.com/2018/01/container-structure-tests-unit-tests.html
 * https://www.techatbloomberg.com/blog/powerfulseal-testing-tool-kubernetes-clusters/
+
+CI/CD for kubernetes applications
+=============================================================
+
+* https://github.com/GoogleCloudPlatform/skaffold
 
 
 NetApp demo
@@ -43,7 +49,7 @@ CNCF のテクノロジースタックの活用
 =============================================================
 
 * https://blog.architecting.it/no-block-persistent-container-storage/
-
+* https://medium.com/makotows-blog/container-data-persistence-bc16966dc82d
 
 バックアップ・DRの検討
 =============================================================

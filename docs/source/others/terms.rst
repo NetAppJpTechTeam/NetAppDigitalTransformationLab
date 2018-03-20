@@ -30,6 +30,8 @@ k8s用語
 * Service
 * Ingress
 * NodePort
+* LoadBalancer
+* ClusterIP
 * Pod
 * PersistentVolume
 * PersistentVolumeClaim
@@ -40,6 +42,7 @@ k8s用語
 * ContainerNetworkInterface(CNI)
 * ConfigMap
 * Secret
+
 
 NetApp用語
 
