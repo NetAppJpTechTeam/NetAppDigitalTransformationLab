@@ -5,6 +5,7 @@ python:
 sudo: false
 cache: pip
 
-install: "pip install sphinx"
-script: sphinx-build -nWT -b dummy . _build/html
+install: "pip install sphinx sphinx_rtd_theme"
+script:
+  - sphinx-build -nWT docs/source/ docs/build/html/
 
