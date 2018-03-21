@@ -62,6 +62,7 @@ StorageClass を定義して、ストレージのサービスカタログを作�
     :caption: 高速ストレージ用の定義ファイルの例 StorageClassFastest.yml
 
 .. todo:: SCをつくるコマンドを追加する。
+
 ストレージクラスを作成します。 ::
 
     $ kubectl create -f StorageClassFastest.yml

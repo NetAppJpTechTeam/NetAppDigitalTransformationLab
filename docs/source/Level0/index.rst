@@ -26,6 +26,7 @@ kubernetes基本操作
     $ kubectl version
     Client Version: version.Info{Major:"1", Minor:"9", GitVersion:"v1.9.4", GitCommit:"bee2d1505c4fe820744d26d41ecd3fdd4a3d6546", GitTreeState:"clean", BuildDate:"2018-03-12T16:29:47Z", GoVersion:"go1.9.3", Compiler:"gc", Platform:"linux/amd64"}
     Server Version: version.Info{Major:"1", Minor:"9", GitVersion:"v1.9.4", GitCommit:"bee2d1505c4fe820744d26d41ecd3fdd4a3d6546", GitTreeState:"clean", BuildDate:"2018-03-12T16:21:35Z", GoVersion:"go1.9.3", Compiler:"gc", Platform:"linux/amd64"}
+
 次にクラスタを形成するノードを確認します。 ::
 
     $ kubectl get nodes
@@ -79,7 +80,7 @@ PORT 列を確認します。上の実行例でいうと「30606」ポートの�
     $ ifconfig -a | grep 192.168.*
       inet addr:192.168.10.10  Bcast:192.168.10.255  Mask:255.255.255.0
 
-上記の情報を元にIPを生成してアクセスします。::
+上記の情報を元にIPを生成してアクセスします。
 
 - http://192.168.10.10:30606/
 
