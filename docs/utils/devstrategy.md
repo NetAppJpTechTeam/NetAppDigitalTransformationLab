@@ -30,4 +30,3 @@ git push origin master
 git checkout master
 git branch -D TOPIC-BRANCH
 git push -d origin TOPIC-BRANCH
-
