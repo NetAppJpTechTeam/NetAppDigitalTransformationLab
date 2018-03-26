@@ -10,6 +10,7 @@ References
 * https://github.com/SecureSkyTechnology/BadLibrary/tree/master/src
 * OracleRAC https://github.com/Seth-Miller/12c-rac-docker
 * kubernetes examples https://github.com/kubernetes/examples
+* https://github.com/microservices-demo/microservices-demo
 
 
 Kubernetes Helm
@@ -33,7 +34,9 @@ NetApp demo
 =============================================================
 
 * https://www.youtube.com/watch?v=mQ2sseKamoQ
-* https://github.com/cschnidr/phpinfo
+* https://github.com/cschnidr/phpinfo\
+* https://github.com/NetAppEMEA/kubernetes-netapp
+* https://www.youtube.com/watch?v=5SyhKEr2Vl8&feature=youtu.be
 
 CNCF のテクノロジースタックの活用
 =============================================================
