@@ -46,6 +46,8 @@ Level 4: 運用編
 * Prometheus + Grafana
 
     * Helm で入れる
+    *  helm install stable/prometheus
+
 
 * k8s Master の冗長化
 

@@ -27,8 +27,10 @@ Test tools
 CI/CD for kubernetes applications
 =============================================================
 
-* https://github.com/GoogleCloudPlatform/skaffold
-
+* JenkinsX http://jenkins-x.io/
+* Skaffolld https://github.com/GoogleCloudPlatform/skaffold
+* Jenkins on GCP https://cloud.google.com/solutions/jenkins-on-kubernetes-engine-tutorial
+* Pipeline https://cloud.google.com/solutions/continuous-delivery-jenkins-kubernetes-engine
 
 NetApp demo
 =============================================================

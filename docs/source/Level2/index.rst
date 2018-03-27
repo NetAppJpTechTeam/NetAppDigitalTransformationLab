@@ -37,7 +37,7 @@ NetApp Trident のインストール
 ここではネットアップをバックエンドストレージとして使用するために、NetApp Trident を導入します。
 TridentはPodとしてデプロイされ通常のアプリケーションと同様に稼働します。
 
-.. include:: trident_install.rst
+.. include:: trident-install.rst
 
 .. todo:: 設計方針について,絵を追加
 
