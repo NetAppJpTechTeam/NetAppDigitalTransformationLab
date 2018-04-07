@@ -1,8 +1,28 @@
 
 
+
 基本的なhelmの使い方は以下の通りです。 ::
 
-    $ helm install --name jenkins --namespace jenkins stable/jenkins
+    $ helm install stable/helm-chart名
+
+今回はJenkinsを導入するにあたり環境に併せてカスタマイズを行います。
+Helmは以下のURLに様々なものが公開されています。パラメータを与えることである程度カスタマイズし使用することができます。
+Helm chartと同等レベルにvalues.yamlというファイルが存在し、これを環境に併せて変更することでカスタマイズしデプロイできます。
+
+* https://github.com/kubernetes/charts
+
+今回のJenkinsのデプロイでは、Ingressを使ったアプリケーションの公開をするため「Master.Ingress.Annotations」、「Master.ServiceType」を変更してデプロイしています。
+また、このvalues.yamlでは永続化ストレージが定義されていないため、Level2で作成したStorageClassを使用し動的にプロビジョニングをするように変更しましょう。
+
+.. literalinclude:: resources/helm-values/jenkins-default-values.yaml
+        :language: yaml
+        :caption: Helm設定用のvalues.yaml
+
+
+実行イメージとしては以下の通りです。 ::
+
+    $ helm --namespace jenkins --name jenkins -f ./jenkins-values.yaml install stable/jenkins
+
     NAME:   jenkins
     LAST DEPLOYED: Mon Mar 26 19:57:25 2018
     NAMESPACE: jenkins
@@ -50,17 +70,35 @@
     For more information on running Jenkins on Kubernetes, visit:
     https://cloud.google.com/solutions/jenkins-on-container-engine
 
-「NOTES」欄にきさい　のある通りadminパスワードを取得します。::
+        1. Get your 'admin' user password by running:
+          printf $(kubectl get secret --namespace jenkins jenkins -o jsonpath="{.data.jenkins-admin-password}" | base64 --decode);echo
+        2. Get the Jenkins URL to visit by running these commands in the same shell:
+          export POD_NAME=$(kubectl get pods --namespace jenkins -l "component=jenkins-master" -o jsonpath="{.items[0].metadata.name}")
+          echo http://127.0.0.1:8080
+          kubectl port-forward $POD_NAME 8080:8080
 
-    $ printf $(kubectl get secret --namespace jenkins jenkins -o jsonpath="{.data.jenkins-admin-password}" | base64 --decode);echo
-
-JenkinsへのアクセスURLを取得します。 ::
-
-    $ export SERVICE_IP=$(kubectl get svc --namespace jenkins jenkins --template "{{ range (index .status.loadBalancer.ingress 0) }}{{ . }}{{ end }}")
-    $ echo http://$SERVICE_IP:8080/login
+        3. Login with the password from step 1 and the username: admin
 
 
-.. tips::
+「NOTES」欄に記載の通りadminパスワードを取得します。
 
-    Helmは以下のURLに様々なものが公開されています。パラメータを与えることである程度カスタマイズし使用するうことができます。
-    Helm chartの
+一部自身で対応する部分があります。
+component 部分はnamespaceを指定しえいる場合はメッセージとは変更になりますので留意ください(2018/4時点)::
+
+
+        $ export POD_NAME=$(kubectl get pods --namespace jenkins -l "component=jenkins-jenkins-master" -o jsonpath="{.items[0].metadata.name}")
+        $ echo $POD_NAME
+           jenkins-6d9c5bffdc-mzk8x
+
+
+ここではIngressを使用してアプリケーションを外部に公開します。
+
+.. include:: ingress.rst
+
+.. image:: resources/jenkins_welcome.png
+
+
+初期画面に記載されている通りパスワードを取得します。 ::
+
+    $ kubectl exec -it jenkins-jenkins-d487b4c48-gg57j -- cat /var/jenkins_home/secrets/initialAdminPassword
+      60dedec9310c4d72a9d59f6d0b283a4a
