@@ -1,6 +1,7 @@
 .idea/
 docs/build
 local-src/
+personal-utilities/
 
 # Logs
 logs

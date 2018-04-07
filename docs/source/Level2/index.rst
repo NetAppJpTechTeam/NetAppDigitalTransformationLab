@@ -37,7 +37,7 @@ NetApp Trident のインストール
 ここではネットアップをバックエンドストレージとして使用するために、NetApp Trident を導入します。
 TridentはPodとしてデプロイされ通常のアプリケーションと同様に稼働します。
 
-.. include:: trident_install.rst
+.. include:: trident-install.rst
 
 .. todo:: 設計方針について,絵を追加
 
@@ -61,13 +61,13 @@ StorageClass を定義して、ストレージのサービスカタログを作�
     :language: yaml
     :caption: 高速ストレージ用の定義ファイルの例 StorageClassFastest.yml
 
-.. todo:: SCをつくるコマンドを追加する。
-
 ストレージクラスを作成します。 ::
 
     $ kubectl create -f StorageClassFastest.yml
+    storageclass "ontap-gold" created
     $ kubectl get sc
-
+    NAME         PROVISIONER         AGE
+    ontap-gold   netapp.io/trident   10s
 
 Persistent Volume Claimの作成
 =============================================================
