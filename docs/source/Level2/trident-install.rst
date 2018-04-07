@@ -28,16 +28,16 @@ Tridentインストール
       - 設定内容
     * - managementLIF
       - ONTAPのクラスタ管理LIFまたはSVM管理LIFを設定
-      - 今回はSVM管理LIFを設定
+      - 192.168.XXX.200
     * - dataLIF
       - データ通信LIF
-      - 192.168.XXX.10
+      - 192.168.XXX.200
     * - svm
       - tridentから使用するSVM
       - svm_k8s_cluster
     * - username/password
       - クラスタ管理者またはSVM管理者のクレデンシャル
-      - 今回SVM管理者を設定
+      - 今回SVM管理者を設定: vsadmin/netapp123
 
 編集後は以下の通りとなります。
 疎通が取れないIPを設定するとtridentデプロイが失敗します。 ::
@@ -83,7 +83,7 @@ Tridentへバックエンドストレージの登録
 
 インストールが完了したことを以下のコマンドで確認します。 ::
 
-    $ ./tridentctl -n trident version
+    $ tridentctl -n trident version
     +----------------+----------------+
     | SERVER VERSION | CLIENT VERSION |
     +----------------+----------------+
@@ -94,11 +94,11 @@ Tridentへバックエンドストレージの登録
 作成した ``setup/backend.json`` を指定し作成します。 ::
 
     $ ./tridentctl -n trident create backend -f setup/backend.json
-    +---------------------+----------------+--------+---------+
-    |        NAME         | STORAGE DRIVER | ONLINE | VOLUMES |
-    +---------------------+----------------+--------+---------+
-    | ontapnas_10.0.1.178 | ontap-nas      | true   |       0 |
-    +---------------------+----------------+--------+---------+
+    +-------------------------+----------------+--------+---------+
+    |          NAME           | STORAGE DRIVER | ONLINE | VOLUMES |
+    +-------------------------+----------------+--------+---------+
+    | ontapnas_192.168.10.200 | ontap-nas      | true   |       0 |
+    +-------------------------+----------------+--------+---------+
 
 
 
