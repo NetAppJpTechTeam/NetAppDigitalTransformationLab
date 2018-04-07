@@ -12,7 +12,7 @@ References
 * kubernetes examples https://github.com/kubernetes/examples
 * Microservices デモ集 https://github.com/microservices-demo/microservices-demo
 * Postgress https://github.com/paunin/PostDock
-
+* JHipSter https://www.jhipster.tech/
 
 Kubernetes
 =============================================================
