@@ -34,7 +34,7 @@ Data Technology Lab Guide
 
   * `@NetAppJPTech <https://twitter.com/NetAppJPTech>`_
 
-* Slack: TBD
+* Slack: `https://netappjptech.slack.com/messages/CA38QKQQ7`_
 
 Contents
 =============================================================
