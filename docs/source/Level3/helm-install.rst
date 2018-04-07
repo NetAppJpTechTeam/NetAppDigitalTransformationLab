@@ -11,7 +11,7 @@ Helm chartと同等レベルにvalues.yamlというファイルが存在し、�
 
 * https://github.com/kubernetes/charts
 
-今回のJenkinsのデプロイでは、Ingressを使ったアプリケーションの公開をするため「Master.Ingress.Annotations」、「Master.ServiceType」を変更してデプロイしています。
+今回のJenkinsのデプロイでは、Ingressを使った公開をするため「Master.Ingress.Annotations」、「Master.ServiceType」を変更してデプロイしています。
 また、このvalues.yamlでは永続化ストレージが定義されていないため、Level2で作成したStorageClassを使用し動的にプロビジョニングをするように変更しましょう。
 
 .. literalinclude:: resources/helm-values/jenkins-default-values.yaml
@@ -83,7 +83,7 @@ Helm chartと同等レベルにvalues.yamlというファイルが存在し、�
 「NOTES」欄に記載の通りadminパスワードを取得します。
 
 一部自身で対応する部分があります。
-component 部分はnamespaceを指定しえいる場合はメッセージとは変更になりますので留意ください(2018/4時点)::
+component 部分はnamespaceを指定している場合はメッセージとは変更になりますので留意ください(2018/4時点)::
 
 
         $ export POD_NAME=$(kubectl get pods --namespace jenkins -l "component=jenkins-jenkins-master" -o jsonpath="{.items[0].metadata.name}")
