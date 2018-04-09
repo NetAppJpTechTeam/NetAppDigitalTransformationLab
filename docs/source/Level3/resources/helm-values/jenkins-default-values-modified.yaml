@@ -43,7 +43,7 @@ Master:
   ServiceAnnotations: {}
   #   service.beta.kubernetes.io/aws-load-balancer-backend-protocol: https
   # Used to create Ingress record (should used with ServiceType: ClusterIP)
-  # HostName: jenkins.cluster.local
+   HostName: jenkins.cluster.local
   # NodePort: <to set explicitly, choose port between 30000-32767
   ContainerPort: 8080
   # Enable Kubernetes Liveness and Readiness Probes
@@ -142,12 +142,11 @@ Persistence:
   AccessMode: ReadWriteOnce
   Size: 8Gi
   volumes:
-# ここに　ボリューム名とマウントパスを記述？
-#    - name: jenkins-home
-#      emptyDir: {}
+    - name: jenkins-home
+      emptyDir: {}
   mounts:
-#    - mountPath: /var/jenkins_home
-#      name: jenkins-home
+    - mountPath: /var/jenkins_home
+      name: jenkins-home
 #      readOnly: true
 
 NetworkPolicy:
