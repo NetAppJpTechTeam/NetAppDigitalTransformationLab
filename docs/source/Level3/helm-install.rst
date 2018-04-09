@@ -1,5 +1,8 @@
+helmを使用する事前の設定をします。
+helmの初期化、RBACの設定を実施します。 ::
 
-
+    $ helm init
+    $ kubectl create clusterrolebinding add-on-cluster-admin --clusterrole=cluster-admin --serviceaccount=kube-system:default
 
 基本的なhelmの使い方は以下の通りです。 ::
 
@@ -7,7 +10,7 @@
 
 今回はJenkinsを導入するにあたり環境に併せてカスタマイズを行います。
 Helmは以下のURLに様々なものが公開されています。パラメータを与えることである程度カスタマイズし使用することができます。
-Helm chartと同等レベルにvalues.yamlというファイルが存在し、これを環境に併せて変更することでカスタマイズしデプロイできます。
+Helm chartと同等のディレクトリレイアウトにvalues.yamlというファイルが存在し、これを環境に併せて変更することでカスタマイズしデプロイできます。
 
 * https://github.com/kubernetes/charts
 
@@ -83,20 +86,13 @@ Helm chartと同等レベルにvalues.yamlというファイルが存在し、�
 「NOTES」欄に記載の通りadminパスワードを取得します。
 
 一部自身で対応する部分があります。
-component 部分はnamespaceを指定している場合はメッセージとは変更になりますので留意ください(2018/4時点)::
-
+component部分はnamespaceを指定している場合はメッセージとは変更になりますので留意ください(2018/4時点) ::
 
         $ export POD_NAME=$(kubectl get pods --namespace jenkins -l "component=jenkins-jenkins-master" -o jsonpath="{.items[0].metadata.name}")
         $ echo $POD_NAME
            jenkins-6d9c5bffdc-mzk8x
 
-
-ここではIngressを使用してアプリケーションを外部に公開します。
-
-.. include:: ingress.rst
-
 .. image:: resources/jenkins_welcome.png
-
 
 初期画面に記載されている通りパスワードを取得します。 ::
 
