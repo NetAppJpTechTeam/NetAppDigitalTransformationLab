@@ -90,9 +90,7 @@ private registry を使う場合
 
 プライベートレジストリのIPは以下の通りです。
 
-.. todo:: IPアドレス確認。そもそもここに記載するかは検討が必要。
-
-* registry ip: 192.168.1.XX
+* registry ip: 192.168.1.50:5000
 
 レジストリは共通に準備しているので、Docker imageをpushする際にレジストリのIPを指定してください。 ::
 
@@ -157,7 +155,7 @@ kubectlのオペレーションの簡易化のためlabelをつけることを�
 
     $ kubectl get svc
 
-結果として以下のような出力が得られます。EXTERNAL-IPの項目に表示されているIPにアクセスしてみましょう。 ::
+結果として以下のような出力が得られます。今回はServiceのtypeをNodePortで指定しているため、マスターノードのIPのPORT(S)の右側のポートにアクセスしてみましょう。 ::
 
     NAME              TYPE           CLUSTER-IP     EXTERNAL-IP   PORT(S)          AGE
     kubernetes        ClusterIP      10.51.240.1    <none>        443/TCP          4d
