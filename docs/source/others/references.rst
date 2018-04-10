@@ -18,7 +18,7 @@ Kubernetes
 =============================================================
 
 * https://github.com/ramitsurana/awesome-kubernetes
-
+* Networking https://speakerdeck.com/apstndb/kubernetes-false-service-hatoudong-iteirufalseka
 
 Kubernetes Helm
 =============================================================
