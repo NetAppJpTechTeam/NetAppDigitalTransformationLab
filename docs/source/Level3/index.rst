@@ -75,13 +75,14 @@ Level1,2ではデプロイしたアプリケーションが配置されている
 
 #. ClusterIP:
 #. NodePort
-#. HostNetwork
+#. LoadBalancer
 
 - https://medium.com/@maniankara/kubernetes-tcp-load-balancer-service-on-premise-non-cloud-f85c9fd8f43c
 - https://kubernetes.io/docs/concepts/services-networking/service/
 
-
-ここではIngressを使用してアプリケーションを外部に公開します。
+今回はServiceのtypeをNodePortとして、Serviceの前段にIngressを配置する構成とします。
+Ingressを使用してアプリケーションを外部に公開します。
+IngressはL7ロードバランサーのような動きをします。
 
 .. include:: ingress.rst
 
@@ -132,6 +133,12 @@ Helm ChartでCI/CD
 =============================================================
 
 個別のアプリケーションデプロイメントからHelm Chartを使ったデプロイメントに変更します。
+
+作成したコンテナをHelm Chartを使ってデプロイするようにします。
+
+Helm Chartの開発ガイドは以下のURLを確認ください。
+
+https://docs.helm.sh/chart_template_guide/#the-chart-template-developer-s-guide
 
 
 デプロイメントのさらなる進化
