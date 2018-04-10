@@ -20,7 +20,7 @@ Tridentインストール
     $ tar xzf trident*.tar.gz && cd trident-installer
     $ cp sample-input/backend-ontap-nas.json setup/backend.json
 
-.. list-table:: それぞれのパラメータ
+.. list-table:: backend.jsonの設定パラメータ
     :header-rows: 1
 
     * - パラメータ名
