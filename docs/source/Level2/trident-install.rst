@@ -14,13 +14,13 @@ Tridentインストール
 =============================================================
 
 バイナリをダウンロードしてインストールします。
-バックエンドストレージのための ``setup/backend.json`` を編集します。以下はサンプルとなります。::
+バックエンドストレージのための ``setup/backend.json`` を編集します。以下はサンプルとなります。 ::
 
     $ wget https://github.com/NetApp/trident/releases/download/v18.01.0/trident-installer-18.01.0.tar.gz
     $ tar xzf trident*.tar.gz && cd trident-installer
     $ cp sample-input/backend-ontap-nas.json setup/backend.json
 
-.. list-table:: それぞれのパラメータ
+.. list-table:: backend.jsonの設定パラメータ
     :header-rows: 1
 
     * - パラメータ名
@@ -72,7 +72,7 @@ tridentctlはパスの通った場所に配置します。 ::
 
 以下のようにtridentに関するログをまとめて確認することが出来るようになります。::
 
-    $ ./tridentctl -n trident logs
+    $ tridentctl -n trident logs
     time="2018-02-15T03:32:35Z" level=error msg="API invocation failed. Post https://10.0.1.146/servlets/netapp.servlets.admin.XMLrequest_filer: dial tcp 10.0.1.146:443: getsockopt: connection timed out"
     time="2018-02-15T03:32:35Z" level=error msg="Problem initializing storage driver: 'ontap-nas' error: Error initializing ontap-nas driver. Could not determine Data ONTAP API version. Could not read ONTAPI version. Post https://10.0.1.146/servlets/netapp.servlets.admin.XMLrequest_filer: dial tcp 10.0.1.146:443: getsockopt: connection timed out" backend= handler=AddBackend
     time="2018-02-15T03:32:35Z" level=info msg="API server REST call." duration=2m10.64501326s method=POST route=AddBackend uri=/trident/v1/backend
