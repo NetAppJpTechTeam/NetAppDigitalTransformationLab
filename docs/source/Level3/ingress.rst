@@ -21,7 +21,7 @@ helm chartを使ったNginx Ingressのデプロイメントです。
 
 `--dry-run` を付与してhelmを実行することでドライランモードで実行することが可能です。 ::
 
-    $helm install stable/nginx-ingress --name nginx-ingress --set rbac.create=true --namespace ingress
+    $ helm install stable/nginx-ingress --name nginx-ingress --set rbac.create=true --namespace ingress
     NAME:   nginx-ingress
     LAST DEPLOYED: Mon Apr  9 13:58:29 2018
     NAMESPACE: ingress
@@ -162,3 +162,44 @@ Ingressが作成されると、「spec - rules - host」で指定したホスト
         </html>
 
 今回のサンプルではDNS登録することとの違いがわからないかもしれませんが、複数のサービスのエンドポイントを統一出来るようになります。
+
+Ingressで設定したServiceをDNSを経登録する
+-------------------------------------------------------------
+
+今回は名前解決をConsulを使います。
+
+登録用JSONは以下の通りです、TagsとNameでdnsに問い合わせる名前が決まります。
+今回はドメインを `service.consul`を使用します。
+
+このラボでは命名規則を定義します。
+
+* ID, Tags: アプリケーション識別子.環境番号
+* Name: web固定
+* Address: 各環境のマスタのIP
+
+アプリケーションにアクセスする際に`jenkins.user10.web.service.consul`というFQDNでアクセスしたい場合は以下のjsonファイルを作成します。
+webservice.jsonとします。 ::
+
+        {
+
+          "ID": "jenkins.user10",
+          "Name": "web",
+          "Tags": [ "jenkins.user10" ],
+          "Address": "192.168.50.11",
+          "Port": 80
+        }
+
+
+ファイルを作成したら以下のコマンドで登録します。 ::
+
+        $ curl -i -s --request PUT --data @webservice.json http://infra1:8500/v1/agent/service/register
+        HTTP/1.1 200 OK
+        Date: Wed, 11 Apr 2018 05:31:37 GMT
+        Content-Length: 0
+        Content-Type: text/plain; charset=utf-8
+
+登録が完了したら名前解決ができるか確認します。 ::
+
+        nslookup jenkins.user10.web.service.consul
+        Server:         192.168.1.1
+        Address:        192.168.1.1#53
