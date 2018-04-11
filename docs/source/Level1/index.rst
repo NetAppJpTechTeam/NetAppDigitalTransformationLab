@@ -115,9 +115,6 @@ private registry を使う場合
 (https://kubernetes.io/docs/tutorials/stateful-application/mysql-wordpress-persistent-volume/ を参考としています。）
 
 
-.. todo:: NodePortの書き方を追加するか否か
-
-
 .. literalinclude:: resources/sample-deployment.yaml
     :language: yaml
     :caption: アプリケーションをデプロイする定義ファイルの例 deployment.yaml

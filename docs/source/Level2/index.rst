@@ -90,10 +90,9 @@ PVCを作成時に独自の機能を有効化することができます。
 
 reclaimPolicyによってポッドがなくなった際のデータの保管ポリシーの設定やデータ保護、SnapShotの取得ポリシーなどを設定できます。
 
-Tridentで提供している特徴的な
-Tridentの1つの斬新な側面は、ユーザーが既存のボリュームを複製することによって新しいボリュームをプロビジョニングできることです。
+Tridentではユーザーが既存のボリュームを複製することによって新しいボリュームをプロビジョニングできる機能を提供しています。
 Tridentは、PVCアノテーションである、`trident.netapp.io/cloneFromPVC` を介してこの機能を有効にします。
-ユーザーが既にプロビジョニングされた`PVC:mysql`を持っている場合は  `PVC: mysql` を参照してmysqlcloneを作成します。
+ユーザーが既にプロビジョニングされたPVC `mysql`を参照してmysqlcloneを作成します。
 ボリュームを最初からプロビジョニングするのではなく、PVCに対応するボリュームを複製します。
 
 一覧については以下のURLに記載があります。
@@ -103,7 +102,7 @@ Tridentは、PVCアノテーションである、`trident.netapp.io/cloneFromPVC
 デプロイに使用したyamlファイルに PVC を追加
 =============================================================
 
-Level1 のときに作成した yaml に PVC の項目を追加し、ダイナミックプロビジョニングで永続化出来るアプリケーションを定義します。
+Level1で作成したyamlにPVCの項目を追加し、ダイナミックプロビジョニングで永続化出来るアプリケーションを定義します。
 
 .. literalinclude:: resources/sample-pvc.yaml
     :language: yaml
@@ -150,6 +149,16 @@ Level1 のときに作成した yaml に PVC の項目を追加し、ダイナ�
     3 entries were displayed.
 
 
+Tridentの特徴的な機能: Fast Cloning
+=============================================================
+
+Tridentの特徴的な機能について前述しました。ここでは更に掘り下げて見たいと思います。
+
+
+
+.. literalinclude:: resources/sample-pvccloning.yaml
+    :language: yaml
+    :caption: クローニングの定義ファイルの例 pvccloning.yml
 
 まとめ
 =============================================================
@@ -161,7 +170,6 @@ Level1 のときに作成した yaml に PVC の項目を追加し、ダイナ�
     * StorageClassの作成: インフラの管理者
     * PersistentVolumeClaimの作成: 利用者
 
-動的にストレージをプロビジョニングし、ポッドに割り当てる方法について体験しました。
 今後障害時の動作が気になると思いますが、 :doc:`../Level4/index` での検討事項とします。
 
 ここまでで Level2 は終了です。
