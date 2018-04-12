@@ -169,7 +169,7 @@ Ingressで設定したServiceをDNSを経登録する
 今回は名前解決をConsulを使います。
 
 登録用JSONは以下の通りです、TagsとNameでdnsに問い合わせる名前が決まります。
-今回はドメインを `service.consul`を使用します。
+今回はドメインを `service.consul` を使用します。
 
 このラボでは命名規則を定義します。
 
