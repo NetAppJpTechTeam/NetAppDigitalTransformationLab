@@ -16,6 +16,7 @@ Helm chartと同等のディレクトリにvalues.yamlというファイルが�
 
 今回のJenkinsのデプロイでは、Ingressを使った公開をするため「Master.Ingress.Annotations」、「Master.ServiceType」を変更してデプロイしています。
 また、このvalues.yamlでは永続化ストレージが定義されていないため、Level2で作成したStorageClassを使用し動的にプロビジョニングをするように変更しましょう。
+以下のvalues.yamlをカスタマイズしてデプロイしましょう。
 
 .. literalinclude:: resources/helm-values/jenkins-default-values.yaml
         :language: yaml
@@ -96,5 +97,5 @@ component部分はnamespaceを指定している場合はメッセージとは�
 
 初期画面に記載されている通りパスワードを取得します。 ::
 
-    $ kubectl exec -it jenkins-jenkins-d487b4c48-gg57j -- cat /var/jenkins_home/secrets/initialAdminPassword
+    $ kubectl exec -it $POD_NAME -- cat /var/jenkins_home/secrets/initialAdminPassword
       60dedec9310c4d72a9d59f6d0b283a4a
