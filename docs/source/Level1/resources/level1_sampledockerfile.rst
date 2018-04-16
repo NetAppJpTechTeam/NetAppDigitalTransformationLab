@@ -28,7 +28,3 @@ MySQLの例を記載します。 docker-composeファイルをサンプルとし
 .. literalinclude:: JHipsterSamples/sonar.yml
    :language: yaml
    :caption: sonarをデプロイする定義ファイルの例 sonar.yaml
-
-
-
-

@@ -7,7 +7,9 @@ Nginx Ingressをデプロイするネームスペースを作成します。
         :language: yaml
             :caption: Nginx Ingressをデプロイするネームスペース用Yaml
 
-以下のコマンドでネームスペースを作成します。 ::
+以下のコマンドでネームスペースを作成します。
+
+.. code-block:: console
 
    $ kubectl create -f ingress-ns.yaml
      namespace "ingress" created
@@ -19,7 +21,9 @@ Nginx Ingressのデプロイメント
 
 helm chartを使ったNginx Ingressのデプロイメントです。
 
-`--dry-run` を付与してhelmを実行することでドライランモードで実行することが可能です。 ::
+`--dry-run` を付与してhelmを実行することでドライランモードで実行することが可能です。
+
+.. code-block:: console
 
     $ helm install stable/nginx-ingress --name nginx-ingress --set rbac.create=true --namespace ingress
     NAME:   nginx-ingress
@@ -122,7 +126,9 @@ Ingressを作成するサンプルです。
             :caption: L7ロードバランス的なもの
 
 
-上記ファイルをインプットとして、Ingressを作成します。 ::
+上記ファイルをインプットとして、Ingressを作成します。
+
+.. code-block:: console
 
         $ kubectl create -f ingress-controller.yaml
         ingress.extensions "mynginx-ingress" created
@@ -132,7 +138,9 @@ Ingressを作成するサンプルです。
         mynginx-ingress   user10.netapp.local             80        51s
 
 Ingressが作成されると、「spec - rules - host」で指定したホスト名でアクセス出来るようになります。
-以下の確認では簡易的にcurlコマンドでipとホスト名をマッピングしていますが、通常はDNSへ登録するようになります。 ::
+以下の確認では簡易的にcurlコマンドでipとホスト名をマッピングしていますが、通常はDNSへ登録するようになります。
+
+.. code-block:: console
 
         $ curl -L --resolve user10.netapp.local:80:10.244.0.3 http://user10.netapp.local
         <!DOCTYPE html>
@@ -178,7 +186,9 @@ Ingressで設定したServiceをDNSを経登録する
 * Address: 各環境のマスタのIP
 
 アプリケーションにアクセスする際に`jenkins.user10.web.service.consul`というFQDNでアクセスしたい場合は以下のjsonファイルを作成します。
-webservice.jsonとします。 ::
+webservice.jsonとします。
+
+.. code-block:: console
 
         {
 
@@ -190,7 +200,9 @@ webservice.jsonとします。 ::
         }
 
 
-ファイルを作成したら以下のコマンドで登録します。 ::
+ファイルを作成したら以下のコマンドで登録します。
+
+.. code-block:: console
 
         $ curl -i -s --request PUT --data @webservice.json http://infra1:8500/v1/agent/service/register
         HTTP/1.1 200 OK
@@ -198,7 +210,9 @@ webservice.jsonとします。 ::
         Content-Length: 0
         Content-Type: text/plain; charset=utf-8
 
-登録が完了したら名前解決ができるか確認します。 ::
+登録が完了したら名前解決ができるか確認します。
+
+.. code-block:: console:
 
         nslookup jenkins.user10.web.service.consul
         Server:         192.168.1.1

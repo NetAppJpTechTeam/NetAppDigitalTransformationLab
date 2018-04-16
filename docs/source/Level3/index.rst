@@ -138,7 +138,7 @@ Helm ChartでCI/CD
 
 Helm Chartの開発ガイドは以下のURLを確認ください。
 
-https://docs.helm.sh/chart_template_guide/#the-chart-template-developer-s-guide
+- https://docs.helm.sh/chart_template_guide/#the-chart-template-developer-s-guide
 
 
 デプロイメントのさらなる進化

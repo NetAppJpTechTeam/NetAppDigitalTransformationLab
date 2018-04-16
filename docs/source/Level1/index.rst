@@ -61,7 +61,9 @@ Dockerfile のリファレンス `Dockerfile Reference ファイル <https://doc
 
 作成した Dockerfileをビルドしてイメージを作成します。
 
-バージョニングを意識してコンテナイメージを作成します、コンテナイメージに明示的にバージョンを指定します。 ::
+バージョニングを意識してコンテナイメージを作成します、コンテナイメージに明示的にバージョンを指定します。
+
+.. code-block:: console
 
     $ docker build -t 生成するコンテナイメージ名:タグ名 Dockerファイルのパス
 
@@ -79,9 +81,14 @@ Dockerイメージの生成方法は複数の手法があります。
 DockerHub を使う場合
 -------------------------------------------------------------
 
-DockerHubにアカウントがあることが前提です。 ::
+DockerHubにアカウントがあることが前提です。
+
+.. code-block:: console
 
     $ docker login
+
+      ユーザ名、パスワードを入力
+
     $ docker image push アカウント名/コンテナイメージ名:タグ名
 
 private registry を使う場合
@@ -92,7 +99,9 @@ private registry を使う場合
 
 * registry ip: 192.168.1.50:5000
 
-レジストリは共通に準備しているので、Docker imageをpushする際にレジストリのIPを指定してください。 ::
+レジストリは共通に準備しているので、Docker imageをpushする際にレジストリのIPを指定してください。
+
+.. code-block:: console
 
     $ docker push レジストリIP:ポート/アカウント名/コンテナイメージ名:タグ名
 
@@ -120,7 +129,8 @@ private registry を使う場合
     :caption: アプリケーションをデプロイする定義ファイルの例 deployment.yaml
 
 
-.. caution:: 本番運用に関して
+.. sidebar:: 本番運用に関して
+
     :doc:`../Level4/index` にてシングル構成ではなく本番運用する際の考慮点等をまとめました。
     Workload APIを使う方法で可用性を高めることができます。
 
@@ -138,7 +148,13 @@ kubectlのオペレーションの簡易化のためlabelをつけることを�
 * ``kubectl delete service -l app=app_label``
 * ``kubectl delete pvc -l app=wordpress``
 
-以下のコマンドを実行してデプロイしましょう。 ::
+kubectlを使ってアプリケーションをデプロイ
+-------------------------------------------------------------
+
+
+以下のコマンドを実行してデプロイしましょう。
+
+.. code-block:: console
 
     $ kubectl create -f deployment.yaml
 
@@ -148,11 +164,19 @@ kubectlのオペレーションの簡易化のためlabelをつけることを�
 
 デプロイしたアプリケーションにアクセスし正常稼働しているか確認します。
 
-アクセスするIPについてはサービスを取得して確認します。 ::
+アクセスするIPについてはサービスを取得して確認します。
+
+.. code-block:: console
 
     $ kubectl get svc
 
-結果として以下のような出力が得られます。今回はServiceのtypeをNodePortで指定しているため、マスターノードのIPのPORT(S)の右側のポートにアクセスしてみましょう。 ::
+結果として以下のような出力が得られます。
+
+今回はServiceのtypeをNodePortで指定しているため、PORT(S)の":"で区切られた右側のポート(以下の例だと8080:31658)にアクセスしてみましょう。
+
+.. todo:: 出力を説明し易いものに変更
+
+.. code-block:: console
 
     NAME              TYPE           CLUSTER-IP     EXTERNAL-IP   PORT(S)          AGE
     kubernetes        ClusterIP      10.51.240.1    <none>        443/TCP          4d
@@ -163,7 +187,8 @@ kubectlのオペレーションの簡易化のためlabelをつけることを�
 =============================================================
 
 kubectlやyamlを使ってk8sへのデプロイが体感できたかと思います。
-実運用になるとこのyamlをたくさん書くことは負荷になることもあるかもしれません
+実運用になるとこのyamlをたくさん書くことは負荷になることもあるかもしれません.
+
 その解決のためにパッケージマネージャーHelm 等を使ってデプロイすることが多いかと思います。
 このラボでは仕組みを理解していただき、応用出来ることを目的としています。
 

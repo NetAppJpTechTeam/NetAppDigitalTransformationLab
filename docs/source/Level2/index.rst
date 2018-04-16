@@ -74,11 +74,16 @@ StorageClass を定義して、ストレージのサービスカタログを作�
     :language: yaml
     :caption: 高速ストレージ用の定義ファイルの例 StorageClassFastest.yml
 
-ストレージクラスを作成します。 ::
+ストレージクラスを作成します。
+
+.. code-block:: console
 
     $ kubectl create -f StorageClassFastest.yml
+
     storageclass "ontap-gold" created
+
     $ kubectl get sc
+
     NAME         PROVISIONER         AGE
     ontap-gold   netapp.io/trident   10s
 
@@ -136,10 +141,12 @@ Level1で作成したyamlにPVCの項目を追加し、ダイナミックプロ�
 
 * 通常運用のリリースに想定するオペレーションをして、外部ストレージにデータ永続化されていることを確認します。
 
-動的にボリュームが作成されていることを確認します。 ::
+動的にボリュームが作成されていることを確認します。
 
+.. code-block:: console
 
-    $ ssh admin@192.168.20.20 vol show -vserver tridentsvm
+    $ ssh admin@192.168.20.20 vol show
+
     Password:
     Vserver   Volume       Aggregate    State      Type       Size  Available Used%
     --------- ------------ ------------ ---------- ---- ---------- ---------- -----
@@ -153,8 +160,6 @@ Tridentの特徴的な機能: Fast Cloning
 =============================================================
 
 Tridentの特徴的な機能について前述しました。ここでは更に掘り下げて見たいと思います。
-
-
 
 .. literalinclude:: resources/sample-pvccloning.yaml
     :language: yaml

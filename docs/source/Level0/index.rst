@@ -21,15 +21,21 @@ kubernetesにデプロイ
 kubernetes基本操作
 -------------------------------------------------------------
 
-必要となるコマンドラインツールがインストールされていることを確認します。 ::
+必要となるコマンドラインツールがインストールされていることを確認します。
+
+.. code-block:: console
 
     $ kubectl version
+
     Client Version: version.Info{Major:"1", Minor:"9", GitVersion:"v1.9.4", GitCommit:"bee2d1505c4fe820744d26d41ecd3fdd4a3d6546", GitTreeState:"clean", BuildDate:"2018-03-12T16:29:47Z", GoVersion:"go1.9.3", Compiler:"gc", Platform:"linux/amd64"}
     Server Version: version.Info{Major:"1", Minor:"9", GitVersion:"v1.9.4", GitCommit:"bee2d1505c4fe820744d26d41ecd3fdd4a3d6546", GitTreeState:"clean", BuildDate:"2018-03-12T16:21:35Z", GoVersion:"go1.9.3", Compiler:"gc", Platform:"linux/amd64"}
 
-次にクラスタを形成するノードを確認します。 ::
+次にクラスタを形成するノードを確認します。
+
+.. code-block:: console
 
     $ kubectl get nodes
+
     NAME      STATUS    ROLES     AGE       VERSION
     master    Ready     master    5d        v1.9.4
     node0     Ready     <none>    5d        v1.9.4
@@ -41,21 +47,30 @@ kubernetes基本操作
 kubernetesクラスタに作成したコンテナアプリケーションをデプロイするためには 「Deployment」を作成します。
 kubectlを使用して、アプリケーションをデプロイします。
 
-以下では ``kubectl run`` を実行すると「Deployment」が作成されます。 ::
+以下では ``kubectl run`` を実行すると「Deployment」が作成されます。
+
+.. code-block:: console
 
     $ kubectl run 任意のデプロイメント名 --image=nginx --port=80
+
     deployment "nginxweb" created
 
-デプロイが完了したら以下のコマンドで状況を確認します。 ::
+デプロイが完了したら以下のコマンドで状況を確認します。
+
+.. code-block:: console
 
     $ kubectl get deployments
+
     NAME                                  DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
     nginxweb                              1         1         1            1           53s
 
 デプロイしたアプリケーションのサービスを確認します。
-まだこの状態ではデプロイしたアプリケーションのサービスは存在しない状況です。 ::
+まだこの状態ではデプロイしたアプリケーションのサービスは存在しない状況です。
+
+.. code-block:: console
 
     $ kubectl get services
+
     NAME         TYPE        CLUSTER-IP   EXTERNAL-IP   PORT(S)   AGE
     kubernetes   ClusterIP   10.96.0.1    <none>        443/TCP   8s
 
@@ -64,11 +79,16 @@ kubectlを使用して、アプリケーションをデプロイします。
 -------------------------------------------------------------
 
 外部向けにサービスを公開します。
-公開後、再度サービスを確認します。 ::
+公開後、再度サービスを確認します。
+
+.. code-block:: console
 
     $ kubectl expose deployment/任意のデプロイメント名 --type="NodePort" --port 80
+
     service "nginxweb" exposed
+
     $ kubectl get services
+
     NAME         TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)        AGE
     kubernetes   ClusterIP   10.96.0.1        <none>        443/TCP        5d
     nginxweb     NodePort    10.103.136.206   <none>        80:30606/TCP   1m
@@ -78,9 +98,12 @@ PORT 列を確認します。上の実行例でいうと「30606」ポートの�
 ノードにアクセスしポッドが動いていれば、そのままアクセスします。ノードにポッドがなければ適切なノード転送される仕組みを持っています。
 そのため基本的にはマスターノードにアクセスすればk8sが適切に転送するという動作をします。
 
-自身のホストのIPを確認します。 ::
+自身のホストのIPを確認します。
+
+.. code-block:: console
 
     $ ifconfig -a | grep 192.168.*
+
       inet addr:192.168.10.10  Bcast:192.168.10.255  Mask:255.255.255.0
 
 上記の情報を元にIPを生成してアクセスします。
@@ -92,9 +115,12 @@ PORT 列を確認します。上の実行例でいうと「30606」ポートの�
 .. image:: resources/nginx.png
 
 
-状態を確認します。 ::
+状態を確認します。
+
+.. code-block:: console
 
     $ kubectl describe deployment nginxweb
+
     Name:                   nginxweb
     Namespace:              default
     CreationTimestamp:      Tue, 20 Mar 2018 13:44:08 +0900
@@ -125,6 +151,9 @@ PORT 列を確認します。上の実行例でいうと「30606」ポートの�
       ----    ------             ----  ----                   -------
       Normal  ScalingReplicaSet  15m   deployment-controller  Scaled up replica set nginxweb-78547ccd78 to 1
 
+Replicas の項目で ``1 available`` となっていればデプロイメント成功です。
+
+
 
 
 問題発生時のログの確認方法
@@ -132,18 +161,25 @@ PORT 列を確認します。上の実行例でいうと「30606」ポートの�
 
 デプロイに失敗するようであれば以下のコマンドで状態を確認します。
 
-ポッドの状態を確認するコマンド ::
+ポッドの状態を確認するコマンド
+
+.. code-block:: console
 
     $ kubectl logs ポッド名
 
 
-デプロイメントの状態を確認するコマンド ::
+デプロイメントの状態を確認するコマンド
+
+.. code-block:: console
 
     $ kubectl describe deployments デプロイメント名
 
 
 他にも以下のようなコマンドで状態を確認することができます。
-デプロイのyamlファイル単位や、定義しているラベル単位でも情報を確認できます。 ::
+デプロイのyamlファイル単位や、定義しているラベル単位でも情報を確認できます。
+
+
+.. code-block:: console
 
     $ kubectl describe -f deploy.yaml
     $ kubectl describe -l ラベル名
@@ -153,7 +189,9 @@ PORT 列を確認します。上の実行例でいうと「30606」ポートの�
 -------------------------------------------------------------
 
 ここまでで一旦コマンドラインの操作は完了です。
-一旦デプロイを削除します。 ::
+一旦デプロイを削除します。
+
+.. code-block:: console
 
     $ kubectl delete deployments デプロイメント名
     $ kubectl delete services サービス名
