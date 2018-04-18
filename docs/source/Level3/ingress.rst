@@ -21,7 +21,7 @@ Nginx Ingressをデプロイするネームスペースを作成します。
 
 .. literalinclude:: resources/ingress/ingress-ns.yaml
         :language: yaml
-            :caption: Nginx Ingressをデプロイするネームスペース用YAML
+        :caption: Nginx Ingressをデプロイするネームスペース用マニフェストファイル
 
 以下のコマンドでネームスペースを作成します。
 
@@ -42,6 +42,7 @@ helm chartを使ったNginx Ingressのデプロイメントです。
 .. code-block:: console
 
     $ helm install stable/nginx-ingress --name nginx-ingress --set rbac.create=true --namespace ingress
+
     NAME:   nginx-ingress
     LAST DEPLOYED: Mon Apr  9 13:58:29 2018
     NAMESPACE: ingress
@@ -139,10 +140,10 @@ Ingressを作成するサンプルです。
 
 .. literalinclude:: resources/ingress/ingress-controller.yaml
         :language: yaml
-            :caption: L7ロードバランス的なもの
+        :caption: L7ロードバランス的なもの
 
 
-上記のYAMLファイルをインプットとして、Ingressを作成します。
+上記のマニフェストファイルをインプットとして、Ingressを作成します。
 
 .. code-block:: console
 
@@ -161,6 +162,7 @@ Ingressが作成されると、「spec - rules - host」で指定したホスト
 .. code-block:: console
 
         $ curl -L --resolve user10.netapp.local:80:10.244.0.3 http://user10.netapp.local
+
         <!DOCTYPE html>
         <html>
         <head>
@@ -195,7 +197,7 @@ Ingressで設定したServiceをDNSを経登録する
 今回は名前解決をConsulを使います。
 
 登録用JSONは以下の通りです、TagsとNameでdnsに問い合わせる名前が決まります。
-今回はドメインを `service.consul` を使用します。
+今回はドメインを ``service.consul`` を使用します。
 
 このラボでは命名規則を定義します。
 
@@ -203,8 +205,8 @@ Ingressで設定したServiceをDNSを経登録する
 * Name: web固定
 * Address: 各環境のマスタのIP
 
-アプリケーションにアクセスする際に`jenkins.user10.web.service.consul`というFQDNでアクセスしたい場合は以下のjsonファイルを作成します。
-webservice.jsonとします。
+アプリケーションにアクセスする際に ``jenkins.user10.web.service.consul`` というFQDNでアクセスしたい場合は以下のjsonファイルを作成します。
+ファイル名はwebservice.jsonとします。ポート番号はアプリケーションで使用しているものに変更してください。
 
 .. code-block:: console
 
@@ -223,6 +225,7 @@ webservice.jsonとします。
 .. code-block:: console
 
         $ curl -i -s --request PUT --data @webservice.json http://infra1:8500/v1/agent/service/register
+
         HTTP/1.1 200 OK
         Date: Wed, 11 Apr 2018 05:31:37 GMT
         Content-Length: 0
@@ -232,6 +235,7 @@ webservice.jsonとします。
 
 .. code-block:: console:
 
-        nslookup jenkins.user10.web.service.consul
+        $ nslookup jenkins.user10.web.service.consul
+
         Server:         192.168.1.1
         Address:        192.168.1.1#53
