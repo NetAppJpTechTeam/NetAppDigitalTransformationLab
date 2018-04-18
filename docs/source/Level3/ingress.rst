@@ -1,3 +1,19 @@
+Level1,2ではデプロイしたアプリケーションが配置されているノードのIPに対してアクセスして稼働を確認していました。
+ここからは外部にアプリケーションを公開しアクセスする方法を使用します。
+
+具体的にはServiceを定義する際に指定する「type」が複数提供されています。
+
+#. ClusterIP
+#. NodePort
+#. LoadBalancer
+
+- https://medium.com/@maniankara/kubernetes-tcp-load-balancer-service-on-premise-non-cloud-f85c9fd8f43c
+- https://kubernetes.io/docs/concepts/services-networking/service/
+
+今回はServiceのtypeをNodePortとして、Serviceの前段にIngressを配置する構成とします。
+Ingressを使用してアプリケーションを外部に公開します。
+IngressはL7ロードバランサーのような動きをします。
+
 Ingress用のネームスペースを作成
 -------------------------------------------------------------
 
@@ -5,13 +21,15 @@ Nginx Ingressをデプロイするネームスペースを作成します。
 
 .. literalinclude:: resources/ingress/ingress-ns.yaml
         :language: yaml
-            :caption: Nginx Ingressをデプロイするネームスペース用Yaml
+        :caption: Nginx Ingressをデプロイするネームスペース用マニフェストファイル
 
-以下のコマンドでネームスペースを作成します。 ::
+以下のコマンドでネームスペースを作成します。
+
+.. code-block:: console
 
    $ kubectl create -f ingress-ns.yaml
-     namespace "ingress" created
 
+     namespace "ingress" created
 
 
 Nginx Ingressのデプロイメント
@@ -19,9 +37,12 @@ Nginx Ingressのデプロイメント
 
 helm chartを使ったNginx Ingressのデプロイメントです。
 
-`--dry-run` を付与してhelmを実行することでドライランモードで実行することが可能です。 ::
+`--dry-run` を付与してhelmを実行することでドライランモードで実行することが可能です。
+
+.. code-block:: console
 
     $ helm install stable/nginx-ingress --name nginx-ingress --set rbac.create=true --namespace ingress
+
     NAME:   nginx-ingress
     LAST DEPLOYED: Mon Apr  9 13:58:29 2018
     NAMESPACE: ingress
@@ -119,22 +140,29 @@ Ingressを作成するサンプルです。
 
 .. literalinclude:: resources/ingress/ingress-controller.yaml
         :language: yaml
-            :caption: L7ロードバランス的なもの
+        :caption: L7ロードバランス的なもの
 
 
-上記ファイルをインプットとして、Ingressを作成します。 ::
+上記のマニフェストファイルをインプットとして、Ingressを作成します。
+
+.. code-block:: console
 
         $ kubectl create -f ingress-controller.yaml
+
         ingress.extensions "mynginx-ingress" created
 
         $ kubectl get ing
+
         NAME              HOSTS                 ADDRESS   PORTS     AGE
         mynginx-ingress   user10.netapp.local             80        51s
 
 Ingressが作成されると、「spec - rules - host」で指定したホスト名でアクセス出来るようになります。
-以下の確認では簡易的にcurlコマンドでipとホスト名をマッピングしていますが、通常はDNSへ登録するようになります。 ::
+以下の確認では簡易的にcurlコマンドでipとホスト名をマッピングしていますが、通常はDNSへAレコードを登録します。
+
+.. code-block:: console
 
         $ curl -L --resolve user10.netapp.local:80:10.244.0.3 http://user10.netapp.local
+
         <!DOCTYPE html>
         <html>
         <head>
@@ -169,7 +197,7 @@ Ingressで設定したServiceをDNSを経登録する
 今回は名前解決をConsulを使います。
 
 登録用JSONは以下の通りです、TagsとNameでdnsに問い合わせる名前が決まります。
-今回はドメインを `service.consul` を使用します。
+今回はドメインを ``service.consul`` を使用します。
 
 このラボでは命名規則を定義します。
 
@@ -177,8 +205,10 @@ Ingressで設定したServiceをDNSを経登録する
 * Name: web固定
 * Address: 各環境のマスタのIP
 
-アプリケーションにアクセスする際に`jenkins.user10.web.service.consul`というFQDNでアクセスしたい場合は以下のjsonファイルを作成します。
-webservice.jsonとします。 ::
+アプリケーションにアクセスする際に ``jenkins.user10.web.service.consul`` というFQDNでアクセスしたい場合は以下のjsonファイルを作成します。
+ファイル名はwebservice.jsonとします。ポート番号はアプリケーションで使用しているものに変更してください。
+
+.. code-block:: console
 
         {
 
@@ -190,16 +220,22 @@ webservice.jsonとします。 ::
         }
 
 
-ファイルを作成したら以下のコマンドで登録します。 ::
+ファイルを作成したら以下のコマンドで登録します。
+
+.. code-block:: console
 
         $ curl -i -s --request PUT --data @webservice.json http://infra1:8500/v1/agent/service/register
+
         HTTP/1.1 200 OK
         Date: Wed, 11 Apr 2018 05:31:37 GMT
         Content-Length: 0
         Content-Type: text/plain; charset=utf-8
 
-登録が完了したら名前解決ができるか確認します。 ::
+登録が完了したら名前解決ができるか確認します。
 
-        nslookup jenkins.user10.web.service.consul
+.. code-block:: console:
+
+        $ nslookup jenkins.user10.web.service.consul
+
         Server:         192.168.1.1
         Address:        192.168.1.1#53

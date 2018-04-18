@@ -1,10 +1,14 @@
 helmを使用する事前の設定をします。
-helmの初期化、RBACの設定を実施します。 ::
+helmの初期化、RBACの設定を実施します。
+
+.. code-block:: console
 
     $ helm init
     $ kubectl create clusterrolebinding add-on-cluster-admin --clusterrole=cluster-admin --serviceaccount=kube-system:default
 
-基本的なhelmの使い方は以下の通りです。 ::
+基本的なhelmの使い方は以下の通りです。
+
+.. code-block:: console
 
     $ helm install stable/helm-chart名
 
@@ -23,7 +27,9 @@ Helm chartと同等のディレクトリにvalues.yamlというファイルが�
         :caption: Helm設定用のvalues.yaml
 
 
-実行イメージとしては以下の通りです。 ::
+実行イメージとしては以下の通りです。
+
+.. code-block:: console
 
     $ helm --namespace jenkins --name jenkins -f ./jenkins-values.yaml install stable/jenkins
 
@@ -87,15 +93,24 @@ Helm chartと同等のディレクトリにvalues.yamlというファイルが�
 「NOTES」欄に記載の通りadminパスワードを取得します。
 
 一部自身で対応する部分があります。
-component部分はnamespaceを指定している場合はメッセージとは変更になりますので留意ください(2018/4時点) ::
+component部分はnamespaceを指定している場合はメッセージとは変更になりますので留意ください(2018/4時点)
+
+.. code-block:: console
 
         $ export POD_NAME=$(kubectl get pods --namespace jenkins -l "component=jenkins-jenkins-master" -o jsonpath="{.items[0].metadata.name}")
         $ echo $POD_NAME
+
            jenkins-6d9c5bffdc-mzk8x
 
 .. image:: resources/jenkins_welcome.png
 
-初期画面に記載されている通りパスワードを取得します。 ::
+初期画面に記載されている通りパスワードを取得します。
+
+.. code-block:: console
 
     $ kubectl exec -it $POD_NAME -- cat /var/jenkins_home/secrets/initialAdminPassword
+
       60dedec9310c4d72a9d59f6d0b283a4a
+
+
+以上で、Jenkinsのデプロイが完了しました

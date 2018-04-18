@@ -9,7 +9,9 @@ Level1,2で習得した内容でデプロイすることが可能です。
 #. Deploymentの定義
 #. 永続化するためのPersistentVolumeClaimの定義
 
-上記を記述してデプロイします。 ::
+上記を記述してデプロイします。
+
+.. code-block:: console
 
     $ kubectl create -f jenkins.yaml
 
