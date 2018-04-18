@@ -27,6 +27,7 @@ Tridentインストール
     $ cp sample-input/backend-ontap-nas.json setup/backend.json
 
 
+
 .. list-table:: backend.jsonの設定パラメータ
     :header-rows: 1
 
@@ -51,7 +52,6 @@ Tridentインストール
 
 .. code-block:: console
 
-    $ vi setup/backend.json
     $ cat setup/backend.json
 
     {
@@ -63,6 +63,7 @@ Tridentインストール
         "username": "vsadmin",
         "password": "netapp123"
     }
+
     $ ./install_trident.sh -n trident
 
 
@@ -99,7 +100,7 @@ tridentctlはパスの通った場所に配置します。
 Tridentへバックエンドストレージの登録
 =============================================================
 
-インストールが完了したことを以下のコマンドで確認します。
+インストールが完了したことを確認します。
 
 .. code-block:: console
 
