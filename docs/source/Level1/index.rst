@@ -119,7 +119,7 @@ private registry を使う場合
 
 
 
-作成したアプリケーションをYAMLで定義してデプロイ
+作成したアプリケーションをYAMLでマニフェストファイルを作成してデプロイ
 =============================================================
 
 
@@ -138,7 +138,7 @@ private registry を使う場合
 
 .. literalinclude:: resources/sample-deployment.yaml
     :language: yaml
-    :caption: アプリケーションをデプロイする定義ファイルの例 deployment.yaml
+    :caption: アプリケーションをデプロイするマニフェストファイルの例 deployment.yaml
 
 
 .. sidebar:: 本番運用に関して
@@ -193,20 +193,16 @@ kubectlを使ってアプリケーションをデプロイ
     wordpress         NodePort    10.98.247.58   <none>        80:32048/TCP   2h
     wordpress-mysql   ClusterIP   None           <none>        3306/TCP       2h
 
-.. sidebar:: kubectl引数の省略系について
+.. note:: kubectl引数の省略系について
 
-    今回はServiceの確認をする際に``svc``という省略形でコマンドを実行しました。
+    今回はServiceの確認をする際に ``svc`` という省略形でコマンドを実行しました。
     他のオブジェクトも同様に省略形があります。コマンド入力を省力化したい場合は省略形も使ってみましょう。
 
-    * Pod -> po
-    * k
-
-
-
+    ``kubectl --help`` や ``kubectl XX --help`` コマンドで確認できます。
 まとめ
 =============================================================
 
-kubectlやYAMLを使ってk8sへのデプロイが体感できたかと思います。
+kubectlやYAMLで記載するマニフェストファイルを使ってk8sへのデプロイが体感できたかと思います。
 実運用になるとこのYAMLをたくさん書くことは負荷になることもあるかもしれません.
 
 その解決のためにパッケージマネージャーHelm 等を使ってデプロイすることが多いかと思います。
