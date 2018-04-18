@@ -99,6 +99,7 @@ component部分はnamespaceを指定している場合はメッセージとは�
 
         $ export POD_NAME=$(kubectl get pods --namespace jenkins -l "component=jenkins-jenkins-master" -o jsonpath="{.items[0].metadata.name}")
         $ echo $POD_NAME
+
            jenkins-6d9c5bffdc-mzk8x
 
 .. image:: resources/jenkins_welcome.png
@@ -108,4 +109,8 @@ component部分はnamespaceを指定している場合はメッセージとは�
 .. code-block:: console
 
     $ kubectl exec -it $POD_NAME -- cat /var/jenkins_home/secrets/initialAdminPassword
+
       60dedec9310c4d72a9d59f6d0b283a4a
+
+
+以上で、Jenkinsのデプロイが完了しました

@@ -1,3 +1,19 @@
+Level1,2ではデプロイしたアプリケーションが配置されているノードのIPに対してアクセスして稼働を確認していました。
+ここからは外部にアプリケーションを公開しアクセスする方法を使用します。
+
+具体的にはServiceを定義する際に指定する「type」が複数提供されています。
+
+#. ClusterIP
+#. NodePort
+#. LoadBalancer
+
+- https://medium.com/@maniankara/kubernetes-tcp-load-balancer-service-on-premise-non-cloud-f85c9fd8f43c
+- https://kubernetes.io/docs/concepts/services-networking/service/
+
+今回はServiceのtypeをNodePortとして、Serviceの前段にIngressを配置する構成とします。
+Ingressを使用してアプリケーションを外部に公開します。
+IngressはL7ロードバランサーのような動きをします。
+
 Ingress用のネームスペースを作成
 -------------------------------------------------------------
 
@@ -5,15 +21,15 @@ Nginx Ingressをデプロイするネームスペースを作成します。
 
 .. literalinclude:: resources/ingress/ingress-ns.yaml
         :language: yaml
-            :caption: Nginx Ingressをデプロイするネームスペース用Yaml
+            :caption: Nginx Ingressをデプロイするネームスペース用YAML
 
 以下のコマンドでネームスペースを作成します。
 
 .. code-block:: console
 
    $ kubectl create -f ingress-ns.yaml
-     namespace "ingress" created
 
+     namespace "ingress" created
 
 
 Nginx Ingressのデプロイメント
@@ -126,19 +142,21 @@ Ingressを作成するサンプルです。
             :caption: L7ロードバランス的なもの
 
 
-上記ファイルをインプットとして、Ingressを作成します。
+上記のYAMLファイルをインプットとして、Ingressを作成します。
 
 .. code-block:: console
 
         $ kubectl create -f ingress-controller.yaml
+
         ingress.extensions "mynginx-ingress" created
 
         $ kubectl get ing
+
         NAME              HOSTS                 ADDRESS   PORTS     AGE
         mynginx-ingress   user10.netapp.local             80        51s
 
 Ingressが作成されると、「spec - rules - host」で指定したホスト名でアクセス出来るようになります。
-以下の確認では簡易的にcurlコマンドでipとホスト名をマッピングしていますが、通常はDNSへ登録するようになります。
+以下の確認では簡易的にcurlコマンドでipとホスト名をマッピングしていますが、通常はDNSへAレコードを登録します。
 
 .. code-block:: console
 
