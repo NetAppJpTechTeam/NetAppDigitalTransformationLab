@@ -1,52 +1,39 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: service_name
+  name: サービス名
   labels:
-    app: app_name
+    app: 任意のラベル名
 spec:
   ports:
-    - port: number_of_port
+    - port: ポート番号
   selector:
-    app: app_name
-    tier: tier_name
+    app: アプリケーション名
+    tier: ティア名
   clusterIP: None
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: pv-claim
-  labels:
-    app: app-name
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 20Gi
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: deployment_name
+  name: デプロイメント名
   labels:
-    app: app_name
+    app: アプリケーション名
 spec:
   selector:
     matchLabels:
-      app: app_name
-      tier: tier_name
+      app: アプリケーション名
+      tier: ティア名
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
-        app: app_name
-        tier: tier_name
+        app: アプリケーション名
+        tier: ティア名
     spec:
       containers:
-      - image: image_name:version
-        name: app_name
+      - image: イメージ名:タグ
+        name: アプリケーション名
         env:
         - name: PASSWORD
           valueFrom:
@@ -54,12 +41,5 @@ spec:
               name: app-pass
               key: password
         ports:
-        - containerPort: number_of_port
-          name: app_name
-        volumeMounts:
-        - name: persistent-storage
-          mountPath: /path/to/persistent/storage
-      volumes:
-      - name: persistent-storage
-        persistentVolumeClaim:
-          claimName: pv-claim
+        - containerPort: ポート番号
+          name: アプリケーション名

@@ -3,7 +3,7 @@ kind: PersistentVolumeClaim
 metadata:
   name: sample-pv-claim
   labels:
-    app: app_name
+    app: アプリケーション名
   annotations:
     trident.netapp.io/reclaimPolicy: "Retain"
     trident.netapp.io/exportPolicy: "default"
