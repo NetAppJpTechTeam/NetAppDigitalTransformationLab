@@ -2,13 +2,24 @@
 Level 0: 環境の確認・基本操作
 ==============================================================
 
-本ラボではkubernetesクラスタへの接続確認と稼働確認を行います。
 
-このレベルで習得できるもの
+目的・ゴール: ラボを実施する環境の確認
 =============================================================
 
+本ラボではkubernetesクラスタへの接続確認と稼働確認を行うことが目的です。
+
+ガイドの中では以下を確認しています。
+
+* ラボを実施する環境の構成理解
 * 環境への接続確認
-* kubernetesの基本操作確認
+* kubernetesの基本操作を確認
+
+流れ
+=============================================================
+
+#. ユーザIDの確認
+#. 環境へログイン
+#. 基本コマンド確認、k8s へアプリケーションデプロイ
 
 kubernetes環境へのログイン
 =============================================================
@@ -27,8 +38,8 @@ kubernetes基本操作
 
     $ kubectl version
 
-    Client Version: version.Info{Major:"1", Minor:"9", GitVersion:"v1.9.4", GitCommit:"bee2d1505c4fe820744d26d41ecd3fdd4a3d6546", GitTreeState:"clean", BuildDate:"2018-03-12T16:29:47Z", GoVersion:"go1.9.3", Compiler:"gc", Platform:"linux/amd64"}
-    Server Version: version.Info{Major:"1", Minor:"9", GitVersion:"v1.9.4", GitCommit:"bee2d1505c4fe820744d26d41ecd3fdd4a3d6546", GitTreeState:"clean", BuildDate:"2018-03-12T16:21:35Z", GoVersion:"go1.9.3", Compiler:"gc", Platform:"linux/amd64"}
+    Client Version: version.Info{Major:"1", Minor:"9", GitVersion:"v1.9.6", GitCommit:"9f8ebd171479bec0ada837d7ee641dec2f8c6dd1", GitTreeState:"clean", BuildDate:"2018-03-21T15:21:50Z", GoVersion:"go1.9.3", Compiler:"gc", Platform:"linux/amd64"}
+    Server Version: version.Info{Major:"1", Minor:"9", GitVersion:"v1.9.6", GitCommit:"9f8ebd171479bec0ada837d7ee641dec2f8c6dd1", GitTreeState:"clean", BuildDate:"2018-03-21T15:13:31Z", GoVersion:"go1.9.3", Compiler:"gc", Platform:"linux/amd64"}
 
 次にクラスタを形成するノードを確認します。
 
@@ -37,9 +48,10 @@ kubernetes基本操作
     $ kubectl get nodes
 
     NAME      STATUS    ROLES     AGE       VERSION
-    master    Ready     master    5d        v1.9.4
-    node0     Ready     <none>    5d        v1.9.4
-    node1     Ready     <none>    5d        v1.9.4
+    master    Ready     master    6d        v1.9.6
+    node0     Ready     <none>    6d        v1.9.6
+    node1     Ready     <none>    6d        v1.9.6
+    node2     Ready     <none>    6d        v1.9.6
 
 デプロイメント
 -------------------------------------------------------------
@@ -83,9 +95,15 @@ kubectlを使用して、アプリケーションをデプロイします。
 
 .. code-block:: console
 
-    $ kubectl expose deployment/任意のデプロイメント名 --type="NodePort" --port 80
+    $ kubectl expose deployment/上記のデプロイメント名 --type="NodePort" --port 80
 
     service "nginxweb" exposed
+
+``kubectl expose``コマンドで外部へ公開しました。
+
+サービス一覧から公開されたポートを確認します。
+
+.. code-block:: console
 
     $ kubectl get services
 
@@ -96,9 +114,9 @@ kubectlを使用して、アプリケーションをデプロイします。
 PORT 列を確認します。上の実行例でいうと「30606」ポートの部分を確認します。
 `--type="NodePort"` を指定すると各ノード上にアプリケーションにアクセスするポート（標準で30000–32767）を作成します。
 ノードにアクセスしポッドが動いていれば、そのままアクセスします。ノードにポッドがなければ適切なノード転送される仕組みを持っています。
-そのため基本的にはマスターノードにアクセスすればk8sが適切に転送するという動作をします。
+そのためマスターノードにアクセスすればk8sが適切に転送するという動作をします。
 
-自身のホストのIPを確認します。
+ホストのIPを確認します。
 
 .. code-block:: console
 
@@ -108,7 +126,7 @@ PORT 列を確認します。上の実行例でいうと「30606」ポートの�
 
 上記の情報を元にIPを生成してアクセスします。
 
-- http://確認したIP:30606/
+- http://確認したIP:確認したポート番号/
 
 アクセス時に以下の画面が表示されれば稼働確認完了です。
 
@@ -176,20 +194,20 @@ Replicas の項目で ``1 available`` となっていればデプロイメント
 
 
 他にも以下のようなコマンドで状態を確認することができます。
-デプロイのyamlファイル単位や、定義しているラベル単位でも情報を確認できます。
+デプロイ時のYAMLファイル単位や、定義しているラベル単位でも情報を確認できます。
 
 
 .. code-block:: console
 
-    $ kubectl describe -f deploy.yaml
+    $ kubectl describe -f YAML定義ファイル
     $ kubectl describe -l ラベル名
 
 
 クリーンアップ
 -------------------------------------------------------------
 
-ここまでで一旦コマンドラインの操作は完了です。
-一旦デプロイを削除します。
+コマンドラインの操作は完了です。
+今までデプロイしたアプリケーションを削除します。
 
 .. code-block:: console
 
@@ -199,6 +217,8 @@ Replicas の項目で ``1 available`` となっていればデプロイメント
 まとめ
 =============================================================
 
-このラボではこの先のラボを行うため基本となる操作を学びました。
+このラボではこの先のラボを行うための基本となる操作及び環境の確認を実施しました。
+
+この先は各自ガイドを見ながら進めてください。
 
 ここまでで Level0 は終了です。
