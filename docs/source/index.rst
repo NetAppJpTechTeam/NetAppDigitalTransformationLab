@@ -10,7 +10,6 @@ Data Technology Lab Guide
 .. image:: https://travis-ci.org/NetAppJpTechTeam/DataTechnologyLab.svg?branch=master
     :target: https://travis-ci.org/NetAppJpTechTeam/DataTechnologyLab
 
-
 はじめに
 =============================================================
 
@@ -34,7 +33,10 @@ Data Technology Lab Guide
 
   * `@NetAppJPTech <https://twitter.com/NetAppJPTech>`_
 
-* Slack: `NetAppJpTech #datatechnologylab <https://netappjptech.slack.com/messages/CA38QKQQ7>`_
+* Slack:
+
+    * `当日QA用 NetAppJpTech #dtl_qa  <https://netappjptech.slack.com/messages/CAB0WUX0E>`_
+    * `継続的なコミュニケーション用 NetAppJpTech #datatechnologylab <https://netappjptech.slack.com/messages/CA38QKQQ7>`_
 
 Contents
 =============================================================
@@ -48,7 +50,19 @@ Contents
    Level3/index
    Level4/index
    Level5/index
-   others/terms
+
+
+References
+=============================================================
+.. toctree::
+    :maxdepth: 2
+
+    others/cmdreferences
+    others/terms
+    others/references
+    Level3/ingress
+
+
 
 インストールするもの・あると便利なもの
 =============================================================
@@ -75,12 +89,6 @@ DesignDoc
 
     others/design
 
-References
-=============================================================
-.. toctree::
-    :maxdepth: 2
-
-    others/references
 
 Indices and tables
 =============================================================
