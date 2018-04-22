@@ -47,6 +47,8 @@ Tridentインストール
       - クラスタ管理者またはSVM管理者のクレデンシャル
       - 今回SVM管理者を設定: vsadmin/netapp123
 
+「XX」はユーザ環境番号になります。
+
 編集後は以下の通りとなります。
 疎通が取れないIPを設定するとtridentデプロイが失敗します。
 
@@ -71,11 +73,12 @@ Tridentインストール
 
 .. code-block:: console
 
-    $ kubectl get pod -n trident
+    $ kubectl get pod -n trident -aw
 
     NAME                READY     STATUS    RESTARTS   AGE
     trident-ephemeral   1/1       Running   0          58s
 
+``-aw``オプションをつけることでPodの動きに変化があれば自動的にリロードしてくれます。
 
 上記の状態で止まってしまう場合は、 ``trident-installer/`` 配下に ``tridentctl`` というtridentのコマンドラインユーティリティが同梱されています。
 このツールを使って状況を確認します。
@@ -117,7 +120,7 @@ Tridentへバックエンドストレージの登録
 
 .. code-block:: console
 
-    $ ./tridentctl -n trident create backend -f setup/backend.json
+    $ tridentctl -n trident create backend -f setup/backend.json
 
     +-------------------------+----------------+--------+---------+
     |          NAME           | STORAGE DRIVER | ONLINE | VOLUMES |
@@ -125,3 +128,14 @@ Tridentへバックエンドストレージの登録
     | ontapnas_192.168.10.200 | ontap-nas      | true   |       0 |
     +-------------------------+----------------+--------+---------+
 
+（Troubleshooting) Tridentをアンインストールする
+=============================================================
+
+``trident-installer`` にアンインストール用のシェルスクリプトが入っています。
+以下の用に ``-a`` オプションを付与して実行すると生成した管理用のetcdのデータなどすべてを削除した上でアンインストールします。
+
+.. code-block:: console
+
+    $ ./uninstall_trident.sh -n trident -a
+
+インストール時にうまくいかずに試行錯誤した際には一度クリーンアップすることをおすすめします。
