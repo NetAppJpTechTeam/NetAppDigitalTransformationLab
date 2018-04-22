@@ -1,16 +1,25 @@
-helmを使用する事前の設定をします。
-helmの初期化、RBACの設定を実施します。
+Helmの初期化
+-----------------------------------------
+
+Helmを使用する事前の設定をします。
+Helmの初期化、RBACの設定を実施します。
 
 .. code-block:: console
 
     $ helm init
     $ kubectl create clusterrolebinding add-on-cluster-admin --clusterrole=cluster-admin --serviceaccount=kube-system:default
 
-基本的なhelmの使い方は以下の通りです。
+Helmの基本
+-----------------------------------------
+
+基本的なHelmの使い方は以下の通りです。
 
 .. code-block:: console
 
     $ helm install stable/helm-chart名
+
+Helmチャートのインストール・Jenkinsのカスタマイズ
+-----------------------------------------
 
 今回はJenkinsを導入するにあたり環境に併せてカスタマイズを行います。
 Helmは以下のURLに様々なものが公開されています。パラメータを与えることである程度カスタマイズし使用することができます。
@@ -113,4 +122,17 @@ component部分はnamespaceを指定している場合はメッセージとは�
       60dedec9310c4d72a9d59f6d0b283a4a
 
 
-以上で、Jenkinsのデプロイが完了しました
+以上で、Jenkinsのデプロイが完了しました。
+
+インストールが上手くいかない場合は？
+-----------------------------------------------------------------
+
+values.yamlを試行錯誤しながら設定していくことになると思います。
+一度デプロイメントしたHelmチャートは以下のコマンドで削除することができます。
+
+.. code-block:: console
+
+    $ helm del --purge チャート名
+
+
+
