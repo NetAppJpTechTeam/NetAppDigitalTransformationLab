@@ -26,27 +26,26 @@ kubectl create/apply/patch/replaceを使用します。
 
 * https://kubernetes.io/docs/concepts/overview/object-management-kubectl/overview/#imperative-object-configuration
 
-kubectl create デプロイメントの基本系、マニフェストファイルを指定してデプロイ。
-新規に行う場合に使用。
+kubectl create デプロイメントの基本系、マニフェストファイルを指定してデプロイし、新規に行う場合に使用します。
 
 .. code-block:: console
 
-    kubectl create -f deployment.yaml
+    $ kubectl create -f deployment.yaml
 
 
-kubectl apply は create/replaceを包含できる。差分反映のアルゴリズムを理解して利用する。
-すでにデプロイメントされている状態で使う、なければ新規作成の動きをする。
+kubectl applyはcreate/replaceを包含できます。差分反映のアルゴリズムを理解して利用しましょう。
+applyの動きとしてはすでにデプロイされていれば更新を行い、デプロイされていなければ新規作成の動きをします。
 
 .. code-block:: console
 
-    kubectl apply -f deployment.yaml
+    $ kubectl apply -f deployment.yaml
 
 
 kubectl replace は稼働中のアプリケーションに対して動的に定義を反映する。
 
 .. code-block:: console
 
-    kubectl apply -f deployment.yaml
+    $ kubectl apply -f deployment.yaml
 
 
 kubectl patch は稼働中のアプリケーションに対して、一部のフィールドを書き換える用途に使用。
@@ -61,6 +60,7 @@ kubectl patch は稼働中のアプリケーションに対して、一部のフ
 よく使うものとしては以下の通りです。
 
 .. code-block:: console
+
     $ kubectl get pod
 
     NAME                               READY     STATUS    RESTARTS   AGE
@@ -78,6 +78,7 @@ kubectl patch は稼働中のアプリケーションに対して、一部のフ
 .. code-block:: console
 
     $ kubectl get deployment
+
     NAME              DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
     wordpress-mysql   1         1         1            1           2d
 
@@ -96,11 +97,24 @@ kubectl patch は稼働中のアプリケーションに対して、一部のフ
     $ kubectl get -f deployment.yaml
 
 
-現状のオブジェクトをすべて確認する場合
+現状のオブジェクトをすべて確認する場合はオブジェクトを指定する箇所に ``all`` を設定するとすべてのオブジェクトを確認できます。
+
 
 .. code-block:: console
 
     $ kubectl get all [-n ネームスペース名]
+
+
+すべてのネームスペースのすべてのオブジェクトを確認したい場合は以下のとおりです。
+
+.. code-block:: console
+
+    $ kubectl get all --all-namespaces
+
+
+マニフェストファイルを使用したオブジェクトの確認もできます。
+
+``-f`` オプションを使用してデプロイ時に使用したマニフェストファイルを指定すると関連するオブジェクトをすべて表示します。
 
 .. code-block:: console
 
@@ -115,25 +129,34 @@ kubectl patch は稼働中のアプリケーションに対して、一部のフ
     deploy/wordpress-mysql   1         1         1            1           2d
 
 
-
-
-うまく稼働できない場合の問題の特定方法について
+問題の特定方法について
 --------------------------------------------------------------
 
-kubectl describe オブジェクト名
-kubectl describe -f deployment.yaml
+マニフェストを
+
+``kubectl get`` と ``kubectl describe``, ``kubectl logs`` を組み合わせて問題箇所を特定していきます。
+
+
+よく使うコマンド
+^^^^^^^^^^^^^^^^^
+
+* kubectl describe オブジェクト名
+* kubectl describe -f deployment.yaml
 
 トラブルシュートの流れ
+^^^^^^^^^^^^^^^^^
 
-#. なにがうまく行っていないのか確認する
+#. 問題箇所の特定
 
-    #. kubectl get -f deployment.yaml
+    #. ``kubectl get -f deployment.yaml`` で予期しない動作をしている箇所を発見
     #. kubectl describe -f deployment.yaml
 
 #. うまく行っていない箇所が分かれば該当のPodを確認する
 
-    #. kubectl logs pod XXXXXX
+    #. kubectl logs pod ポッド名
+    #. 3rd party製の"stern"というツールもあります。こちらは複数のPodに対してkubectl logsを実行する動きをします。非常に便利なものになります。
 
 #. 取得できた情報を元に対応実施
+
     #. YAMLファイルの修正
 
