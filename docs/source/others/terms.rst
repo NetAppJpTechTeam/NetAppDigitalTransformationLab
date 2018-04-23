@@ -19,19 +19,30 @@
       - 分類
       - 説明
     * - Deployment
+      - deploy
+      - kubernetes
+      - アプリケーションをデプロイする時に使うもの。デプロイの管理やレプリカの管理を行う。
+    * - Service
+      - svc
+      - kubernetes
+      - アプリケーションをkubernetesクラスタ外に公開するときに使用する。
+    * - Ingress
+      - ing
+      - kubernetes
+      - アプリケーションをkubernetesクラスタ外に公開するときに使用する。Serviceとの違いはIngressは、Serviceの前段に配置されServiceへのアクセスルールを定義する。
+    * - NodePort
       - 特になし
       - kubernetes
-      - アプリケーションをデプロイする時に使うもの
+      - アプリケーションをkubernetesクラスタ外に公開するときに使用する。各k8sノードでポートを解放しアクセスできるようする。接続したノードにポッドがなければ適切なノードに転送してアクセス可能にする。
+    * - LoadBalancer
+      - 特になし
+      - kubernetes
+      - アプリケーションをkubernetesクラスタ外に公開するときに使用する。デプロイ時にロードバランサーサービスに自動登録します。クラウドサービス、オンプレミスでは一部のプラットフォームで対応しています。
+    * - ClusterIP
+      - 特になし
+      - kubernetes
+      - アプリケーションをkubernetesクラスタ内に公開するときに使用する。
 
-
-k8s用語
-
-* Deployment
-* Service
-* Ingress
-* NodePort
-* LoadBalancer
-* ClusterIP
 * Pod
 * PersistentVolume
 * PersistentVolumeClaim
