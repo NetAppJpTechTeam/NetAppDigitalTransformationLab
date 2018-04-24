@@ -53,15 +53,11 @@ NetApp demo
 * https://github.com/NetAppEMEA/kubernetes-netapp
 * https://www.youtube.com/watch?v=5SyhKEr2Vl8&feature=youtu.be
 
-CNCF のテクノロジースタックの活用
-=============================================================
-
-* Istio サービスメッシュ
 
 コンテナデザインパターン
 =============================================================
 
-* Google paper
+* https://static.googleusercontent.com/media/research.google.com/ja//pubs/archive/45406.pdf
 
 コンテナストレージの選択
 =============================================================
