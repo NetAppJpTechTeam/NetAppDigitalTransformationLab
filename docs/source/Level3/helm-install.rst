@@ -27,9 +27,16 @@ Helm chartと同等のディレクトリにvalues.yamlというファイルが�
 
 * https://github.com/kubernetes/charts
 
-今回のJenkinsのデプロイでは、Ingressを使った公開をするため「Master.Ingress.Annotations」、「Master.ServiceType」を変更してデプロイしています。
+今回のJenkinsのデプロイでは２つの公開方法が選択できます。
+
+1つ目が今までのレベルと同様に ``Service`` の ``type`` を ``NodePort`` として公開する方法です。これは今まで通りの疎通確認が可能です。
+
+2つ目が ``Ingress`` を使った公開です。IngressをJenkinsのHelmチャートを使ってデプロイするためには「Master.Ingress.Annotations」、「Master.ServiceType」を変更しデプロイします。
 また、このvalues.yamlでは永続化ストレージが定義されていないため、Level2で作成したStorageClassを使用し動的にプロビジョニングをするように変更しましょう。
-以下のvalues.yamlをカスタマイズしてデプロイしましょう。
+
+簡易的にデプロイをためしてみたい方は1つ目の ``NodePort`` を使ったやり方を実施、新しい概念であるIngressを使った方法を実施したい方は2つ目を選択しましょう。
+
+どちらの方法の場合も、以下のvalues.yamlをカスタマイズしてデプロイします。
 
 .. literalinclude:: resources/helm-values/jenkins-default-values.yaml
         :language: yaml
@@ -40,87 +47,74 @@ Helm chartと同等のディレクトリにvalues.yamlというファイルが�
 
 .. code-block:: console
 
-    $ helm --namespace jenkins --name jenkins -f ./jenkins-values.yaml install stable/jenkins
+    $ helm --namespace jenkins --name jenkins -f ./jenkins-values.yaml install stable/jenkins --debug
+        LAST DEPLOYED: Tue Apr 24 12:47:12 2018
+        NAMESPACE: jenkins
+        STATUS: DEPLOYED
 
-    NAME:   jenkins
-    LAST DEPLOYED: Mon Mar 26 19:57:25 2018
-    NAMESPACE: jenkins
-    STATUS: DEPLOYED
+        RESOURCES:
+        ==> v1/Secret
+        NAME     TYPE    DATA  AGE
+        jenkins  Opaque  2     8m
 
-    RESOURCES:
-    ==> v1/PersistentVolumeClaim
-    NAME     STATUS   VOLUME  CAPACITY  ACCESS MODES  STORAGECLASS  AGE
-    jenkins  Pending  0s
+        ==> v1/ConfigMap
+        NAME           DATA  AGE
+        jenkins        3     8m
+        jenkins-tests  1     8m
 
-    ==> v1/Service
-    NAME           TYPE          CLUSTER-IP     EXTERNAL-IP  PORT(S)         AGE
-    jenkins-agent  ClusterIP     10.100.198.44  <none>       50000/TCP       0s
-    jenkins        LoadBalancer  10.101.141.43  <pending>    8080:31340/TCP  0s
+        ==> v1/PersistentVolumeClaim
+        NAME     STATUS  VOLUME                 CAPACITY  ACCESS MODES  STORAGECLASS  AGE
+        jenkins  Bound   jenkins-jenkins-2c478  8Gi       RWO           ontap-gold    8m
 
-    ==> v1beta1/Deployment
-    NAME     DESIRED  CURRENT  UP-TO-DATE  AVAILABLE  AGE
-    jenkins  1        1        1           0          0s
+        ==> v1/ServiceAccount
+        NAME     SECRETS  AGE
+        jenkins  1        8m
 
-    ==> v1/Pod(related)
-    NAME                      READY  STATUS    RESTARTS  AGE
-    jenkins-6cd96444b5-z9ctq  0/1    Init:0/1  0         0s
+        ==> v1/Service
+        NAME           TYPE       CLUSTER-IP   EXTERNAL-IP  PORT(S)         AGE
+        jenkins-agent  ClusterIP  10.98.21.68  <none>       50000/TCP       8m
+        jenkins        NodePort   10.96.24.25  <none>       8080:31050/TCP  8m
 
-    ==> v1/Secret
-    NAME     TYPE    DATA  AGE
-    jenkins  Opaque  2     0s
+        ==> v1beta1/Deployment
+        NAME     DESIRED  CURRENT  UP-TO-DATE  AVAILABLE  AGE
+        jenkins  1        1        1           1          8m
 
-    ==> v1/ConfigMap
-    NAME           DATA  AGE
-    jenkins        3     0s
-    jenkins-tests  1     0s
+        ==> v1beta1/Ingress
+        NAME     HOSTS                              ADDRESS  PORTS  AGE
+        jenkins  jenkins.user21.web.service.consul  80       8m
+
+        ==> v1/Pod(related)
+        NAME                      READY  STATUS   RESTARTS  AGE
+        jenkins-578686f98d-6pbx9  1/1    Running  0         8m
+
+        ==> v1beta1/ClusterRoleBinding
+        NAME                  AGE
+        jenkins-role-binding  8m
 
 
-    NOTES:
-    1. Get your 'admin' user password by running:
-      printf $(kubectl get secret --namespace jenkins jenkins -o jsonpath="{.data.jenkins-admin-password}" | base64 --decode);echo
-    2. Get the Jenkins URL to visit by running these commands in the same shell:
-      NOTE: It may take a few minutes for the LoadBalancer IP to be available.
-            You can watch the status of by running 'kubectl get svc --namespace jenkins -w jenkins'
-      export SERVICE_IP=$(kubectl get svc --namespace jenkins jenkins --template "{{ range (index .status.loadBalancer.ingress 0) }}{{ . }}{{ end }}")
-      echo http://$SERVICE_IP:8080/login
-
-    3. Login with the password from step 1 and the username: admin
-
-    For more information on running Jenkins on Kubernetes, visit:
-    https://cloud.google.com/solutions/jenkins-on-container-engine
-
+        NOTES:
         1. Get your 'admin' user password by running:
           printf $(kubectl get secret --namespace jenkins jenkins -o jsonpath="{.data.jenkins-admin-password}" | base64 --decode);echo
-        2. Get the Jenkins URL to visit by running these commands in the same shell:
-          export POD_NAME=$(kubectl get pods --namespace jenkins -l "component=jenkins-master" -o jsonpath="{.items[0].metadata.name}")
-          echo http://127.0.0.1:8080
-          kubectl port-forward $POD_NAME 8080:8080
+
+        2. Visit http://jenkins.user21.web.service.consul
 
         3. Login with the password from step 1 and the username: admin
+
+        For more information on running Jenkins on Kubernetes, visit:
+        https://cloud.google.com/solutions/jenkins-on-container-engine
+        Configure the Kubernetes plugin in Jenkins to use the following Service Account name jenkins using the following steps:
+          Create a Jenkins credential of type Kubernetes service account with service account name jenkins
+          Under configure Jenkins -- Update the credentials config in the cloud section to use the service account credential you created in the step above.
 
 
 「NOTES」欄に記載の通りadminパスワードを取得します。
 
-一部自身で対応する部分があります。
-component部分はnamespaceを指定している場合はメッセージとは変更になりますので留意ください(2018/4時点)
 
 .. code-block:: console
 
-        $ export POD_NAME=$(kubectl get pods --namespace jenkins -l "component=jenkins-jenkins-master" -o jsonpath="{.items[0].metadata.name}")
-        $ echo $POD_NAME
+    $ printf $(kubectl get secret --namespace jenkins jenkins -o jsonpath="{.data.jenkins-admin-password}" | base64 --decode);echo
 
-           jenkins-6d9c5bffdc-mzk8x
-
-.. image:: resources/jenkins_welcome.png
-
-初期画面に記載されている通りパスワードを取得します。
-
-.. code-block:: console
-
-    $ kubectl exec -it $POD_NAME -- cat /var/jenkins_home/secrets/initialAdminPassword
-
-      60dedec9310c4d72a9d59f6d0b283a4a
-
+        sShJg2gig9
 
 以上で、Jenkinsのデプロイが完了しました。
 
