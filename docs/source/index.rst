@@ -27,7 +27,7 @@ Data Technology Lab Guide
 
 * 本ドキュメントのリポジトリにIssueまたはPull-request
 
-  * https://github.com/NetAppJpTechTeam/DataTechnologyLab
+  * GitHub リポジトリ: https://github.com/NetAppJpTechTeam/DataTechnologyLab
 
 * Twitter:
 
@@ -35,8 +35,7 @@ Data Technology Lab Guide
 
 * Slack:
 
-    * `当日QA用 NetAppJpTech #dtl_qa  <https://netappjptech.slack.com/messages/CAB0WUX0E>`_
-    * `継続的なコミュニケーション用 NetAppJpTech #datatechnologylab <https://netappjptech.slack.com/messages/CA38QKQQ7>`_
+  * `継続的なコミュニケーション用 NetAppJpTech #datatechnologylab <https://bit.ly/2HsbpHw>`_
 
 Contents
 =============================================================
