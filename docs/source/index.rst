@@ -4,7 +4,7 @@
    contain the root `toctree` directive.
 
 =============================================================
-Data Technology Lab Guide
+NetApp Digital Transformation Lab (NDX) (formerly Data Technology Lab Guide)
 =============================================================
 
 .. image:: https://travis-ci.org/NetAppJpTechTeam/DataTechnologyLab.svg?branch=master
