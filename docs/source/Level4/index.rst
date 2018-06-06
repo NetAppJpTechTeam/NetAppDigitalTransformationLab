@@ -118,6 +118,26 @@ Helmを使った場合にも同様のことが実現可能です。
 
 参考: https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/
 
+アプリケーション負荷に応じたスケールアップ
+-------------------------------------------------------------
+
+``Horizontal Pod AutoScaler`` に対して ``Vertical Pod AutoScaler``があります。
+
+完全互換ではありませんが、Vertical Pod AutoScalerというものが k8 1.9でalpha versionとして提供されています。
+従来型のアプリケーションではスケールアウトより、スケールアップのほうが行いやすいのが一般的です。
+
+https://github.com/kubernetes/autoscaler/tree/master/vertical-pod-autoscaler
+
+アプリケーションの監視
+-------------------------------------------------------------
+
+kubernetsで監視すべき項目としてはクラスタ全体の監視とアプリケーションごとの監視になります。
+
+- クラスタ全体の監視については後述します。
+- 稼働しているアプリケーションの監視(Pod の監視)
+
+
+
 インフラの可用性を向上させる
 =============================================================
 
