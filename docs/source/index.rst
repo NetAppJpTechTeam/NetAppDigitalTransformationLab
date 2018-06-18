@@ -4,7 +4,7 @@
    contain the root `toctree` directive.
 
 =============================================================
-Data Technology Lab Guide
+NetApp Digital Transformation Lab (NDX) (formerly Data Technology Lab Guide)
 =============================================================
 
 .. image:: https://travis-ci.org/NetAppJpTechTeam/DataTechnologyLab.svg?branch=master
@@ -16,7 +16,7 @@ Data Technology Lab Guide
 目的
 ------------------------------------------------------------
 
-* DXを支える根幹技術（3rd Platform）とNetApp製品を組み合わせることによる価値を触りながら体験
+* デジタルトランスフォーメーションを支える根幹技術とNetApp製品を組み合わせることによる価値を触りながら体験
 * 特定のシナリオに沿った関連技術の組み合わせ検証
 * Labを通じての技術者コミュニティの創出
 
