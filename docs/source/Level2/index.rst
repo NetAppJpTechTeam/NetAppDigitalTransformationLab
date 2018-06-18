@@ -184,10 +184,12 @@ Tridentの特徴的な機能: Fast Cloning
 
 Tridentには特徴的な機能であるクローニングの機能が存在します。
 
-**巨大なボリュームでも容量消費せずに超高速にデータをコピーする**クローニングテクノロジーがkubernetesから使用可能となります。
+**巨大なボリュームでも容量消費せずに超高速にデータをコピーする** クローニングテクノロジーがkubernetesから使用可能となります。
 
 ユーザーが既存のボリュームを複製することによって新しいボリュームをプロビジョニングできる機能を提供しています。
 PVCアノテーションである、``trident.netapp.io/cloneFromPVC`` を介してクローン機能を利用できます。
+
+引数にPVC名（いわゆるボリューム名）を指定します。
 
 .. literalinclude:: resources/sample-pvccloning.yaml
     :language: yaml
