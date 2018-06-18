@@ -1,4 +1,4 @@
-# DataTechnologyLab
+# NetApp Digital Transformation Lab
 Step by Step application modernization with container technologies.
 
 ## Web site
