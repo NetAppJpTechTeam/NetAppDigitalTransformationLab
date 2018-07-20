@@ -6,4 +6,4 @@ Step by Step application modernization with container technologies.
 - http://datatechnologylab.rtfd.io/
 
 ## Build Status
-[![Build Status](https://travis-ci.org/NetAppJpTechTeam/DataTechnologyLab.svg?branch=master)](https://travis-ci.org/NetAppJpTechTeam/DataTechnologyLab)
+[![Build Status](https://travis-ci.org/NetAppJpTechTeam/NetAppDigitalTransformationLab.svg?branch=master)](https://travis-ci.org/NetAppJpTechTeam/NetAppDigitalTransformationLab)
