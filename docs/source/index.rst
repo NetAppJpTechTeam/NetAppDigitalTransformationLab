@@ -27,7 +27,7 @@ NetApp Digital Transformation Lab (NDX) (formerly Data Technology Lab Guide)
 
 * 本ドキュメントのリポジトリにIssueまたはPull-request
 
-  * GitHub リポジトリ: https://github.com/NetAppJpTechTeam/DataTechnologyLab
+  * GitHub リポジトリ: https://github.com/NetAppJpTechTeam/NetAppDigitalTransformationLab
 
 * Twitter:
 
