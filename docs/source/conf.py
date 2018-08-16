@@ -54,7 +54,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'Data Technology Lab'
+project = u'NetApp Digital Transformation Lab'
 copyright = u'2018, NetApp'
 author = u'Makoto Watanabe'
 
@@ -208,7 +208,7 @@ html_static_path = ['_static']
 #html_search_scorer = 'scorer.js'
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'DataTechnologyLabdoc'
+htmlhelp_basename = 'NetAppDigitalTransformationLabdoc'
 
 # -- Options for LaTeX output ---------------------------------------------
 
@@ -230,7 +230,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'DataTechnologyLab.tex', u'Data Technology Lab Documentation',
+    (master_doc, 'NetAppDigitalTransformationLab.tex', u'NetApp Digital Transformation Lab Documentation',
      u'Makoto Watanabe', 'manual'),
 ]
 
