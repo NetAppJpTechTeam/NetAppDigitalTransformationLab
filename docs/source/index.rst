@@ -7,8 +7,8 @@
 NetApp Digital Transformation Lab (NDX) (formerly Data Technology Lab Guide)
 =============================================================
 
-.. image:: https://travis-ci.org/NetAppJpTechTeam/DataTechnologyLab.svg?branch=master
-    :target: https://travis-ci.org/NetAppJpTechTeam/DataTechnologyLab
+.. image:: https://travis-ci.org/NetAppJpTechTeam/NetAppDigitalTransformationLab.svg?branch=master
+    :target: https://travis-ci.org/NetAppJpTechTeam/NetAppDigitalTransformationLab
 
 はじめに
 =============================================================
