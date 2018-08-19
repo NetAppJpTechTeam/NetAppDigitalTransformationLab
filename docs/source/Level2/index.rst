@@ -9,7 +9,7 @@ Level 2: ステートフルコンテナの実現
 アプリケーションは永続化領域がないとデータの保存ができません。
 KubernetesではStatic provisioningとDynamic provisioningの２つの永続化の手法があります。
 
-このレベルではDynamic provisioningを実現するためDynamic provisonerであるTridentをインストールし、
+このレベルではDynamic provisioningを実現するためDynamic provisionerであるTridentをインストールし、
 マニフェストファイルを作成しデータの永続化をすることが目標です。
 
 流れ
@@ -65,36 +65,47 @@ TridentはPodとしてデプロイされ通常のアプリケーションと同�
 
 .. include:: trident-install.rst
 
-例えば、v18.01のTridentでは以下の項目をStorageClassを作成するときに設定できます。
-
-* 性能に関する属性: メディアのタイプ、プロビジョニングのタイプ（シン・シック）、IOPS
-* データ保護・管理に関する属性:スナップショット、クローニング、暗号化の有効・向こう
-* バックエンドのストレージプラットフォーム
-
-全てのパラメータ設定については以下のURLに記載があります。
-
-* https://netapp-trident.readthedocs.io/en/stable-v18.01/kubernetes/concepts/objects.html#kubernetes-storageclass-objects
-
-
 StorageClassの定義
 =============================================================
 
 StorageClassを定義して、ストレージのサービスカタログを作りましょう。
 
-* DB 用の高速領域: SSD を使ったストレージサービス
-* Web コンテンツ用のリポジトリ: HDDを使ったストレージサービス
+Trident v18.07 ではStorageClassを作成するときに以下の属性を設定できます。
+これらの属性のパラメータを組み合わせてストレージサービスをデザインします。
+
+.. list-table:: StorageClass の parameters に設定可能な属性
+    :header-rows: 1
+
+    * - 設定可能な属性
+      - 例
+    * - 性能に関する属性
+      - メデイアタイプ(hdd, hybrid, ssd)、プロビジョニングのタイプ（シン、シック)、IOPS
+    * - データ保護・管理に関する属性
+      - スナップショット有無、クローニング有効化、暗号化の有効化
+    * - バックエンドのストレージプラットフォーム属性
+      - ontap-nas, ontap-nas-economy, ontap-nas-flexgroup, ontap-san, solidfire-san, eseries-iscsi
+
+全てのパラメータ設定については以下のURLに記載があります。
+
+* https://netapp-trident.readthedocs.io/en/stable-v18.07/kubernetes/concepts/objects.html#kubernetes-storageclass-objects
+
+NFSバックエンドのONTAPでのStorageClass
+----------------------------------------------------------------
 
 ストレージ構成は以下の通りです。
 今回、意識する必要があるところは異なるメディアタイプ(HDDとSSD)のアグリゲートを保有しているところです。
 
-* ONTAP 9.3
 * 各SVMにHDD, SSDのアグリゲートを割り当て済み
 
     * aggr1_01:SSDのアグリゲート
     * aggr2_01:HDDのアグリゲート
 
+以下のようなイメージでStoageClassを作成しましょう。
 
-StorageClassの作成方法のサンプルは以下の通りです。
+* DB 用の高速領域: SSD を使ったストレージサービス
+* Web コンテンツ用のリポジトリ: HDDを使ったストレージサービス
+
+以下は上記の「DB 用の高速領域」のStorageClass作成方法のサンプルです。
 
 .. literalinclude:: resources/sample-sc.yaml
     :language: yaml
@@ -113,23 +124,45 @@ StorageClassの作成方法のサンプルは以下の通りです。
     NAME         PROVISIONER         AGE
     ontap-gold   netapp.io/trident   10s
 
+同様にブロックデバイスバックエンドとして設定したSolidFireに対応するStorageClassを作成します。
+
+バックエンド登録時に３つの性能別のQoSを作成しました。
+
+それぞれに該当するStoageClassを作成します。StorageClassで指定されたIOPSを実現できるバックエンドのQoSがボリューム作成時に自動設定されます。
+
+.. literalinclude:: resources/sample-block-sf-bronze-sc.yaml
+    :language: yaml
+    :caption: 1000IOPSの性能が出せるStorageClass
+
+
+.. literalinclude:: resources/sample-block-sf-silver-sc.yaml
+    :language: yaml
+    :caption: 4000IOPSの性能が出せるStoageClass
+
+
+.. literalinclude:: resources/sample-block-sf-gold-sc.yaml
+    :language: yaml
+    :caption: 8000IOPSの性能が出せるStoageClass
+
+以降のセクションではここまでで作成したStorageClassを適切に使い分けてすすめましょう。
+
 Persistent Volume Claimの作成
 =============================================================
 
 アプリケーションで必要とされる永続化領域の定義をします。
 PVCを作成時に独自の機能を有効化することができます。
 
-``reclaimPolicy`` によってポッドがなくなった際のデータの保管ポリシーの設定ができます。
-他にもデータ保護、SnapShotの取得ポリシーなどを設定できます。
+データの保管ポリシー、データ保護ポリシー、SnapShotの取得ポリシー、クローニングの有効化、暗号化の有効化などを設定できます。
 
 一覧については以下のURLに記載があります。
+``metadata.annotation`` 配下に記述することで様々な機能を使用することが可能となります。
 
-* https://netapp-trident.readthedocs.io/en/stable-v18.01/kubernetes/concepts/objects.html#trident-volume-objects
+* https://netapp-trident.readthedocs.io/en/stable-v18.07/kubernetes/concepts/objects.html#kubernetes-persistentvolumeclaim-objects
 
-デプロイ用のマニフェストファイルににPVCを追加
+デプロイ用のマニフェストファイルにPVCを追加
 =============================================================
 
-Level1で作成したマニフェストファイルにPVCの項目を追加し、ダイナミックプロビジョニングで永続化出来るアプリケーションを定義します。
+Level1で作成したマニフェストファイルにPVCの項目を追加し、ダイナミックプロビジョニングを使用しデータを永続化出来るアプリケーションを定義します。
 
 .. literalinclude:: resources/sample-pvc.yaml
     :language: yaml
@@ -138,37 +171,64 @@ Level1で作成したマニフェストファイルにPVCの項目を追加し�
 デプロイメント実施
 =============================================================
 
-アプリケーションから何かしらのデータを保存するようにします。
+上記のPVCの設定が終わったら再度アプリケーションをデプロイします。
 
-    * アプリケーションからデータを記録
-    * シンプルにnginxのアクセスログファイルを永続化
+その後、アプリケーションからデータを保存するようオペレーションを行います。
+WordPressであれば記事を投稿することで簡単に確認ができます。
 
-アプリケーションの停止
+アプリケーションの停止・起動
 =============================================================
 
 永続化されていることを確認するため、一度アプリケーションを停止します。
-可能であればアプリケーションのバージョンアップを行ってみましょう。
 
-Deploymentで必ず１つのポッドは起動するような設定になっているため、
-簡単に実施するためにはポッドを削除する手段がとれます。
-DeploymentによってPodの起動数は管理されるため新たにポッドが起動します。
-
-
-再デプロイメント
-=============================================================
-
-再起動したPodに対してボリュームがマウントされていることを確認することも可能です。
-容易に行える操作としてはDeployment配下にあるPodを削除し、Deploymentによって起動し直させるといったやり方です。
-
-* アプリケーションであれば再度ログインし、保存したデータを確認します。
-
-* 通常運用のリリースに想定するオペレーションをして、外部ストレージにデータ永続化されていることを確認します。
-
-動的にボリュームが作成されていることを確認します。
+Deploymentで必要となるポッドは起動するような設定になっているため、
+簡単にアプリケーションの停止・起動を行う方法として ``Deployment`` 配下の ``Pod`` を削除する方法がとれます。
 
 .. code-block:: console
 
-    $ ssh vsadmin@192.168.20.20 vol show
+    $ kubectl delete pod -l "ラベル名"
+
+    $ kubectl get deploy
+
+実行例は以下の通りです。
+
+.. code-block:: console
+
+    $ kubectl delete pod -l app=wordpress
+
+    pod "wordpress-5bc75fd7bd-kzc5l" deleted
+    pod "wordpress-mysql-565494758-jjdl4" deleted
+
+    $ kubectl get deploy
+
+    NAME              DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
+    wordpress         1         1         1            0           31d
+    wordpress-mysql   1         1         1            0           31d
+
+DeploymentによってPodの起動数は管理されるため新たにPodが起動します。
+``AVAILABLE`` の数が正常になるまで待ちましょう。
+
+.. code-block:: console
+
+    $ kubectl get deploy
+
+    NAME              DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
+    wordpress         1         1         1            1           31d
+    wordpress-mysql   1         1         1            1           31d
+
+再デプロイメント後の確認
+=============================================================
+
+再起動したPodに対して永続化されたデータが使用されていることを確認します。
+2つの視点から確認したいと思います。
+
+
+1. アプリケーションであれば再度ログインして保存したデータを確認します。
+2. バックエンドストレージに動的にボリュームが作成されていることを確認します。
+
+.. code-block:: console
+
+    $ ssh vsadmin@192.168.XX.20 vol show
 
     Password:
     Vserver   Volume       Aggregate    State      Type       Size  Available Used%
@@ -184,7 +244,7 @@ Tridentの特徴的な機能: Fast Cloning
 
 Tridentには特徴的な機能であるクローニングの機能が存在します。
 
-**巨大なボリュームでも容量消費せずに超高速にデータをコピーする** クローニングテクノロジーがkubernetesから使用可能となります。
+**巨大なボリュームでも容量消費せずに超高速にデータをコピーする** クローニングテクノロジーがkubernetesでも使用可能となります。
 
 ユーザーが既存のボリュームを複製することによって新しいボリュームをプロビジョニングできる機能を提供しています。
 PVCアノテーションである、``trident.netapp.io/cloneFromPVC`` を介してクローン機能を利用できます。
@@ -199,12 +259,29 @@ PVCアノテーションである、``trident.netapp.io/cloneFromPVC`` を介し
 ---------------------------------------------------------------
 
 クローニング技術はシンプルですが非常に多く用途で使用することができます。
-例としてあげられるのが以下の通りのことです。
-
+例としてあげられるのが以下の用途です。
 
 * プレビルド環境の高速展開
 * 本番環境に影響せずに大規模な並列テスト
 * 運用時のデータリストアの高速化、瞬時に論理障害を戻す
+
+Tridentの17.07でのアップデート: CSI (Container Storage Interface)への対応
+=============================================================
+
+最新のTridentではCSIモードでのデプロイが可能となっています。(インストール時に ``--csi`` を付与するだけ）
+CSIは仕様自体がまだαステージということもあり実験的なモードですが、いち早くCSIをお試しいただくことが可能となっています。
+
+
+- Trident CSI モードでの動作：https://netapp-trident.readthedocs.io/en/latest/kubernetes/trident-csi.html
+- Trident CSI に書かれた記事: https://netapp.io/2018/07/03/netapp-trident-and-the-csi-oh-my/
+
+CSI自体についてはこちら
+- https://kubernetes.io/blog/2018/01/introducing-container-storage-interface/
+
+.. note::
+
+    理論的にはCSIの仕様でドライバを実装すれば、そのドライバはkubernetes、Mesos, Docker, Cloud Foundryなど
+    CSIを実装したコンテナオーケストレーターから使用できるようになります。
 
 まとめ
 =============================================================
@@ -213,10 +290,10 @@ PVCアノテーションである、``trident.netapp.io/cloneFromPVC`` を介し
 
 今回はStorageClassの作成からアプリケーションにPersistentVolumeを割り当てるところまでを一連の流れで実現しました。
 
-本来であればそれぞれで役割がことなるため以下のような分担になるかと思います。
+運用を考えた場合、それぞれのコンポーネントで担当が異なるため以下のような分担になるかと思います。
 
     * StorageClassの作成: インフラ・kubernetesクラスタの管理者
-    * PersistentVolumeClaimの作成: 利用者
+    * PersistentVolumeClaimの作成: アプリケーション開発者
 
 今後障害時の動作が気になると思いますが、 :doc:`../Level4/index` での検討事項とします。
 
