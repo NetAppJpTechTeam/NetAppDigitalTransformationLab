@@ -239,6 +239,8 @@ NFSバックエンドストレージと同様に ``setup`` ディレクトリに
 
 基本的な設定項目としては以下の表野通りです。
 
+.. todo:: MVIPのIP確認
+
 .. list-table:: solidfire-backend.jsonの設定パラメータ (iSCSI SolidFire バックエンド)
     :header-rows: 1
 
@@ -275,16 +277,16 @@ NFSバックエンドストレージと同様に ``setup`` ディレクトリに
                 "Type": "Bronze",
                 "Qos": {
                     "minIOPS": 1000,
-                    "maxIOPS": 2000,
-                    "burstIOPS": 4000
+                    "maxIOPS": 3999,
+                    "burstIOPS": 4500
                 }
             },
             {
                 "Type": "Silver",
                 "Qos": {
                     "minIOPS": 4000,
-                    "maxIOPS": 6000,
-                    "burstIOPS": 8000
+                    "maxIOPS": 5999,
+                    "burstIOPS": 6500
                 }
             },
             {
@@ -303,6 +305,7 @@ NFSバックエンドストレージと同様に ``setup`` ディレクトリに
 .. code-block:: console
 
     $ ./tridentctl -n trident create backend -f setup/solidfire-backend.json
+
     +------------------+----------------+--------+---------+
     |       NAME       | STORAGE DRIVER | ONLINE | VOLUMES |
     +------------------+----------------+--------+---------+
@@ -314,6 +317,7 @@ NFSバックエンドストレージと同様に ``setup`` ディレクトリに
 .. code-block:: console
 
     $ ./tridentctl get backend -n trident
+
     +-------------------+----------------+--------+---------+
     |       NAME        | STORAGE DRIVER | ONLINE | VOLUMES |
     +-------------------+----------------+--------+---------+
@@ -329,7 +333,7 @@ NFSバックエンドストレージと同様に ``setup`` ディレクトリに
     ``tridentctl`` ユーティリティにはアンインストール用のサブコマンドがあります。
 
     以下のように ``-a`` オプションを付与して実行すると生成した管理用のetcdのデータなどすべてを削除した上でアンインストールします。
-    インストール実行時に失敗したときなど、クリーンに再インストールしたい場合ときに使います。
+    インストール実行時に失敗したときなど、クリーンに再インストールしたい場合に使います。
 
     .. code-block:: console
 
