@@ -37,6 +37,7 @@ kubernetes上のオブジェクト名は以下の通りです。
 * DaemonSet
 * StatefulSet
 
+.. todo:: replica数はマニフェストで記載しないというベストプラクティスを書く＋ベストプラクティスのリファレンスを記載
 
 ローリングアップデート
 -------------------------------------------------------------
@@ -178,6 +179,12 @@ API受付をするマスタ系のノードやetcdやkubernetesサービスの高
 * ServiceGraph Graphbiz & Prometeus
 * ServiceMesh
 
+Helmで提供されているGrafana+Prometheusをデプロイし監視することにチャレンジしてみましょう。
+完成図としては以下のようなイメージです。
+
+.. img::
+
+
 バックアップはどうするか？
 -------------------------------------------------------------
 
@@ -201,9 +208,9 @@ DRをどうするか？
 アプリケーションのポータビリティはコンテナで実現。
 別クラスタで作成されたPVはそのままは参照できないので以下の方法を検討する。
 
-* Cluster federation
 * CSI (Container Storage Interface)の既存ボリュームのインポートに対応をまつ
-* Heptio ark: https://github.com/heptio/ark + SVMDR
+* Heptio ark: https://github.com/heptio/ark + SVM-DR
 
+ここでは NetApp
 
 
