@@ -160,3 +160,14 @@ kubectl patch は稼働中のアプリケーションに対して、一部のフ
 
     #. マニフェストファイルの修正
 
+オペレーション簡易化のためデフォルトストレージクラスを設定
+--------------------------------------------------------------
+
+サンプルで公開されているマニフェストを試したいときに以下の設定をしておくと簡単に起動できるようになります。
+
+- デフォルトのストレージクラスを設定
+- external ip が付与できるようにするような仕組みを導入する
+
+.. code-block:: console
+
+   kubectl patch storageclass [StorageClass名] -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}'
