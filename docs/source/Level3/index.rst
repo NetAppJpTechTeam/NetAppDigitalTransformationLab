@@ -31,15 +31,16 @@ CI/CDパイプラインの定義
 
 このラボでのCI/CDパイプラインの定義は以下を想定しています。
 
-* テスト実行
 * アプリケーションビルド
 * コンテナイメージのビルド
 * レジストリへコンテナイメージのpush
+* テスト実行
 * k8sへアプリケーションデプロイ
 
 Gitは共有で準備しています。
 
 ここではJenkinsをkubernetes上にデプロイしてみましょう。
+
 Git自体も併せてデプロイしてみたいということであればGitLabをデプロイすることをおすすめします。
 GitLabを使えばコンテナのCI/CDパイプライン、構成管理、イメージレジストリを兼ねて使用することができます。
 
@@ -68,7 +69,7 @@ CI/CDパイプラインを実現するためのツールとしてJenkinsが非�
 Helmを使ってJenkinsをデプロイ
 =============================================================
 
-.. include:: helm-install.rst
+.. include:: jenkins-install-with-helm.rst
 
 Helm以外でJenkinsをデプロイした場合
 =============================================================
@@ -86,11 +87,9 @@ Helmを使ってJenkinsをインストールした場合は自動でIngressが�
 
     <span style="color: red;font-size: 15px">
     注意 <br/>
-    Helm chart を使ってインストールした場合は自動でIngressが導入されています。<br/>
+    Helm chart で Ingress を使用するよう yamlファイルを変更してインストールした場合は自動でIngressが導入されています。<br/>
     そのため、以下の手順はHelmで実施した人は不要です。
     </span>
-
-
 
 Ingressの導入についてはこちらに :doc:`ingress` まとめました。
 
@@ -101,62 +100,36 @@ HelmでデプロイしたJenkinsにはIngress経由でアクセスします。
 そのためホスト名を使用してアクセスします。
 
 .. note::
+
         なぜそのような仕組みになっているかを知りたい方はJenkinsのHelmチャートをご確認ください。
         https://github.com/kubernetes/charts/tree/master/stable/jenkins
 
+.. code-block:: bash:
+        #!/bin/bash
 
-今回は名前解決にConsulを使います。
+        ETCD="http://192.168.1.1:2379,http://192.168.1.2:2379,http://192.168.1.3:2379"
 
-登録用JSONは以下の通りです、TagsとNameでdnsに問い合わせる名前が決まります。
-今回はドメインを ``service.consul`` を使用します。
+        ETCDCTL_API=3 /usr/local/bin/etcdctl --endpoints $ETCD "$@"
 
-このラボでは命名規則を定義します。
+以下のようにしてDNSに登録可能です(jenkins.user1x.ndxlab.net で 192.168.1x.10 を登録します)
 
-* ID, Tags: アプリケーション識別子.環境番号
-* Name: web固定
-* Address: 各環境のマスタのIP
-
-アプリケーションにアクセスする際に ``jenkins.user10.web.service.consul`` というFQDNでアクセスしたい場合は以下のjsonファイルを作成します。
-ファイル名はwebservice.jsonとします。ポート番号はアプリケーションで使用しているものに変更してください。
-
-.. code-block:: console
-
-        {
-
-          "ID": "jenkins.user10",
-          "Name": "web",
-          "Tags": [ "jenkins.user10" ],
-          "Address": "192.168.XX.10",
-          "Port": 80
-        }
+        etcdctl put /dns/net/ndxlab/user1X/jenkins '{"host":"192.168.1x.10"}'
 
 
-
-ファイルを作成したら以下のコマンドで登録します。
-
-.. code-block:: console
-
-        $ curl -i -s --request PUT --data @webservice.json http://infra1:8500/v1/agent/service/register
-
-        HTTP/1.1 200 OK
-        Date: Wed, 11 Apr 2018 05:31:37 GMT
-        Content-Length: 0
-        Content-Type: text/plain; charset=utf-8
-
-登録が完了したら名前解決ができるか確認します。
+名前解決ができているか確認します。
 
 .. code-block:: console:
 
-        $ nslookup jenkins.user10.web.service.consul
+        $ nslookup jenkins.user1X.ndxlab.net
 
 Jenkinsの設定をする
 =============================================================
 
-Gitリポジトリに変更があったら自動でテストを実行するジョブを定義します。
+Gitリポジトリに変更があったら自動でテストを実行するpipelineを定義します。
 このテストは任意で作成してください。
 
 ここでやりたいことは該当リポジトリにコミットがあり、リリースタグが付与された場合に自動でビルド・デプロイをする流れを作成することです。
-そのためにはまずJenkinsでGitリポジトリに操作があった場合の動作を定義します。
+そのためにはまずJenkinsでGitリポジトリに操作があった場合の動作の定義とKubernetesとの接続の設定をします。
 
 定義出来る動作としては以下の単位が考えられます。
 細かく設定することも可能です。運用に合わせた単位で設定します。
@@ -168,6 +141,37 @@ Gitリポジトリに変更があったら自動でテストを実行するジ�
 前述した以下の項目を盛り込みCI/CDパイプラインを作成しましょう。
 以下のようなタスクを組み込んだパイプラインを作成します。シンプルなパイプラインからはじめ、必要に応じてステージを追加していきましょう。
 
+Jenkins AgentをKubernetes上で実行できるようにする
+-------------------------------------------------------------
+
+Jenkinsからkubernetes上でJenkins agentを実行する場合にはJenkins kubernetes-plugin の導入が必要です。
+通常はソースコードの取得から実施することになります。gitを使う場合であればgitのjenkins-pluginが必要です。
+
+本ガイドで準備した values.yaml を使用している場合にはすでにどちらも導入されている状態となります。
+
+ここでは Jenkins から kubernetesへ接続できるようにする設定を提示いたします。
+
+Jeninsログイン後、クレデンシャルを事前に作成します。
+
+jenkins 導入済みのネームスペースにサービスアカウントを作成します。
+
+.. code-block:: console
+
+        kubectl create clusterrolebinding jenkins --clusterrole cluster-admin --serviceaccount=jenkins:default
+
+.. todo :: 手順記載
+
+Configurationから「Kubernetes設定」を選択します。
+
+.. image:: resources/jenkins-configuration.jpg
+
+ここでは必要となるパラメータを設定していきます。
+
+- /etc/kubernetes/pki/apiserver.crtの内容をkubernetes certificate keyへ。
+
+
+Jenkins Pipelineの作成
+-------------------------------------------------------------
 
 * テスト実行
 * アプリケーションビルド
@@ -177,7 +181,16 @@ Gitリポジトリに変更があったら自動でテストを実行するジ�
 
 上記のようなパイプラインを作成にはJenkins pipeline機能が活用できます。
 
--  https://jenkins.io/doc/book/pipeline/
+- https://jenkins.io/doc/book/pipeline/
+- https://github.com/jenkinsci/kubernetes-plugin/blob/master/README.md
+
+ここではテンプレートを準備しました、上記の様なパイプラインを実装してみましょう。
+
+.. literalinclude:: resources/jenkins/jenkinsfile
+        :language: groovy
+        :caption: Jenkins pipelineのフォーマット
+
+
 
 アプリケーションの変更を検知してデプロイメント可能にする
 =============================================================
@@ -191,8 +204,11 @@ CI/CDのパイプラインを作成したら実際にアプリケーションの
 
 実際にkubernetes環境へのデプロイができたかの確認とアプリケーションが稼働しているかを確認します。
 
-Helm ChartでCI/CD
+コンテナをCI/CDする方法 Helmを使ってみる
 =============================================================
+
+コンテナのCI/CDではいくつか方法があります。
+ここではコンテナをCI/CDするために必要な検討事項を記載するとともに
 
 個別のアプリケーションデプロイメントからHelm Chartを使ったデプロイメントに変更します。
 
@@ -202,6 +218,14 @@ Helm Chartの開発ガイドは以下のURLを確認ください。
 
 - https://docs.helm.sh/chart_template_guide/#the-chart-template-developer-s-guide
 
+他にも以下のような構成管理・パッケージマネジメントのツールが存在しています。
+
+.. todo:: 混ざっているので整理。
+
+- Kustomize
+- Draft
+- GitKube
+- Skaffold
 
 デプロイメントのさらなる進化
 =============================================================

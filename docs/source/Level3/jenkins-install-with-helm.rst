@@ -27,16 +27,22 @@ Helm chartと同等のディレクトリにvalues.yamlというファイルが�
 
 * https://github.com/kubernetes/charts
 
-今回のJenkinsのデプロイでは２つの公開方法が選択できます。
+今回のJenkinsのデプロイでは3つの公開方法が選択できます。
 
-1つ目が今までのレベルと同様に ``Service`` の ``type`` を ``NodePort`` として公開する方法です。これは今まで通りの疎通確認が可能です。
+
+1つ目が、今回の環境では ``Service`` の ``type`` を ``LoadBalancer`` としてしてデプロイすると external-ipが付与される環境を設定しています。(MetalLBをデプロイ済みです。)
 
 2つ目が ``Ingress`` を使った公開です。IngressをJenkinsのHelmチャートを使ってデプロイするためには「Master.Ingress.Annotations」、「Master.ServiceType」を変更しデプロイします。
 また、このvalues.yamlでは永続化ストレージが定義されていないため、Level2で作成したStorageClassを使用し動的にプロビジョニングをするように変更しましょう。
 
-簡易的にデプロイをためしてみたい方は1つ目の ``NodePort`` を使ったやり方を実施、新しい概念であるIngressを使った方法を実施したい方は2つ目を選択しましょう。
+簡易的にデプロイをためしてみたい方は1つ目の ``LoadBalancer`` を使ったやり方を実施、新しい概念であるIngressを使った方法を実施したい方は2つ目を選択しましょう。
 
 どちらの方法の場合も、以下のvalues.yamlをカスタマイズしてデプロイします。
+このレベルではJenkinsをデプロイするのが目的ではなくCI/CDパイプラインを作成するのが目的であるため、デプロイ用のyamlファイルを準備しました。
+
+StorageClassには環境に作成したStorageClassを設定します。このサンプルでは暫定で "ontap-gold"を設定してあります。
+
+また、Kubernetes上でCI/CDパイプラインを作成するため ``Kubernetes-plugin`` もyamlファイルに追記済みです。
 
 .. literalinclude:: resources/helm-values/jenkins-default-values.yaml
         :language: yaml
@@ -44,6 +50,8 @@ Helm chartと同等のディレクトリにvalues.yamlというファイルが�
 
 
 実行イメージとしては以下の通りです。
+
+.. todo:: ユーザアドレス変更
 
 .. code-block:: console
 
