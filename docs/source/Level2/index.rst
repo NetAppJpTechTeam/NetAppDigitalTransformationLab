@@ -249,7 +249,7 @@ Tridentには特徴的な機能であるクローニングの機能が存在し�
 ユーザーが既存のボリュームを複製することによって新しいボリュームをプロビジョニングできる機能を提供しています。
 PVCアノテーションである、``trident.netapp.io/cloneFromPVC`` を介してクローン機能を利用できます。
 
-引数にPVC名（いわゆるボリューム名）を指定します。
+引数にPVC名を指定します。
 
 .. literalinclude:: resources/sample-pvccloning.yaml
     :language: yaml
