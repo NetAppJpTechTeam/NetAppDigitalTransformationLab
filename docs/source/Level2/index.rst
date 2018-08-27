@@ -146,6 +146,16 @@ NFSバックエンドのONTAPでのStorageClass
 
 以降のセクションではここまでで作成したStorageClassを適切に使い分けてすすめましょう。
 
+
+.. note:: デフォルトのStorageClassの設定
+
+    StorageClassは記載がないときに使用するStorageClassを指定できます。
+
+    .. code-block:: console
+
+        kubectl patch storageclass ストレージクラス名 -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}'
+
+
 Persistent Volume Claimの作成
 =============================================================
 
@@ -255,6 +265,16 @@ PVCアノテーションである、``trident.netapp.io/cloneFromPVC`` を介し
     :language: yaml
     :caption: クローニングのマニフェストファイルの例 pvccloning.yml
 
+
+ここではサンプルでPVC Cloning を活用したOracle Databaseを複数デプロイするデモ動画をご覧ください。
+
+.. raw:: html
+
+   <iframe width="760" height="500" src="https://www.youtube.com/embed/6X7p8_G9ucY" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+
+
+
+
 クローニング技術によって実現可能なこと
 ---------------------------------------------------------------
 
@@ -265,10 +285,10 @@ PVCアノテーションである、``trident.netapp.io/cloneFromPVC`` を介し
 * 本番環境に影響せずに大規模な並列テスト
 * 運用時のデータリストアの高速化、瞬時に論理障害を戻す
 
-Tridentの17.07でのアップデート: CSI (Container Storage Interface)への対応
+Tridentの18.07でのアップデート: CSI (Container Storage Interface)への対応
 =============================================================
 
-最新のTridentではCSIモードでのデプロイが可能となっています。(インストール時に ``--csi`` を付与するだけ）
+最新のTridentではCSIモードでのデプロイが可能となっています。(インストール時に ``--csi`` を付与する）
 CSIは仕様自体がまだαステージということもあり実験的なモードですが、いち早くCSIをお試しいただくことが可能となっています。
 
 
