@@ -182,7 +182,7 @@ API受付をするマスタ系のノードやetcdやkubernetesサービスの高
 Helmで提供されているGrafana+Prometheusをデプロイし監視することにチャレンジしてみましょう。
 完成図としては以下のようなイメージです。
 
-.. img::
+* :doc:`./prometheus/deploy-monitoring`
 
 
 バックアップはどうするか？
