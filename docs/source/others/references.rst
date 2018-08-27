@@ -19,11 +19,18 @@ Kubernetes
 
 * https://github.com/ramitsurana/awesome-kubernetes
 * Networking https://speakerdeck.com/apstndb/kubernetes-false-service-hatoudong-iteirufalseka
+* https://kubernetes.io/blog/2018/08/03/out-of-the-clouds-onto-the-ground-how-to-make-kubernetes-production-grade-anywhere/
 
-Kubernetes Helm
+Kubernetes Monitoring
+=============================================================
+
+- https://www.oreilly.com/ideas/5-things-you-should-be-monitoring?utm_source=feedburner&utm_medium=feed&utm_campaign=Feed%3A+oreilly%2Fradar%2Fatom+%28O%27Reilly+Radar%29
+
+Kubernetes configuration
 =============================================================
 
 * Helm chart集 https://github.com/kubernetes/charts/tree/master/stable
+* Kustomize https://github.com/kubernetes-sigs/kustomize
 
 Test tools
 =============================================================
@@ -43,7 +50,16 @@ CI/CD for kubernetes applications
 Kubernets Network (Expose application for external)
 =============================================================
 
-* https://github.com/nginxinc/kubernetes-ingress/tree/master/examples
+* Ingress https://github.com/nginxinc/kubernetes-ingress/tree/master/examples
+* MetalLB https://metallb.universe.tf/
+* Trafik
+* istio https://istio.io/
+
+Kubernetes Security
+=============================================================
+
+- https://www.cncf.io/blog/2018/08/01/demystifying-rbac-in-kubernetes/
+
 
 NetApp demo
 =============================================================
