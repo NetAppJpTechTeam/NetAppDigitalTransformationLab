@@ -1,37 +1,49 @@
 pipeline {
     agent {
         kubernetes {
-            label 'mypod'
+            label 'jenkins-ci'
             defaultContainer 'jnlp'
-            yaml """
-apiVersion: v1
-kind: Pod
-metadata:
-  labels:
-    some-label: some-label-value
-spec:
-  containers:
-  - name: maven
-    image: maven:alpine
-    command:
-    - cat
-    tty: true
-  - name: busybox
-    image: busybox
-    command:
-    - cat
-    tty: true
-"""
+            yamlFile 'KubernetesPod.yaml'
         }
     }
+
     stages {
-        stage('Run maven') {
+
+        stage('Pre Build Check') {
             steps {
-                container('maven') {
-                    sh 'mvn -version'
+                script {
+                    echo "Pre Build staget implement!"
                 }
                 container('busybox') {
-                    sh '/bin/busybox'
+                    sh 'echo Hello Container World in Pre Build Check'
+                }
+            }
+        }
+
+        stage('Build') {
+            steps {
+                echo "Build staget implement!"
+
+                docker.build("nodejs-build-${env.BUILD_ID}", "-f Dockerfile .").inside() {
+                    node -v
+                }
+            }
+        }
+
+        stage('Test') {
+            steps {
+                echo 'Test Stage implement!'
+                container('kubectl') {
+                    sh 'kubectl version'
+                }
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                echo 'printenv'
+                container('helm') {
+                    sh 'helm version'
                 }
             }
         }

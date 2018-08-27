@@ -1,0 +1,33 @@
+metadata:
+  labels:
+    some-label: jenkins-ci
+spec:
+  containers:
+  - name: jnlp
+    env:
+    - name: CONTAINER_ENV_VAR
+      value: jnlp
+  - name: busybox
+    image: busybox
+    command:
+    - cat
+    tty: true
+    env:
+    - name: CONTAINER_ENV_VAR
+      value: busybox
+  - name: kubectl
+    image: lachlanevenson/k8s-kubectl:v1.8.8
+    command:
+    - cat
+    tty: true
+    env:
+    - name: CONTAINER_ENV_VAR
+      value: kubectl
+  - name: helm
+    image: lachlanevenson/k8s-helm:latest
+    command: 
+    - cat
+    tty: true
+    env:
+    - name: CONTAINER_ENV_VAR
+      value: helm

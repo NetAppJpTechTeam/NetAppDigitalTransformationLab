@@ -37,9 +37,8 @@ CI/CDパイプラインの定義
 * テスト実行
 * k8sへアプリケーションデプロイ
 
-Gitは共有で準備しています。
-
-ここではJenkinsをkubernetes上にデプロイしてみましょう。
+GitはGitLabを共有で準備していますが、使いなれているサービス(GitHub等)があればそちらを使って頂いても構いません。
+まずは、Jenkinsをkubernetes上にデプロイしてみましょう。
 
 Git自体も併せてデプロイしてみたいということであればGitLabをデプロイすることをおすすめします。
 GitLabを使えばコンテナのCI/CDパイプライン、構成管理、イメージレジストリを兼ねて使用することができます。
@@ -79,99 +78,18 @@ Helm以外でJenkinsをデプロイした場合
 必要に応じて実施してください。
 
 外部にアプリケーションを公開する方法として ``Ingress`` があります。
-Helmを使ってJenkinsをインストールした場合は自動でIngressが作成されます。
-それ以外の手法を取った場合は、kubernetesクラスタ外のネットワークからアクセスできるようにIngressを作成してみましょう。
+Helmを使ってJenkinsをインストー時にvalues.yamlで設定を行うことでIngressが作成されます。
+それ以外の手法を取った場合は、kubernetesクラスタ外のネットワークからアクセスできるようにIngressを作成しアクセスする方法があります。
 
-
-.. raw:: html
-
-    <span style="color: red;font-size: 15px">
-    注意 <br/>
-    Helm chart で Ingress を使用するよう yamlファイルを変更してインストールした場合は自動でIngressが導入されています。<br/>
-    そのため、以下の手順はHelmで実施した人は不要です。
-    </span>
-
-Ingressの導入についてはこちらに :doc:`ingress` まとめました。
-
-ServiceをDNSへ登録する
-==============================================================
-
-HelmでデプロイしたJenkinsにはIngress経由でアクセスします。
-そのためホスト名を使用してアクセスします。
-
-.. note::
-
-        なぜそのような仕組みになっているかを知りたい方はJenkinsのHelmチャートをご確認ください。
-        https://github.com/kubernetes/charts/tree/master/stable/jenkins
-
-.. code-block:: bash:
-        #!/bin/bash
-
-        ETCD="http://192.168.1.1:2379,http://192.168.1.2:2379,http://192.168.1.3:2379"
-
-        ETCDCTL_API=3 /usr/local/bin/etcdctl --endpoints $ETCD "$@"
-
-以下のようにしてDNSに登録可能です(jenkins.user1x.ndxlab.net で 192.168.1x.10 を登録します)
-
-        etcdctl put /dns/net/ndxlab/user1X/jenkins '{"host":"192.168.1x.10"}'
-
-
-名前解決ができているか確認します。
-
-.. code-block:: console:
-
-        $ nslookup jenkins.user1X.ndxlab.net
+Ingressの導入についてはLevel4 運用編の :doc:`../Level4/ingress/ingress` にまとめました。
 
 Jenkinsの設定をする
 =============================================================
 
-Gitリポジトリに変更があったら自動でテストを実行するpipelineを定義します。
-このテストは任意で作成してください。
-
-ここでやりたいことは該当リポジトリにコミットがあり、リリースタグが付与された場合に自動でビルド・デプロイをする流れを作成することです。
-そのためにはまずJenkinsでGitリポジトリに操作があった場合の動作の定義とKubernetesとの接続の設定をします。
-
-定義出来る動作としては以下の単位が考えられます。
-細かく設定することも可能です。運用に合わせた単位で設定します。
-
-* pull request 単位
-* release tag 単位
-* 定期実行
-
-前述した以下の項目を盛り込みCI/CDパイプラインを作成しましょう。
-以下のようなタスクを組み込んだパイプラインを作成します。シンプルなパイプラインからはじめ、必要に応じてステージを追加していきましょう。
-
-Jenkins AgentをKubernetes上で実行できるようにする
--------------------------------------------------------------
-
-Jenkinsからkubernetes上でJenkins agentを実行する場合にはJenkins kubernetes-plugin の導入が必要です。
-通常はソースコードの取得から実施することになります。gitを使う場合であればgitのjenkins-pluginが必要です。
-
-本ガイドで準備した values.yaml を使用している場合にはすでにどちらも導入されている状態となります。
-
-ここでは Jenkins から kubernetesへ接続できるようにする設定を提示いたします。
-
-Jeninsログイン後、クレデンシャルを事前に作成します。
-
-jenkins 導入済みのネームスペースにサービスアカウントを作成します。
-
-.. code-block:: console
-
-        kubectl create clusterrolebinding jenkins --clusterrole cluster-admin --serviceaccount=jenkins:default
-
-.. todo :: 手順記載
-
-Configurationから「Kubernetes設定」を選択します。
-
-.. image:: resources/jenkins-configuration.jpg
-
-ここでは必要となるパラメータを設定していきます。
-
-- /etc/kubernetes/pki/apiserver.crtの内容をkubernetes certificate keyへ。
-
+.. include:: jenkins-configuration.rst
 
 Jenkins Pipelineの作成
--------------------------------------------------------------
+=============================================================
 
 * テスト実行
 * アプリケーションビルド
@@ -185,17 +103,33 @@ Jenkins Pipelineの作成
 - https://github.com/jenkinsci/kubernetes-plugin/blob/master/README.md
 
 ここではテンプレートを準備しました、上記の様なパイプラインを実装してみましょう。
+Jenkins ではパイプラインを構築するために２つの記述方法があります。
+
+- Declarative pipeline syntax https://jenkins.io/doc/book/pipeline/#declarative-pipeline-fundamentals
+- Scripted pipeline syntax https://jenkins.io/doc/book/pipeline/#scripted-pipeline-fundamentals
+
+それぞれの違いついてはこちら。
+
+- https://jenkins.io/doc/book/pipeline/#declarative-versus-scripted-pipeline-syntax
 
 .. literalinclude:: resources/jenkins/jenkinsfile
         :language: groovy
         :caption: Jenkins pipelineのフォーマット
 
 
+.. literalinclude:: resources/jenkins/KubernetesPod.yaml
+        :language: yaml
+        :caption: Jenkins pipelineをkubernetesで動作させるコンテナ
+
+
+Jenkins pipeline の作成が完了したら任意のGitリポジトリにpushします。
+以降のJenkins Pipelineの実行にJenkinsfileを使用します。
+
 
 アプリケーションの変更を検知してデプロイメント可能にする
 =============================================================
 
-CI/CDのパイプラインを作成したら実際にアプリケーションの変更をトリガーに(ソースコードの変更、Gitリポジトリへのpush等)k8sへアプリケーションをデプロイします。
+CI/CDのパイプラインを作成したら実際にアプリケーションの変更をトリガー(ソースコードの変更、Gitリポジトリへのpush等)としてk8sへアプリケーションをデプロイします。
 
 ポリシーとして大きく2つに別れます、参考までに以下に記載いたします。
 
@@ -203,6 +137,12 @@ CI/CDのパイプラインを作成したら実際にアプリケーションの
 * デプロイメントまでを完全自動化する
 
 実際にkubernetes環境へのデプロイができたかの確認とアプリケーションが稼働しているかを確認します。
+
+今回はサンプルとしてJenkinsのBlueOcean pluginを使用してPipelineを作成します。
+
+.. image:: resources/jenkins_blueocean.png
+
+.. todo:: [WIP] 後続のスクリーンショット
 
 コンテナをCI/CDする方法 Helmを使ってみる
 =============================================================
@@ -270,6 +210,8 @@ Blue／Green デプロイメントはすぐに古いバージョンにもどせ�
 =============================================================
 
 このラボではコンテナ化したアプリケーションのCI/CDパイプラインの構築に挑戦しました。
-CI/CDパイプラインを作成するためのJenkins/GitLabをインストールするために必要なHelmの使い方、アプリケーションを外部に公開するためのkubernetesオブジェクトのIngressも併せて使えるようになりました。
+CI/CDパイプラインを作成するためのJenkins/GitLabをインストールするために必要なHelmが使えるようになりました。
+
+本ラボでは簡易的なパイプラインを実際に構築しました。パイプライン内の処理については個々で実装したものから発展させ様々な処理を追加することができます。
 
 ここまでで Level3 は終了です。
