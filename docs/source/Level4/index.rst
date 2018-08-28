@@ -13,7 +13,6 @@ Level3まででアプリケーションを迅速にリリースする仕組み�
 流れ
 =============================================================
 
-
 本レベルでは運用時に課題となり、解決が必要となる項目についてリストしました。
 現在の環境に対して変更をして見てください。ここでは実際に手をうごかしてもらってもいいですし、
 チーム内でディスカッションの材料にしてください。
@@ -37,20 +36,16 @@ kubernetes上のオブジェクト名は以下の通りです。
 * DaemonSet
 * StatefulSet
 
-.. todo:: replica数はマニフェストで記載しないというベストプラクティスを書く＋ベストプラクティスのリファレンスを記載
-
 ローリングアップデート
 -------------------------------------------------------------
 
-
-
-``Deployment`` の ``Pod template``部分に変更があった場合に自動でアップデートできます。
+``Deployment`` の ``Pod template`` 部分に変更があった場合に自動でアップデートできます。
 
 .. code-block:: console
 
     $ kubectl set image deployment/DEPLOYMENT CONTAINER=IMAGE_NAME:TAG
 
-``--record``オプションをつけるとアノテーションが付与されます。
+``--record`` オプションをつけるとアノテーションが付与されます。
 
 参考: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/
 
@@ -91,8 +86,7 @@ kubernetes上のオブジェクト名は以下の通りです。
       Volumes:      <none>
 
 アプリケーションは ``Deployment`` でリビジョン管理しており、ロールバック機能も提供しています。
-``rollout undo`` で直前のリビジョンに戻ります。``--to-revision``を指定することで任意のリビジョンに戻すことも可能です。
-
+``rollout undo`` で直前のリビジョンに戻ります。``--to-revision`` を指定することで任意のリビジョンに戻すことも可能です。
 
 .. code-block:: console
 
@@ -122,9 +116,9 @@ Helmを使った場合にも同様のことが実現可能です。
 アプリケーション負荷に応じたスケールアップ
 -------------------------------------------------------------
 
-``Horizontal Pod AutoScaler`` に対して ``Vertical Pod AutoScaler``があります。
+``Horizontal Pod AutoScaler`` に対して ``Vertical Pod AutoScaler`` があります。
 
-完全互換ではありませんが、Vertical Pod AutoScalerというものが k8 1.9でalpha versionとして提供されています。
+完全互換ではありませんが、Vertical Pod AutoScalerというものが k8s 1.9でalpha versionとして提供されています。
 従来型のアプリケーションではスケールアウトより、スケールアップのほうが行いやすいのが一般的です。
 
 https://github.com/kubernetes/autoscaler/tree/master/vertical-pod-autoscaler
@@ -211,6 +205,18 @@ DRをどうするか？
 * CSI (Container Storage Interface)の既存ボリュームのインポートに対応をまつ
 * Heptio ark: https://github.com/heptio/ark + SVM-DR
 
-ここでは NetApp
+Podが停止した場合のアプリケーションの動作
+-------------------------------------------------------------
+
+Dynamic ProvisioningされたPVCのPod障害時の動作については以下のような動作になります。
+PVCはTridentを使ってデプロイしたものです。
+
+- 停止したPodは別ノードで立ち上がる
+- Podからマウントしていたボリュームは再度別ノードでもマウントされデータの読み書きは継続可能
+
+``Stateful Set`` を使い、MongoDBを複数ノードで構成し上記の検証を行った結果が以下のリンク先で確認できます。
+
+ :doc:`./mongodb-statefulset-failure/statefulset-failure`
+
 
 

@@ -119,7 +119,7 @@ Jenkins ではパイプラインを構築するために２つの記述方法が
 
 .. literalinclude:: resources/jenkins/KubernetesPod.yaml
         :language: yaml
-        :caption: Jenkins pipelineをkubernetesで動作させるコンテナ
+        :caption: Jenkins pipelineをkubernetesで動作させるコンテナのテンプレートを定義
 
 
 Jenkins pipeline の作成が完了したら任意のGitリポジトリにpushします。
@@ -142,7 +142,11 @@ CI/CDのパイプラインを作成したら実際にアプリケーションの
 
 .. image:: resources/jenkins_blueocean.png
 
-.. todo:: [WIP] 後続のスクリーンショット
+BlueOcean plugin を使用するとウィザード形式でPipelineを作成することができます。
+
+各入力値については以下のURLにてどのような形式で入力されるかの記載があります。
+
+- https://jenkins.io/doc/book/blueocean/creating-pipelines/
 
 コンテナをCI/CDする方法 Helmを使ってみる
 =============================================================
@@ -158,9 +162,7 @@ Helm Chartの開発ガイドは以下のURLを確認ください。
 
 - https://docs.helm.sh/chart_template_guide/#the-chart-template-developer-s-guide
 
-他にも以下のような構成管理・パッケージマネジメントのツールが存在しています。
-
-.. todo:: 混ざっているので整理。
+他にも以下のようなCI/CDを行いやすくする構成管理・パッケージマネジメントのツールが存在しています。
 
 - Kustomize
 - Draft

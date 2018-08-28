@@ -1,0 +1,38 @@
+persistence:
+  enabled: true
+  accessModes:
+  - ReadWriteOnce
+  size: 5Gi
+
+datasources:
+  datasources.yaml:
+    apiVersion: 1
+    datasources:
+    - name: Prometheus
+      type: prometheus
+      url: http://prometheus-server
+      access: proxy
+      isDefault: true
+
+dashboards:
+  kube-dash:
+    gnetId: 6663
+    revision: 1
+    datasource: Prometheus
+  kube-official-dash:
+    gnetId: 2
+    revision: 1
+    datasource: Prometheus
+
+dashboardProviders:
+  dashboardproviders.yaml:
+    apiVersion: 1
+    providers:
+    - name: 'default'
+      orgId: 1
+      folder: ''
+      type: file
+      disableDeletion: false
+      editable: true
+      options:
+        path: /var/lib/grafana/dashboards
