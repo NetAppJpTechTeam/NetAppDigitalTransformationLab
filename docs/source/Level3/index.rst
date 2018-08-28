@@ -119,7 +119,7 @@ Jenkins ではパイプラインを構築するために２つの記述方法が
 
 .. literalinclude:: resources/jenkins/KubernetesPod.yaml
         :language: yaml
-        :caption: Jenkins pipelineをkubernetesで動作させるコンテナのテンプレート
+        :caption: Jenkins pipelineをkubernetesで動作させるコンテナのテンプレートを定義
 
 
 Jenkins pipeline の作成が完了したら任意のGitリポジトリにpushします。

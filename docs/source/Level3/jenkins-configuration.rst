@@ -23,7 +23,7 @@ Jenkinsからkubernetes上でJenkins agentを実行する場合にはJenkins kub
 
 Jeninsログイン後、クレデンシャルを事前に作成します。
 
-.. image:: resources/Kubernetes-Credentials.jpg
+.. image:: resources/Kubernetes-Credentials.png
 
 jenkins 導入済みのネームスペースにサービスアカウントを作成します。
 
