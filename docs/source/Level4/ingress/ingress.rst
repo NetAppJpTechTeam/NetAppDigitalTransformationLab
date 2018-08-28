@@ -214,8 +214,9 @@ Aレコードのエントリは以下のようなスクリプトを準備する�
 
 以下のようにしてDNSに登録可能です(jenkins.user1x.ndxlab.net で 192.168.1x.10 を登録します)
 
-    $ etcdctl put /dns/net/ndxlab/user1X/jenkins '{"host":"192.168.1x.10"}'
+.. code-block:: console
 
+    $ etcdctl put /dns/net/ndxlab/user1X/jenkins '{"host":"192.168.1x.10"}'
 
 名前解決ができているか確認します。
 
