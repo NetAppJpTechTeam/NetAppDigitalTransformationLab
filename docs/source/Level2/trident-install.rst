@@ -237,9 +237,7 @@ Tridentへバックエンドストレージの登録
 
 NFSバックエンドストレージと同様に ``setup`` ディレクトリに ``solidfire-backend.json`` を作成します。
 
-基本的な設定項目としては以下の表野通りです。
-
-.. todo:: MVIPのIP確認
+基本的な設定項目としては以下の表の通りです。
 
 .. list-table:: solidfire-backend.jsonの設定パラメータ (iSCSI SolidFire バックエンド)
     :header-rows: 1
@@ -249,7 +247,7 @@ NFSバックエンドストレージと同様に ``setup`` ディレクトリに
       - 設定内容
     * - Endpoint
       - SolidFire の管理用IPを設定(MVIP)、URL先頭にユーザーIDとパスワードを付与
-      - 別途記載
+      - 10.128.223.240
     * - SVIP
       - データ通信のIPを設定（クラスタで１つ）
       - 192.168.0.240:3260
