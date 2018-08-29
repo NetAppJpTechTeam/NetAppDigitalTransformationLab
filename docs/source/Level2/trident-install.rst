@@ -259,14 +259,16 @@ NFSバックエンドストレージと同様に ``setup`` ディレクトリに
       - 1つ以上のminIOPS, maxIOPS, burstIOPSを指定
 
 
-.. code-block:: json solidfire-backend.json
+テンプレートとなるSolidFireのバックエンド定義ファイルは以下の通りです。
+
+.. code-block:: json
 
     {
         "version": 1,
         "storageDriverName": "solidfire-san",
-        "Endpoint": "https://admin:netapp123@10.128.223.240/json-rpc/8.0",
-        "SVIP": "192.168.0.240:3260",
-        "TenantName": "user14",
+        "Endpoint": "https://ユーザ名:パスワード@マネジメント用IP/json-rpc/8.0",
+        "SVIP": "ストレージアクセス用IP:3260",
+        "TenantName": "ユーザ環境番号",
         "backendName": "iSCSI_SF_Backend",
         "InitiatorIFace": "default",
         "UseCHAP": true,
@@ -297,6 +299,8 @@ NFSバックエンドストレージと同様に ``setup`` ディレクトリに
             }
         ]
     }
+
+
 
 同様にバックエンド登録を実施します。
 
