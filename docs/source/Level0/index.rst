@@ -38,8 +38,8 @@ kubernetes基本操作
 
     $ kubectl version
 
-    Client Version: version.Info{Major:"1", Minor:"9", GitVersion:"v1.9.6", GitCommit:"9f8ebd171479bec0ada837d7ee641dec2f8c6dd1", GitTreeState:"clean", BuildDate:"2018-03-21T15:21:50Z", GoVersion:"go1.9.3", Compiler:"gc", Platform:"linux/amd64"}
-    Server Version: version.Info{Major:"1", Minor:"9", GitVersion:"v1.9.6", GitCommit:"9f8ebd171479bec0ada837d7ee641dec2f8c6dd1", GitTreeState:"clean", BuildDate:"2018-03-21T15:13:31Z", GoVersion:"go1.9.3", Compiler:"gc", Platform:"linux/amd64"}
+    Client Version: version.Info{Major:"1", Minor:"11", GitVersion:"v1.11.2", GitCommit:"bb9ffb1654d4a729bb4cec18ff088eacc153c239", GitTreeState:"clean", BuildDate:"2018-08-07T23:17:28Z", GoVersion:"go1.10.3", Compiler:"gc", Platform:"linux/amd64"}
+    Server Version: version.Info{Major:"1", Minor:"11", GitVersion:"v1.11.2", GitCommit:"bb9ffb1654d4a729bb4cec18ff088eacc153c239", GitTreeState:"clean", BuildDate:"2018-08-07T23:08:19Z", GoVersion:"go1.10.3", Compiler:"gc", Platform:"linux/amd64"}
 
 次にクラスタを形成するノードを確認します。
 
@@ -48,10 +48,10 @@ kubernetes基本操作
     $ kubectl get nodes
 
     NAME      STATUS    ROLES     AGE       VERSION
-    master    Ready     master    6d        v1.9.6
-    node0     Ready     <none>    6d        v1.9.6
-    node1     Ready     <none>    6d        v1.9.6
-    node2     Ready     <none>    6d        v1.9.6
+    master    Ready     master    1d        v1.11.2
+    node0     Ready     <none>    1d        v1.11.2
+    node1     Ready     <none>    1d        v1.11.2
+    node2     Ready     <none>    1d        v1.11.2
 
 デプロイメント
 -------------------------------------------------------------

@@ -23,9 +23,7 @@ Jenkinsからkubernetes上でJenkins agentを実行する場合にはJenkins kub
 
 Jeninsログイン後、クレデンシャルを事前に作成します。
 
-詳細な手順については以下のURLが参考になります。
-
-- https://github.com/jenkinsci/kubernetes-plugin#container-configuration
+.. image:: resources/Kubernetes-Credentials.png
 
 jenkins 導入済みのネームスペースにサービスアカウントを作成します。
 
@@ -41,7 +39,8 @@ Configurationから「Kubernetes設定」を選択します。
 
 - kubernetes URL: マスタのIP, 192.168.XX.10
 - Kubernetes Namespace: Jenkinsをインストールしたnamespace名
-- kubernetes certificate key: /etc/kubernetes/pki/apiserver.crtの内容をペースト。
+- kubernetes certificate key: /etc/kubernetes/pki/apiserver.crtの内容をペースト
+- Credentials: Secret を選択
 
 
 

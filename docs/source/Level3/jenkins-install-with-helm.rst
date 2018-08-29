@@ -716,7 +716,7 @@ Helmを使いvalues.yamlを定義するとどのようなマニフェストフ�
 
 その場合には ``--dry-run`` と ``--debug`` を付与することでデプロイメントされるYAMLファイルが出力されます。
 
-helm --namespace jenkins --name jenkins -f ./values.yaml install stable/jenkins --dry-run --debug
+    helm --namespace jenkins --name jenkins -f ./values.yaml install stable/jenkins --dry-run --debug
 
 
 values.yamlのTry & Error: インストールが上手くいかない場合は？

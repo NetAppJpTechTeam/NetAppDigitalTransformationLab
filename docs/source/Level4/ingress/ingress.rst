@@ -1,5 +1,5 @@
 ==============================================================
-Ingressを導入する
+Ingressを導入
 ==============================================================
 
 Level1,2ではデプロイしたアプリケーションが配置されているノードのIPに対してアクセスして稼働を確認していました。
@@ -196,7 +196,7 @@ Ingressが作成されると、「spec - rules - host」で指定したホスト
 
 1つのエンドポイントから複数のサービス呼びだしを実現することができるようになりました。
 
-DNS登録を行う。
+DNS登録実施
 ==============================================================
 
 Ingress経由でアクセスするにはホスト名を使用してアクセスします。
@@ -204,17 +204,19 @@ Ingress経由でアクセスするにはホスト名を使用してアクセス�
 
 Aレコードのエントリは以下のようなスクリプトを準備することで各ユーザが自身で登録することが可能なしくみです。
 
-.. code-block:: bash:
-        #!/bin/bash
+.. code-block:: bash
 
-        ETCD="http://192.168.1.1:2379,http://192.168.1.2:2379,http://192.168.1.3:2379"
+    #!/bin/bash
 
-        ETCDCTL_API=3 /usr/local/bin/etcdctl --endpoints $ETCD "$@"
+    ETCD="http://192.168.1.1:2379,http://192.168.1.2:2379,http://192.168.1.3:2379"
+
+    ETCDCTL_API=3 /usr/local/bin/etcdctl --endpoints $ETCD "$@"
 
 以下のようにしてDNSに登録可能です(jenkins.user1x.ndxlab.net で 192.168.1x.10 を登録します)
 
-        etcdctl put /dns/net/ndxlab/user1X/jenkins '{"host":"192.168.1x.10"}'
+.. code-block:: console
 
+    $ etcdctl put /dns/net/ndxlab/user1X/jenkins '{"host":"192.168.1x.10"}'
 
 名前解決ができているか確認します。
 
