@@ -54,6 +54,8 @@ Helm を使いmongodbをデプロイします。
 Podを停止させ、別ノードで起動することを確認します。
 
 まずは起動状態を確認し、それぞれのPodがどのノードで稼働しているかを確認します。
+
+
 .. code-block:: console
 
     mongodb-mongodb-replicaset-0   1/1       Running   0          5m        10.244.3.6   node2              │
