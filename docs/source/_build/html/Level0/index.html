@@ -1,0 +1,437 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="ja" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="ja" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Level 0: 環境の確認・基本操作 &mdash; NetApp Digital Transformation Lab 18.08 NDX vol2 ドキュメント</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/custom-width.css" type="text/css" />
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="検索" href="../search.html" />
+    <link rel="next" title="Level 1: アプリケーションをコンテナ化する" href="../Level1/index.html" />
+    <link rel="prev" title="NetApp Digital Transformation Lab (NDX) (formerly Data Technology Lab Guide)" href="../index.html" /> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> NetApp Digital Transformation Lab
+          
+
+          
+            
+            <img src="../_static/netapp_logo.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                18.08
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Level 0: 環境の確認・基本操作</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id1">目的・ゴール: ラボを実施する環境の確認</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id2">流れ</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#kubernetes">kubernetes環境へのログイン</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id3">kubernetesにデプロイ</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id4">kubernetes基本操作</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id5">デプロイメント</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id6">外部向けに公開</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id7">問題発生時のログの確認方法</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id8">クリーンアップ</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id9">まとめ</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../Level1/index.html">Level 1: アプリケーションをコンテナ化する</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Level2/index.html">Level 2: ステートフルコンテナの実現</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Level3/index.html">Level 3: CI／CDパイプラインを構築</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Level4/index.html">Level 4: 運用編</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Level5/index.html">Level 5: Microservice化</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../others/cmdreferences.html">コマンドリファレンス</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../others/terms.html">用語集</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../others/references.html">References</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Level4/ingress/ingress.html">Ingressを導入</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../others/installed.html">Installed apps</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../others/todos.html">ToDos</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../others/design.html">Design: kubernetes クラスタの設計要素について</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">NetApp Digital Transformation Lab</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>Level 0: 環境の確認・基本操作</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/Level0/index.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="level-0">
+<h1>Level 0: 環境の確認・基本操作<a class="headerlink" href="#level-0" title="このヘッドラインへのパーマリンク">¶</a></h1>
+<div class="section" id="id1">
+<h2>目的・ゴール: ラボを実施する環境の確認<a class="headerlink" href="#id1" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>本ラボではkubernetesクラスタへの接続確認と稼働確認を行うことが目的です。</p>
+<p>ガイドの中では以下を確認しています。</p>
+<ul class="simple">
+<li>ラボを実施する環境の構成理解</li>
+<li>環境への接続確認</li>
+<li>kubernetesの基本操作を確認</li>
+</ul>
+</div>
+<div class="section" id="id2">
+<h2>流れ<a class="headerlink" href="#id2" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<ol class="arabic simple">
+<li>ユーザIDの確認</li>
+<li>環境へログイン</li>
+<li>基本コマンド確認、k8s へアプリケーションデプロイ</li>
+</ol>
+</div>
+<div class="section" id="kubernetes">
+<h2>kubernetes環境へのログイン<a class="headerlink" href="#kubernetes" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>各自配布されている接続先情報にログイン出来るかを確認してください。</p>
+</div>
+<div class="section" id="id3">
+<h2>kubernetesにデプロイ<a class="headerlink" href="#id3" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<div class="section" id="id4">
+<h3>kubernetes基本操作<a class="headerlink" href="#id4" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<p>必要となるコマンドラインツールがインストールされていることを確認します。</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> kubectl version
+
+<span class="go">Client Version: version.Info{Major:&quot;1&quot;, Minor:&quot;11&quot;, GitVersion:&quot;v1.11.2&quot;, GitCommit:&quot;bb9ffb1654d4a729bb4cec18ff088eacc153c239&quot;, GitTreeState:&quot;clean&quot;, BuildDate:&quot;2018-08-07T23:17:28Z&quot;, GoVersion:&quot;go1.10.3&quot;, Compiler:&quot;gc&quot;, Platform:&quot;linux/amd64&quot;}</span>
+<span class="go">Server Version: version.Info{Major:&quot;1&quot;, Minor:&quot;11&quot;, GitVersion:&quot;v1.11.2&quot;, GitCommit:&quot;bb9ffb1654d4a729bb4cec18ff088eacc153c239&quot;, GitTreeState:&quot;clean&quot;, BuildDate:&quot;2018-08-07T23:08:19Z&quot;, GoVersion:&quot;go1.10.3&quot;, Compiler:&quot;gc&quot;, Platform:&quot;linux/amd64&quot;}</span>
+</pre></div>
+</div>
+<p>次にクラスタを形成するノードを確認します。</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> kubectl get nodes
+
+<span class="go">NAME      STATUS    ROLES     AGE       VERSION</span>
+<span class="go">master    Ready     master    1d        v1.11.2</span>
+<span class="go">node0     Ready     &lt;none&gt;    1d        v1.11.2</span>
+<span class="go">node1     Ready     &lt;none&gt;    1d        v1.11.2</span>
+<span class="go">node2     Ready     &lt;none&gt;    1d        v1.11.2</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id5">
+<h3>デプロイメント<a class="headerlink" href="#id5" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<p>kubernetesクラスタに作成したコンテナアプリケーションをデプロイするためには 「Deployment」を作成します。
+kubectlを使用して、アプリケーションをデプロイします。</p>
+<p>以下では <code class="docutils literal notranslate"><span class="pre">kubectl</span> <span class="pre">run</span></code> を実行すると「Deployment」が作成されます。</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> kubectl run 任意のデプロイメント名 --image<span class="o">=</span>nginx --port<span class="o">=</span><span class="m">80</span>
+
+<span class="go">deployment &quot;nginxweb&quot; created</span>
+</pre></div>
+</div>
+<p>デプロイが完了したら以下のコマンドで状況を確認します。</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> kubectl get deployments
+
+<span class="go">NAME                                  DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE</span>
+<span class="go">nginxweb                              1         1         1            1           53s</span>
+</pre></div>
+</div>
+<p>デプロイしたアプリケーションのサービスを確認します。
+まだこの状態ではデプロイしたアプリケーションのサービスは存在しない状況です。</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> kubectl get services
+
+<span class="go">NAME         TYPE        CLUSTER-IP   EXTERNAL-IP   PORT(S)   AGE</span>
+<span class="go">kubernetes   ClusterIP   10.96.0.1    &lt;none&gt;        443/TCP   8s</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id6">
+<h3>外部向けに公開<a class="headerlink" href="#id6" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<p>外部向けにサービスを公開します。
+公開後、再度サービスを確認します。</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> kubectl expose deployment/上記のデプロイメント名 --type<span class="o">=</span><span class="s2">&quot;NodePort&quot;</span> --port <span class="m">80</span>
+
+<span class="go">service &quot;nginxweb&quot; exposed</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">kubectl</span> <span class="pre">expose</span></code> コマンドで外部へ公開しました。</p>
+<p>サービス一覧から公開されたポートを確認します。</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> kubectl get services
+
+<span class="go">NAME         TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)        AGE</span>
+<span class="go">kubernetes   ClusterIP   10.96.0.1        &lt;none&gt;        443/TCP        5d</span>
+<span class="go">nginxweb     NodePort    10.103.136.206   &lt;none&gt;        80:30606/TCP   1m</span>
+</pre></div>
+</div>
+<p>PORT 列を確認します。上の実行例でいうと「30606」ポートの部分を確認します。</p>
+<p><code class="docutils literal notranslate"><span class="pre">--type=&quot;NodePort&quot;</span></code> を指定すると各ノード上にアプリケーションにアクセスするポート（標準で30000–32767）を作成します。
+ノードにアクセスしポッドが動いていれば、そのままアクセスします。
+ノードにポッドがなければ適切なノード転送される仕組みを持っています。
+そのためマスターノードにアクセスすればk8sが適切に転送するという動作をします。</p>
+<p>ホストのIPを確認します。</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> ifconfig -a <span class="p">|</span> grep <span class="m">192</span>.168.*
+
+<span class="go">  inet addr:192.168.10.10  Bcast:192.168.10.255  Mask:255.255.255.0</span>
+</pre></div>
+</div>
+<p>上記の情報を元にIPを生成してアクセスします。</p>
+<ul class="simple">
+<li><a class="reference external" href="http:/">http:/</a>/確認したIP:確認したポート番号/</li>
+</ul>
+<p>アクセス時に以下の画面が表示されれば稼働確認完了です。</p>
+<img alt="../_images/nginx.png" src="../_images/nginx.png" />
+<p>状態を確認します。</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> kubectl describe deployment nginxweb
+
+<span class="go">Name:                   nginxweb</span>
+<span class="go">Namespace:              default</span>
+<span class="go">CreationTimestamp:      Tue, 20 Mar 2018 13:44:08 +0900</span>
+<span class="go">Labels:                 run=nginxweb</span>
+<span class="go">Annotations:            deployment.kubernetes.io/revision=1</span>
+<span class="go">Selector:               run=nginxweb</span>
+<span class="go">Replicas:               1 desired | 1 updated | 1 total | 1 available | 0 unavailable</span>
+<span class="go">StrategyType:           RollingUpdate</span>
+<span class="go">MinReadySeconds:        0</span>
+<span class="go">RollingUpdateStrategy:  1 max unavailable, 1 max surge</span>
+<span class="go">Pod Template:</span>
+<span class="go">  Labels:  run=nginxweb</span>
+<span class="go">  Containers:</span>
+<span class="go">   nginxweb:</span>
+<span class="go">    Image:        nginx</span>
+<span class="go">    Port:         80/TCP</span>
+<span class="go">    Environment:  &lt;none&gt;</span>
+<span class="go">    Mounts:       &lt;none&gt;</span>
+<span class="go">  Volumes:        &lt;none&gt;</span>
+<span class="go">Conditions:</span>
+<span class="go">  Type           Status  Reason</span>
+<span class="go">  ----           ------  ------</span>
+<span class="go">  Available      True    MinimumReplicasAvailable</span>
+<span class="go">OldReplicaSets:  &lt;none&gt;</span>
+<span class="go">NewReplicaSet:   nginxweb-78547ccd78 (1/1 replicas created)</span>
+<span class="go">Events:</span>
+<span class="go">  Type    Reason             Age   From                   Message</span>
+<span class="go">  ----    ------             ----  ----                   -------</span>
+<span class="go">  Normal  ScalingReplicaSet  15m   deployment-controller  Scaled up replica set nginxweb-78547ccd78 to 1</span>
+</pre></div>
+</div>
+<p>Replicas の項目で <code class="docutils literal notranslate"><span class="pre">1</span> <span class="pre">available</span></code> となっていればデプロイメント成功です。</p>
+</div>
+<div class="section" id="id7">
+<h3>問題発生時のログの確認方法<a class="headerlink" href="#id7" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<p>デプロイに失敗するようであれば以下のコマンドで状態を確認します。</p>
+<p>ポッドの状態を確認するコマンド</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> kubectl logs ポッド名
+</pre></div>
+</div>
+<p>デプロイメントの状態を確認するコマンド</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> kubectl describe deployments デプロイメント名
+</pre></div>
+</div>
+<p>他にも以下のようなコマンドで状態を確認することができます。
+デプロイ時のYAMLファイル単位や、定義しているラベル単位でも情報を確認できます。</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> kubectl describe -f YAML定義ファイル
+<span class="gp">$</span> kubectl describe -l ラベル名
+</pre></div>
+</div>
+<p>よく使うコマンドや問題発生時の確認方法については次のページにまとめました。
+今後のラボでうまくいかない場合いはぜひ参考にしてください。</p>
+<p><a class="reference internal" href="../others/cmdreferences.html"><span class="doc">コマンドリファレンス</span></a></p>
+</div>
+<div class="section" id="id8">
+<h3>クリーンアップ<a class="headerlink" href="#id8" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<p>コマンドラインの操作は完了です。
+今までデプロイしたアプリケーションを削除します。</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> kubectl delete deployments デプロイメント名
+<span class="gp">$</span> kubectl delete services サービス名
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="id9">
+<h2>まとめ<a class="headerlink" href="#id9" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>このラボではこの先のラボを行うための基本となる操作及び環境の確認を実施しました。</p>
+<p>この先は各自ガイドを見ながら進めてください。</p>
+<p>ここまでで Level0 は終了です。</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../Level1/index.html" class="btn btn-neutral float-right" title="Level 1: アプリケーションをコンテナ化する" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../index.html" class="btn btn-neutral" title="NetApp Digital Transformation Lab (NDX) (formerly Data Technology Lab Guide)" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, NetApp.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'18.08 NDX vol2',
+            LANGUAGE:'ja',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="../_static/translations.js"></script>
+
+  
+
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

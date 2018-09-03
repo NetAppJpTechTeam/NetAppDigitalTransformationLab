@@ -1,0 +1,440 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="ja" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="ja" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Ingressを導入 &mdash; NetApp Digital Transformation Lab 18.08 NDX vol2 ドキュメント</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/custom-width.css" type="text/css" />
+    <link rel="index" title="索引" href="../../genindex.html" />
+    <link rel="search" title="検索" href="../../search.html" />
+    <link rel="next" title="Installed apps" href="../../others/installed.html" />
+    <link rel="prev" title="References" href="../../others/references.html" /> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> NetApp Digital Transformation Lab
+          
+
+          
+            
+            <img src="../../_static/netapp_logo.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                18.08
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../Level0/index.html">Level 0: 環境の確認・基本操作</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Level1/index.html">Level 1: アプリケーションをコンテナ化する</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Level2/index.html">Level 2: ステートフルコンテナの実現</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Level3/index.html">Level 3: CI／CDパイプラインを構築</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Level 4: 運用編</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Level5/index.html">Level 5: Microservice化</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../others/cmdreferences.html">コマンドリファレンス</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../others/terms.html">用語集</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../others/references.html">References</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Ingressを導入</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id1">Ingress用のネームスペースを作成</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#nginx-ingress">Nginx Ingressのデプロイメント</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#dns">DNS登録実施</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../others/installed.html">Installed apps</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../others/todos.html">ToDos</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../others/design.html">Design: kubernetes クラスタの設計要素について</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">NetApp Digital Transformation Lab</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+      <li>Ingressを導入</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/Level4/ingress/ingress.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="ingress">
+<h1>Ingressを導入<a class="headerlink" href="#ingress" title="このヘッドラインへのパーマリンク">¶</a></h1>
+<p>Level1,2ではデプロイしたアプリケーションが配置されているノードのIPに対してアクセスして稼働を確認していました。
+ここからは外部にアプリケーションを公開しアクセスする方法を使用します。</p>
+<p>具体的にはServiceを定義する際に指定する「type」が複数提供されています。</p>
+<ol class="arabic simple">
+<li>ClusterIP</li>
+<li>NodePort</li>
+<li>LoadBalancer</li>
+</ol>
+<ul class="simple">
+<li><a class="reference external" href="https://medium.com/&#64;maniankara/kubernetes-tcp-load-balancer-service-on-premise-non-cloud-f85c9fd8f43c">https://medium.com/&#64;maniankara/kubernetes-tcp-load-balancer-service-on-premise-non-cloud-f85c9fd8f43c</a></li>
+<li><a class="reference external" href="https://kubernetes.io/docs/concepts/services-networking/service/">https://kubernetes.io/docs/concepts/services-networking/service/</a></li>
+</ul>
+<p>今回はServiceのtypeをNodePortとして、Serviceの前段にIngressを配置する構成とします。
+Ingressを使用してアプリケーションを外部に公開します。
+IngressはL7ロードバランサーのような動きをします。</p>
+<div class="section" id="id1">
+<h2>Ingress用のネームスペースを作成<a class="headerlink" href="#id1" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>Nginx Ingressをデプロイするネームスペースを作成します。</p>
+<p>以下のコマンドでネームスペースを作成します。</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> kubectl create -f ingress-ns.yaml
+
+<span class="go">  namespace &quot;ingress&quot; created</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="nginx-ingress">
+<h2>Nginx Ingressのデプロイメント<a class="headerlink" href="#nginx-ingress" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>helm chartを使ったNginx Ingressのデプロイメントです。</p>
+<p><cite>--dry-run</cite> を付与してhelmを実行することでドライランモードで実行することが可能です。</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> helm install stable/nginx-ingress --name nginx-ingress --set rbac.create<span class="o">=</span><span class="nb">true</span> --namespace ingress
+
+<span class="go">NAME:   nginx-ingress</span>
+<span class="go">LAST DEPLOYED: Mon Apr  9 13:58:29 2018</span>
+<span class="go">NAMESPACE: ingress</span>
+<span class="go">STATUS: DEPLOYED</span>
+
+<span class="go">RESOURCES:</span>
+<span class="go">==&gt; v1/ServiceAccount</span>
+<span class="go">NAME           SECRETS  AGE</span>
+<span class="go">nginx-ingress  1        0s</span>
+
+<span class="go">==&gt; v1beta1/ClusterRoleBinding</span>
+<span class="go">NAME           AGE</span>
+<span class="go">nginx-ingress  0s</span>
+
+<span class="go">==&gt; v1beta1/Role</span>
+<span class="go">NAME           AGE</span>
+<span class="go">nginx-ingress  0s</span>
+
+<span class="go">==&gt; v1beta1/RoleBinding</span>
+<span class="go">NAME           AGE</span>
+<span class="go">nginx-ingress  0s</span>
+
+<span class="go">==&gt; v1/Service</span>
+<span class="go">NAME                           TYPE          CLUSTER-IP     EXTERNAL-IP  PORT(S)                     AGE</span>
+<span class="go">nginx-ingress-controller       LoadBalancer  10.96.106.165  &lt;pending&gt;    80:32065/TCP,443:32049/TCP  0s</span>
+<span class="go">nginx-ingress-default-backend  ClusterIP     10.101.0.249   &lt;none&gt;       80/TCP                      0s</span>
+
+<span class="go">==&gt; v1beta1/Deployment</span>
+<span class="go">NAME                           DESIRED  CURRENT  UP-TO-DATE  AVAILABLE  AGE</span>
+<span class="go">nginx-ingress-controller       1        1        1           0          0s</span>
+<span class="go">nginx-ingress-default-backend  1        1        1           0          0s</span>
+
+<span class="go">==&gt; v1/ConfigMap</span>
+<span class="go">NAME                      DATA  AGE</span>
+<span class="go">nginx-ingress-controller  1     0s</span>
+
+<span class="go">==&gt; v1beta1/PodDisruptionBudget</span>
+<span class="go">NAME                           MIN AVAILABLE  MAX UNAVAILABLE  ALLOWED DISRUPTIONS  AGE</span>
+<span class="go">nginx-ingress-controller       1              N/A              0                    0s</span>
+<span class="go">nginx-ingress-default-backend  1              N/A              0                    0s</span>
+
+<span class="go">==&gt; v1/Pod(related)</span>
+<span class="go">NAME                                           READY  STATUS             RESTARTS  AGE</span>
+<span class="go">nginx-ingress-controller-5475585cc9-q5ckc      0/1    ContainerCreating  0         0s</span>
+<span class="go">nginx-ingress-default-backend-956f8bbff-5znnc  0/1    ContainerCreating  0         0s</span>
+
+<span class="go">==&gt; v1beta1/ClusterRole</span>
+<span class="go">NAME           AGE</span>
+<span class="go">nginx-ingress  0s</span>
+
+
+<span class="go">NOTES:</span>
+<span class="go">The nginx-ingress controller has been installed.</span>
+<span class="go">It may take a few minutes for the LoadBalancer IP to be available.</span>
+<span class="go">You can watch the status by running &#39;kubectl --namespace ingress get services -o wide -w nginx-ingress-controller&#39;</span>
+
+<span class="go">An example Ingress that makes use of the controller:</span>
+
+<span class="go">  apiVersion: extensions/v1beta1</span>
+<span class="go">  kind: Ingress</span>
+<span class="go">  metadata:</span>
+<span class="go">    annotations:</span>
+<span class="go">      kubernetes.io/ingress.class: nginx</span>
+<span class="go">    name: example</span>
+<span class="go">    namespace: foo</span>
+<span class="go">  spec:</span>
+<span class="go">    rules:</span>
+<span class="go">      - host: www.example.com</span>
+<span class="go">        http:</span>
+<span class="go">          paths:</span>
+<span class="go">            - backend:</span>
+<span class="go">                serviceName: exampleService</span>
+<span class="go">                servicePort: 80</span>
+<span class="go">              path: /</span>
+<span class="gp">    #</span> This section is only required <span class="k">if</span> TLS is to be enabled <span class="k">for</span> the Ingress
+<span class="go">    tls:</span>
+<span class="go">        - hosts:</span>
+<span class="go">            - www.example.com</span>
+<span class="go">          secretName: example-tls</span>
+
+<span class="go">If TLS is enabled for the Ingress, a Secret containing the certificate and key must also be provided:</span>
+
+<span class="go">  apiVersion: v1</span>
+<span class="go">  kind: Secret</span>
+<span class="go">  metadata:</span>
+<span class="go">    name: example-tls</span>
+<span class="go">    namespace: foo</span>
+<span class="go">  data:</span>
+<span class="go">    tls.crt: &lt;base64 encoded cert&gt;</span>
+<span class="go">    tls.key: &lt;base64 encoded key&gt;</span>
+<span class="go">  type: kubernetes.io/tls</span>
+</pre></div>
+</div>
+<p>Ingressを作成するサンプルです。</p>
+<p>上記のマニフェストファイルをインプットとして、Ingressを作成します。</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> kubectl create -f ingress-controller.yaml
+
+<span class="go">ingress.extensions &quot;mynginx-ingress&quot; created</span>
+
+<span class="gp">$</span> kubectl get ing
+
+<span class="go">NAME              HOSTS                 ADDRESS   PORTS     AGE</span>
+<span class="go">mynginx-ingress   user10.netapp.local             80        51s</span>
+</pre></div>
+</div>
+<p>Ingressが作成されると、「spec - rules - host」で指定したホスト名でアクセス出来るようになります。
+以下の確認では簡易的にcurlコマンドでipとホスト名をマッピングしていますが、通常はDNSへAレコードを登録します。</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> curl -L --resolve user10.netapp.local:80:10.244.0.3 http://user10.netapp.local
+
+<span class="go">&lt;!DOCTYPE html&gt;</span>
+<span class="go">&lt;html&gt;</span>
+<span class="go">&lt;head&gt;</span>
+<span class="go">&lt;title&gt;Welcome to nginx!&lt;/title&gt;</span>
+<span class="go">&lt;style&gt;</span>
+<span class="go">    body {</span>
+<span class="go">        width: 35em;</span>
+<span class="go">        margin: 0 auto;</span>
+<span class="go">        font-family: Tahoma, Verdana, Arial, sans-serif;</span>
+<span class="go">    }</span>
+<span class="go">&lt;/style&gt;</span>
+<span class="go">&lt;/head&gt;</span>
+<span class="go">&lt;body&gt;</span>
+<span class="go">&lt;h1&gt;Welcome to nginx!&lt;/h1&gt;</span>
+<span class="go">&lt;p&gt;If you see this page, the nginx web server is successfully installed and</span>
+<span class="go">working. Further configuration is required.&lt;/p&gt;</span>
+
+<span class="go">&lt;p&gt;For online documentation and support please refer to</span>
+<span class="go">&lt;a href=&quot;http://nginx.org/&quot;&gt;nginx.org&lt;/a&gt;.&lt;br/&gt;</span>
+<span class="go">Commercial support is available at</span>
+<span class="go">&lt;a href=&quot;http://nginx.com/&quot;&gt;nginx.com&lt;/a&gt;.&lt;/p&gt;</span>
+
+<span class="go">&lt;p&gt;&lt;em&gt;Thank you for using nginx.&lt;/em&gt;&lt;/p&gt;</span>
+<span class="go">&lt;/body&gt;</span>
+<span class="go">&lt;/html&gt;</span>
+</pre></div>
+</div>
+<p>1つのエンドポイントから複数のサービス呼びだしを実現することができるようになりました。</p>
+</div>
+<div class="section" id="dns">
+<h2>DNS登録実施<a class="headerlink" href="#dns" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>Ingress経由でアクセスするにはホスト名を使用してアクセスします。
+本ラボではDNSサーバを共通で準備しています。</p>
+<p>Aレコードのエントリは以下のようなスクリプトを準備することで各ユーザが自身で登録することが可能なしくみです。</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/bin/bash</span>
+
+<span class="nv">ETCD</span><span class="o">=</span><span class="s2">&quot;http://192.168.1.1:2379,http://192.168.1.2:2379,http://192.168.1.3:2379&quot;</span>
+
+<span class="nv">ETCDCTL_API</span><span class="o">=</span><span class="m">3</span> /usr/local/bin/etcdctl --endpoints <span class="nv">$ETCD</span> <span class="s2">&quot;</span><span class="nv">$@</span><span class="s2">&quot;</span>
+</pre></div>
+</div>
+<p>以下のようにしてDNSに登録可能です(jenkins.user1x.ndxlab.net で 192.168.1x.10 を登録します)</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> etcdctl put /dns/net/ndxlab/user1X/jenkins <span class="s1">&#39;{&quot;host&quot;:&quot;192.168.1x.10&quot;}&#39;</span>
+</pre></div>
+</div>
+<p>名前解決ができているか確認します。</p>
+<div class="highlight-console: notranslate"><div class="highlight"><pre><span></span>$ nslookup app-name.user1X.ndxlab.net
+</pre></div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../../others/installed.html" class="btn btn-neutral float-right" title="Installed apps" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../../others/references.html" class="btn btn-neutral" title="References" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, NetApp.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'18.08 NDX vol2',
+            LANGUAGE:'ja',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../_static/translations.js"></script>
+
+  
+
+  <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,254 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="ja" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="ja" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Rancher でできること &mdash; NetApp Digital Transformation Lab 18.08 NDX vol2 ドキュメント</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/custom-width.css" type="text/css" />
+    <link rel="index" title="索引" href="../../genindex.html" />
+    <link rel="search" title="検索" href="../../search.html" /> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> NetApp Digital Transformation Lab
+          
+
+          
+            
+            <img src="../../_static/netapp_logo.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                18.08
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../Level0/index.html">Level 0: 環境の確認・基本操作</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Level1/index.html">Level 1: アプリケーションをコンテナ化する</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Level2/index.html">Level 2: ステートフルコンテナの実現</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Level3/index.html">Level 3: CI／CDパイプラインを構築</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Level 4: 運用編</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Level5/index.html">Level 5: Microservice化</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../others/cmdreferences.html">コマンドリファレンス</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../others/terms.html">用語集</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../others/references.html">References</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ingress/ingress.html">Ingressを導入</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../others/installed.html">Installed apps</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../others/todos.html">ToDos</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../others/design.html">Design: kubernetes クラスタの設計要素について</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">NetApp Digital Transformation Lab</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+      <li>Rancher でできること</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/Level4/rancher/index.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="rancher">
+<h1>Rancher でできること<a class="headerlink" href="#rancher" title="このヘッドラインへのパーマリンク">¶</a></h1>
+<p>Rancherは様々な環境のkubernetesクラスタを管理するとともに、アプリケーションの管理も行うことができます。</p>
+<p>ここではRancherの導入から、アプリケーションのデプロイまでを簡単に実施します。</p>
+<p>ここでいうアプリケーションとは kubernetes 上で動くものすべてです。</p>
+<p>例えば、kubernetes クラスタを監視するソフトウェアスタック(Prometheus+Grafana+InfluxDB）をkubernetes上で簡単に起動することが可能です。</p>
+</div>
+<div class="section" id="id1">
+<h1>Rancher を導入する<a class="headerlink" href="#id1" title="このヘッドラインへのパーマリンク">¶</a></h1>
+<p>Rancherの導入には、Dockerコマンドを利用します。もし、Dockerをインストールしていない場合にはDockerをインストールします。</p>
+<p>Rancherに必要なDockerのバージョンは、</p>
+<div class="admonition-todo admonition" id="index-0">
+<p class="first admonition-title">課題</p>
+<p class="last">コンテンツ記載</p>
+</div>
+</div>
+<div class="section" id="id2">
+<h1>アプリケーションをデプロイ<a class="headerlink" href="#id2" title="このヘッドラインへのパーマリンク">¶</a></h1>
+<div class="admonition-todo admonition" id="index-1">
+<p class="first admonition-title">課題</p>
+<p class="last">コンテンツ記載</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, NetApp.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'18.08 NDX vol2',
+            LANGUAGE:'ja',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../_static/translations.js"></script>
+
+  
+
+  <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
