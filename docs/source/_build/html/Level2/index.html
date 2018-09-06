@@ -1,0 +1,948 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="ja" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="ja" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Level 2: ステートフルコンテナの実現 &mdash; NetApp Digital Transformation Lab 18.08 NDX vol2 ドキュメント</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/custom-width.css" type="text/css" />
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="検索" href="../search.html" />
+    <link rel="next" title="Level 3: CI／CDパイプラインを構築" href="../Level3/index.html" />
+    <link rel="prev" title="Level 1: アプリケーションをコンテナ化する" href="../Level1/index.html" /> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> NetApp Digital Transformation Lab
+          
+
+          
+            
+            <img src="../_static/netapp_logo.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                18.08
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../Level0/index.html">Level 0: 環境の確認・基本操作</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Level1/index.html">Level 1: アプリケーションをコンテナ化する</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Level 2: ステートフルコンテナの実現</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id1">目的・ゴール: アプリケーションのデータ永続化を実現</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id2">流れ</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id3">コンテナでの永続データのカテゴライズ</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#dynamic-provisioning">Dynamic provisioning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#netapp-trident">NetApp Tridentのインストール</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#trident">Tridentインストール事前準備</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id4">Tridentインストール</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id5">Tridentへバックエンドストレージの登録</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#storageclass">StorageClassの定義</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#nfsontapstorageclass">NFSバックエンドのONTAPでのStorageClass</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#persistent-volume-claim">Persistent Volume Claimの作成</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pvc">デプロイ用のマニフェストファイルにPVCを追加</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id6">デプロイメント実施</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id7">アプリケーションの停止・起動</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id8">再デプロイメント後の確認</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#trident-fast-cloning">Tridentの特徴的な機能: Fast Cloning</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id9">クローニング技術によって実現可能なこと</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#trident18-07-csi-container-storage-interface">Tridentの18.07でのアップデート: CSI (Container Storage Interface)への対応</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id10">まとめ</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../Level3/index.html">Level 3: CI／CDパイプラインを構築</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Level4/index.html">Level 4: 運用編</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Level5/index.html">Level 5: Microservice化</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../others/cmdreferences.html">コマンドリファレンス</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../others/terms.html">用語集</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../others/references.html">References</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Level4/ingress/ingress.html">Ingressを導入</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../others/installed.html">Installed apps</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../others/todos.html">ToDos</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../others/design.html">Design: kubernetes クラスタの設計要素について</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">NetApp Digital Transformation Lab</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>Level 2: ステートフルコンテナの実現</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/Level2/index.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="level-2">
+<h1>Level 2: ステートフルコンテナの実現<a class="headerlink" href="#level-2" title="このヘッドラインへのパーマリンク">¶</a></h1>
+<div class="section" id="id1">
+<h2>目的・ゴール: アプリケーションのデータ永続化を実現<a class="headerlink" href="#id1" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>アプリケーションは永続化領域がないとデータの保存ができません。
+KubernetesではStatic provisioningとDynamic provisioningの２つの永続化の手法があります。</p>
+<p>このレベルではDynamic provisioningを実現するためDynamic provisionerであるTridentをインストールし、
+マニフェストファイルを作成しデータの永続化をすることが目標です。</p>
+</div>
+<div class="section" id="id2">
+<h2>流れ<a class="headerlink" href="#id2" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<ol class="arabic">
+<li><p class="first">Dynamic storage provisioningを実現(Tridentのインストール)</p>
+</li>
+<li><p class="first">StorageClassの作成</p>
+</li>
+<li><p class="first">PVCをkubernetesマニフェストファイルに追加</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li>作成したStorageClassを使用する</li>
+<li>PVCをkubernetesにリクエストした時点で動的にストレージがプロビジョニングされる</li>
+</ol>
+</div></blockquote>
+</li>
+<li><p class="first">アプリケーションを稼働させて永続化ができていることを確認</p>
+</li>
+</ol>
+</div>
+<div class="section" id="id3">
+<h2>コンテナでの永続データのカテゴライズ<a class="headerlink" href="#id3" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>コンテナ化されたアプリケーション、環境での永続データは
+以下のように分類して考え必要な物をリストアップしました。</p>
+<ul class="simple">
+<li>データベースのデータファイル、ログファイル</li>
+<li>各サーバのログファイル</li>
+<li>設定ファイル</li>
+<li>共有ファイル</li>
+</ul>
+</div>
+<div class="section" id="dynamic-provisioning">
+<h2>Dynamic provisioning<a class="headerlink" href="#dynamic-provisioning" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>ステートフルコンテナを実現する上でストレージは重要なコンポーネントになります。</p>
+<p>Dynamic volume provisiong はオンデマンドにストレージをプロビジョニングするためのものです。</p>
+<p>Static provisioning、Dynamic provisioning それぞれを比較します。</p>
+<p>Static provisioningの場合、クラスタの管理者がストレージをプロビジョニングして、PersitentVolumeオブジェクトを作成しkubernetesに公開する必要があります。</p>
+<p>Dynamic provisioningの場合、Static provisioningで手動で行っていたステップを自動化し、管理者がおこなっていたストレージの事前のプロビジョニング作業をなくすことができます。</p>
+<p>StorageClassオブジェクトで指定したプロビジョナを使用し、動的にストレージリソースをプロビジョニングすることができます。</p>
+<p>StorageClassには様々なパラメータを指定することができアプリケーションに適したストレージカタログ、プロファイルを作成することができ、物理的なストレージを抽象化するレイヤとなります。</p>
+<p>ネットアップはDynamic provisioningを実現するためのNetApp Tridentというprovisionerを提供しています。</p>
+<p>このレベルではTridentでDynamic provisioningを行い、アプリケーションのデータ永続化を実現します。</p>
+</div>
+<div class="section" id="netapp-trident">
+<h2>NetApp Tridentのインストール<a class="headerlink" href="#netapp-trident" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>Dynamic storage provisioningを実現するためNetApp Tridentを導入します。
+TridentはPodとしてデプロイされ通常のアプリケーションと同様に稼働します。</p>
+</div>
+<div class="section" id="trident">
+<h2>Tridentインストール事前準備<a class="headerlink" href="#trident" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>Trident のインストールでk8sクラスタの管理者権限が必要になります。</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> kubectl auth can-i <span class="s1">&#39;*&#39;</span> <span class="s1">&#39;*&#39;</span> --all-namespaces
+</pre></div>
+</div>
+<p>バックエンドに登録するマネジメントIPにk8sクラスタのコンテナから疎通が取れるかを確認します。</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> kubectl run -i --tty ping --image<span class="o">=</span>busybox --restart<span class="o">=</span>Never --rm --  ping <span class="o">[</span>ipアドレス<span class="o">]</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id4">
+<h2>Tridentインストール<a class="headerlink" href="#id4" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>バイナリをダウンロードしてインストールします。(例はバージョン18.07)
+バックエンドストレージのための <code class="docutils literal notranslate"><span class="pre">setup/backend.json</span></code> を編集します。</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> wget https://github.com/NetApp/trident/releases/download/v18.07.0/trident-installer-18.07.0.tar.gz
+
+<span class="gp">$</span> tar xzf trident*.tar.gz <span class="o">&amp;&amp;</span> <span class="nb">cd</span> trident-installer
+
+<span class="gp">$</span> cp sample-input/backend-ontap-nas.json setup/backend.json
+</pre></div>
+</div>
+<table border="1" class="docutils" id="id11">
+<caption><span class="caption-text">backend.jsonの設定パラメータ (NFS ONTAPバックエンド)</span><a class="headerlink" href="#id11" title="このテーブルへのパーマリンク">¶</a></caption>
+<colgroup>
+<col width="33%" />
+<col width="33%" />
+<col width="33%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">パラメータ名</th>
+<th class="head">説明</th>
+<th class="head">設定内容</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>managementLIF</td>
+<td>ONTAPのクラスタ管理LIFまたはSVM管理LIFを設定</td>
+<td>192.168.XX.200</td>
+</tr>
+<tr class="row-odd"><td>dataLIF</td>
+<td>データ通信LIF</td>
+<td>192.168.XX.200</td>
+</tr>
+<tr class="row-even"><td>svm</td>
+<td>tridentから使用するSVM</td>
+<td>svmXX</td>
+</tr>
+<tr class="row-odd"><td>username/password</td>
+<td>クラスタ管理者またはSVM管理者のクレデンシャル</td>
+<td>SVM管理者を設定: vsadmin/netapp123</td>
+</tr>
+</tbody>
+</table>
+<p>「XX」はユーザ環境番号になります。</p>
+<p>編集後は以下の通りとなります。
+疎通が取れないIPを設定するとtridentデプロイが失敗します。</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> cat setup/backend.json
+
+<span class="go">{</span>
+<span class="go">    &quot;version&quot;: 1,</span>
+<span class="go">    &quot;storageDriverName&quot;: &quot;ontap-nas&quot;,</span>
+<span class="go">    &quot;managementLIF&quot;: &quot;192.168.XX.200&quot;,</span>
+<span class="go">    &quot;dataLIF&quot;: &quot;192.168.XX.200&quot;,</span>
+<span class="go">    &quot;svm&quot;: &quot;svmXX&quot;,</span>
+<span class="go">    &quot;username&quot;: &quot;vsadmin&quot;,</span>
+<span class="go">    &quot;password&quot;: &quot;netapp123&quot;</span>
+<span class="go">}</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">tridentctl</span></code> ユーティリティではドライランモードとデバッグモードがオプションで指定できます。
+２つを設定し、実行すると以下のように必要事項を事前チェックし、その内容をすべて標準出力にプリントします。</p>
+<p>まずは、ドライランモードで実行し問題ないことを確認します。以下の出力結果はユーザ14で実施した場合です。</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> ./tridentctl install --dry-run -n trident -d
+
+<span class="go">DEBU Initialized logging.                          logLevel=debug</span>
+<span class="go">DEBU Running outside a pod, creating CLI-based client.</span>
+<span class="go">DEBU Initialized Kubernetes CLI client.            cli=kubectl flavor=k8s namespace=default version=1.11.0</span>
+<span class="go">DEBU Validated installation environment.           installationNamespace=trident kubernetesVersion=</span>
+<span class="go">DEBU Parsed requested volume size.                 quantity=2Gi</span>
+<span class="go">DEBU Dumping RBAC fields.                          ucpBearerToken= ucpHost= useKubernetesRBAC=true</span>
+<span class="go">DEBU Namespace does not exist.                     namespace=trident</span>
+<span class="go">DEBU PVC does not exist.                           pvc=trident</span>
+<span class="go">DEBU PV does not exist.                            pv=trident</span>
+<span class="go">INFO Starting storage driver.                      backend=/home/localadmin/manifest/trident/trident-installer/setup/backend.json</span>
+<span class="go">DEBU config: {&quot;backendName&quot;:&quot;NFS_ONTAP_Backend&quot;,&quot;dataLIF&quot;:&quot;192.168.14.200&quot;,&quot;managementLIF&quot;:&quot;192.168.14.200&quot;,&quot;password&quot;:&quot;netapp123&quot;,&quot;storageDriverName&quot;:&quot;ontap-nas&quot;,&quot;svm&quot;:&quot;svm14&quot;,&quot;username&quot;:&quot;vsadmin&quot;,&quot;version&quot;:1}</span>
+<span class="go">DEBU Storage prefix is absent, will use default prefix.</span>
+<span class="go">DEBU Parsed commonConfig: {Version:1 StorageDriverName:ontap-nas BackendName:NFS_ONTAP_Backend Debug:false DebugTraceFlags:map[] DisableDelete:false StoragePrefixRaw:[] StoragePrefix:&lt;nil&gt; SerialNumbers:[] DriverContext:}</span>
+<span class="go">DEBU Initializing storage driver.                  driver=ontap-nas</span>
+<span class="go">DEBU Addresses found from ManagementLIF lookup.    addresses=&quot;[192.168.14.200]&quot; hostname=192.168.14.200</span>
+<span class="go">DEBU Using specified SVM.                          SVM=svm14</span>
+<span class="go">DEBU ONTAP API version.                            Ontapi=1.130</span>
+<span class="go">WARN Could not determine controller serial numbers. API status: failed, Reason: Unable to find API: system-node-get-iter, Code: 13005</span>
+<span class="go">DEBU Configuration defaults                        Encryption=false ExportPolicy=default FileSystemType=ext4 NfsMountOptions=&quot;-o nfsvers=3&quot; SecurityStyle=unix Size=1G SnapshotDir=false SnapshotPolicy=none SpaceReserve=none SplitOnClone=false StoragePrefix=trident_ UnixPermissions=---rwxrwxrwx</span>
+<span class="go">DEBU Data LIFs                                     dataLIFs=&quot;[192.168.14.200]&quot;</span>
+<span class="go">DEBU Found NAS LIFs.                               dataLIFs=&quot;[192.168.14.200]&quot;</span>
+<span class="go">DEBU Addresses found from hostname lookup.         addresses=&quot;[192.168.14.200]&quot; hostname=192.168.14.200</span>
+<span class="go">DEBU Found matching Data LIF.                      hostNameAddress=192.168.14.200</span>
+<span class="go">DEBU Configured EMS heartbeat.                     intervalHours=24</span>
+<span class="go">DEBU Read storage pools assigned to SVM.           pools=&quot;[aggr1_01 aggr2_01]&quot; svm=svm14</span>
+<span class="go">DEBU Read aggregate attributes.                    aggregate=aggr1_01 mediaType=ssd</span>
+<span class="go">DEBU Read aggregate attributes.                    aggregate=aggr2_01 mediaType=hdd</span>
+<span class="go">DEBU Storage driver initialized.                   driver=ontap-nas</span>
+<span class="go">INFO Storage driver loaded.                        driver=ontap-nas</span>
+<span class="go">INFO Dry run completed, no problems found.</span>
+</pre></div>
+</div>
+<p>ドライランモードで実施すると最後に問題ない旨(INFO Dry run completed, no problems found.) が表示されれば、インストールに必要な事前要件を満たしていることが確認できます。</p>
+<p>上記の状態まで確認できたら実際にインストールを実施します。</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> ./tridentctl install -n trident -d
+
+<span class="go">DEBU Initialized logging.                          logLevel=debug</span>
+<span class="go">DEBU Running outside a pod, creating CLI-based client.</span>
+<span class="go">DEBU Initialized Kubernetes CLI client.            cli=kubectl flavor=k8s namespace=default version=1.11.0</span>
+<span class="go">DEBU Validated installation environment.           installationNamespace=trident kubernetesVersion=</span>
+<span class="go">DEBU Parsed requested volume size.                 quantity=2Gi</span>
+<span class="go">DEBU Dumping RBAC fields.                          ucpBearerToken= ucpHost= useKubernetesRBAC=true</span>
+<span class="go">DEBU Namespace does not exist.                     namespace=trident</span>
+<span class="go">DEBU PVC does not exist.                           pvc=trident</span>
+<span class="go">DEBU PV does not exist.                            pv=trident</span>
+<span class="go">INFO Starting storage driver.                      backend=/home/localadmin/manifest/trident/trident-installer/setup/backend.json</span>
+<span class="go">DEBU config: {&quot;backendName&quot;:&quot;NFS_ONTAP_Backend&quot;,&quot;dataLIF&quot;:&quot;192.168.14.200&quot;,&quot;managementLIF&quot;:&quot;192.168.14.200&quot;,&quot;password&quot;:&quot;netapp123&quot;,&quot;storageDriverName&quot;:&quot;ontap-nas&quot;,&quot;svm&quot;:&quot;svm14&quot;,&quot;username&quot;:&quot;vsadmin&quot;,&quot;version&quot;:1}</span>
+<span class="go">DEBU Storage prefix is absent, will use default prefix.</span>
+<span class="go">DEBU Parsed commonConfig: {Version:1 StorageDriverName:ontap-nas BackendName:NFS_ONTAP_Backend Debug:false DebugTraceFlags:map[] DisableDelete:false StoragePrefixRaw:[] StoragePrefix:&lt;nil&gt; SerialNumbers:[] DriverContext:}</span>
+<span class="go">DEBU Initializing storage driver.                  driver=ontap-nas</span>
+<span class="go">DEBU Addresses found from ManagementLIF lookup.    addresses=&quot;[192.168.14.200]&quot; hostname=192.168.14.200</span>
+<span class="go">DEBU Using specified SVM.                          SVM=svm14</span>
+<span class="go">DEBU ONTAP API version.                            Ontapi=1.130</span>
+<span class="go">WARN Could not determine controller serial numbers. API status: failed, Reason: Unable to find API: system-node-get-iter, Code: 13005</span>
+<span class="go">DEBU Configuration defaults                        Encryption=false ExportPolicy=default FileSystemType=ext4 NfsMountOptions=&quot;-o nfsvers=3&quot; SecurityStyle=unix Size=1G SnapshotDir=false SnapshotPolicy=none SpaceReserve=none SplitOnClone=false StoragePrefix=trident_ UnixPermissions=---rwxrwxrwx</span>
+<span class="go">DEBU Data LIFs                                     dataLIFs=&quot;[192.168.14.200]&quot;</span>
+<span class="go">DEBU Found NAS LIFs.                               dataLIFs=&quot;[192.168.14.200]&quot;</span>
+<span class="go">DEBU Addresses found from hostname lookup.         addresses=&quot;[192.168.14.200]&quot; hostname=192.168.14.200</span>
+<span class="go">DEBU Found matching Data LIF.                      hostNameAddress=192.168.14.200</span>
+<span class="go">DEBU Configured EMS heartbeat.                     intervalHours=24</span>
+<span class="go">DEBU Read storage pools assigned to SVM.           pools=&quot;[aggr1_01 aggr2_01]&quot; svm=svm14</span>
+<span class="go">DEBU Read aggregate attributes.                    aggregate=aggr1_01 mediaType=ssd</span>
+<span class="go">DEBU Read aggregate attributes.                    aggregate=aggr2_01 mediaType=hdd</span>
+<span class="go">DEBU Storage driver initialized.                   driver=ontap-nas</span>
+<span class="go">INFO Storage driver loaded.                        driver=ontap-nas</span>
+<span class="go">INFO Starting Trident installation.                namespace=trident</span>
+<span class="go">DEBU Created Kubernetes object by YAML.</span>
+<span class="go">INFO Created namespace.                            namespace=trident</span>
+<span class="go">DEBU Deleted Kubernetes object by YAML.</span>
+<span class="go">DEBU Deleted cluster role binding.</span>
+<span class="go">DEBU Deleted Kubernetes object by YAML.</span>
+<span class="go">DEBU Deleted cluster role.</span>
+<span class="go">DEBU Deleted Kubernetes object by YAML.</span>
+<span class="go">DEBU Deleted service account.</span>
+<span class="go">DEBU Created Kubernetes object by YAML.</span>
+<span class="go">INFO Created service account.</span>
+<span class="go">DEBU Created Kubernetes object by YAML.</span>
+<span class="go">INFO Created cluster role.</span>
+<span class="go">DEBU Created Kubernetes object by YAML.</span>
+<span class="go">INFO Created cluster role binding.</span>
+<span class="go">DEBU Created Kubernetes object by YAML.</span>
+<span class="go">INFO Created PVC.</span>
+<span class="go">DEBU Attempting volume create.                     size=2147483648 storagePool=aggr1_01 volConfig.StorageClass=</span>
+<span class="go">DEBU Creating Flexvol.                             aggregate=aggr1_01 encryption=false exportPolicy=default name=trident_trident securityStyle=unix size=2147483648 snapshotDir=false snapshotPolicy=none snapshotReserve=0 spaceReserve=none unixPermissions=---rwxrwxrwx</span>
+<span class="go">DEBU SVM root volume has no load-sharing mirrors.  rootVolume=svm_root</span>
+<span class="go">DEBU Created Kubernetes object by YAML.</span>
+<span class="go">INFO Created PV.                                   pv=trident</span>
+<span class="go">INFO Waiting for PVC to be bound.                  pvc=trident</span>
+<span class="go">DEBU PVC not yet bound, waiting.                   increment=282.430263ms pvc=trident</span>
+<span class="go">DEBU PVC not yet bound, waiting.                   increment=907.038791ms pvc=trident</span>
+<span class="go">DEBU PVC not yet bound, waiting.                   increment=1.497234254s pvc=trident</span>
+<span class="go">DEBU PVC not yet bound, waiting.                   increment=1.182346358s pvc=trident</span>
+<span class="go">DEBU PVC not yet bound, waiting.                   increment=3.794274009s pvc=trident</span>
+<span class="go">DEBU Logged EMS message.                           driver=ontap-nas</span>
+<span class="go">DEBU PVC not yet bound, waiting.                   increment=2.554707984s pvc=trident</span>
+<span class="go">DEBU Created Kubernetes object by YAML.</span>
+<span class="go">INFO Created Trident deployment.</span>
+<span class="go">INFO Waiting for Trident pod to start.</span>
+<span class="go">DEBU Trident pod not yet running, waiting.         increment=481.632837ms</span>
+<span class="go">DEBU Trident pod not yet running, waiting.         increment=848.840617ms</span>
+<span class="go">DEBU Trident pod not yet running, waiting.         increment=1.171028148s</span>
+<span class="go">DEBU Trident pod not yet running, waiting.         increment=871.68468ms</span>
+<span class="go">DEBU Trident pod not yet running, waiting.         increment=2.784723303s</span>
+<span class="go">DEBU Trident pod not yet running, waiting.         increment=3.037298468s</span>
+<span class="go">DEBU Trident pod not yet running, waiting.         increment=7.540652793s</span>
+<span class="go">DEBU Trident pod not yet running, waiting.         increment=12.611925219s</span>
+<span class="go">DEBU Trident pod not yet running, waiting.         increment=18.389729895s</span>
+<span class="go">INFO Trident pod started.                          namespace=trident pod=trident-6946fdf6d8-8cb8q</span>
+<span class="go">INFO Waiting for Trident REST interface.</span>
+<span class="go">DEBU Invoking tunneled command: kubectl exec trident-6946fdf6d8-8cb8q -n trident -c trident-main -- tridentctl -s 127.0.0.1:8000 version -o json</span>
+<span class="go">INFO Trident REST interface is up.                 version=18.07.0</span>
+<span class="go">INFO Trident installation succeeded.</span>
+</pre></div>
+</div>
+<p>「INFO Trident installation succeeded.」が出力されればインストール成功です。</p>
+<p>また、問題が発生した場合には <code class="docutils literal notranslate"><span class="pre">tridentctl</span></code> を使用してtridentに関するログをまとめて確認することが出来ます。</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> ./tridentctl -n trident logs
+
+<span class="go">time=&quot;2018-02-15T03:32:35Z&quot; level=error msg=&quot;API invocation failed. Post https://10.0.1.146/servlets/netapp.servlets.admin.XMLrequest_filer: dial tcp 10.0.1.146:443: getsockopt: connection timed out&quot;</span>
+<span class="go">time=&quot;2018-02-15T03:32:35Z&quot; level=error msg=&quot;Problem initializing storage driver: &#39;ontap-nas&#39; error: Error initializing ontap-nas driver. Could not determine Data ONTAP API version. Could not read ONTAPI version. Post https://10.0.1.146/servlets/netapp.servlets.admin.XMLrequest_filer: dial tcp 10.0.1.146:443: getsockopt: connection timed out&quot; backend= handler=AddBackend</span>
+<span class="go">time=&quot;2018-02-15T03:32:35Z&quot; level=info msg=&quot;API server REST call.&quot; duration=2m10.64501326s method=POST route=AddBackend uri=/trident/v1/backend</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id5">
+<h2>Tridentへバックエンドストレージの登録<a class="headerlink" href="#id5" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>インストールが完了したらtridentのバージョンを確認します。</p>
+<div class="highlight-consile notranslate"><div class="highlight"><pre><span></span>$ ./tridentctl  version -n trident
+
++----------------+----------------+
+| SERVER VERSION | CLIENT VERSION |
++----------------+----------------+
+| 18.07.0        | 18.07.0        |
++----------------+----------------+
+</pre></div>
+</div>
+<p>バージョンが表示されていればインストール成功です。
+作成した定義ファイル、 <code class="docutils literal notranslate"><span class="pre">setup/backend.json</span></code> を使用し、バックエンド登録を実行します。
+まずは NFS ストレージバックエンドであるONTAPを登録します。</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> ./tridentctl -n trident create backend -f setup/backend.json
+
+<span class="go">+-------------------+----------------+--------+---------+</span>
+<span class="go">|       NAME        | STORAGE DRIVER | ONLINE | VOLUMES |</span>
+<span class="go">+-------------------+----------------+--------+---------+</span>
+<span class="go">| NFS_ONTAP_Backend | ontap-nas      | true   |       0 |</span>
+<span class="go">+-------------------+----------------+--------+---------+</span>
+</pre></div>
+</div>
+<p>つづいて、iSCSI ブロック・ストレージバックエンドのSolidFireを登録します。</p>
+<p>NFSバックエンドストレージと同様に <code class="docutils literal notranslate"><span class="pre">setup</span></code> ディレクトリに <code class="docutils literal notranslate"><span class="pre">solidfire-backend.json</span></code> を作成します。</p>
+<p>基本的な設定項目としては以下の表の通りです。</p>
+<table border="1" class="docutils" id="id12">
+<caption><span class="caption-text">solidfire-backend.jsonの設定パラメータ (iSCSI SolidFire バックエンド)</span><a class="headerlink" href="#id12" title="このテーブルへのパーマリンク">¶</a></caption>
+<colgroup>
+<col width="33%" />
+<col width="33%" />
+<col width="33%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">パラメータ名</th>
+<th class="head">説明</th>
+<th class="head">設定内容</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Endpoint</td>
+<td>SolidFire の管理用IPを設定(MVIP)、URL先頭にユーザーIDとパスワードを付与</td>
+<td>10.128.223.240</td>
+</tr>
+<tr class="row-odd"><td>SVIP</td>
+<td>データ通信のIPを設定（クラスタで１つ）</td>
+<td>192.168.0.240:3260</td>
+</tr>
+<tr class="row-even"><td>TenantName</td>
+<td>任意の名称を設定、SolidFire側でのテナントとなる。</td>
+<td>今回は環境番号とする(userXX)</td>
+</tr>
+<tr class="row-odd"><td>Types</td>
+<td>ストレージカタログとしてのQoSのリストを指定</td>
+<td>1つ以上のminIOPS, maxIOPS, burstIOPSを指定</td>
+</tr>
+</tbody>
+</table>
+<p>テンプレートとなるSolidFireのバックエンド定義ファイルは以下の通りです。</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="nt">&quot;version&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="nt">&quot;storageDriverName&quot;</span><span class="p">:</span> <span class="s2">&quot;solidfire-san&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;Endpoint&quot;</span><span class="p">:</span> <span class="s2">&quot;https://ユーザ名:パスワード@マネジメント用IP/json-rpc/8.0&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;SVIP&quot;</span><span class="p">:</span> <span class="s2">&quot;ストレージアクセス用IP:3260&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;TenantName&quot;</span><span class="p">:</span> <span class="s2">&quot;ユーザ環境番号&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;backendName&quot;</span><span class="p">:</span> <span class="s2">&quot;iSCSI_SF_Backend&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;InitiatorIFace&quot;</span><span class="p">:</span> <span class="s2">&quot;default&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;UseCHAP&quot;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+    <span class="nt">&quot;Types&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">{</span>
+            <span class="nt">&quot;Type&quot;</span><span class="p">:</span> <span class="s2">&quot;Bronze&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;Qos&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="nt">&quot;minIOPS&quot;</span><span class="p">:</span> <span class="mi">1000</span><span class="p">,</span>
+                <span class="nt">&quot;maxIOPS&quot;</span><span class="p">:</span> <span class="mi">3999</span><span class="p">,</span>
+                <span class="nt">&quot;burstIOPS&quot;</span><span class="p">:</span> <span class="mi">4500</span>
+            <span class="p">}</span>
+        <span class="p">},</span>
+        <span class="p">{</span>
+            <span class="nt">&quot;Type&quot;</span><span class="p">:</span> <span class="s2">&quot;Silver&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;Qos&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="nt">&quot;minIOPS&quot;</span><span class="p">:</span> <span class="mi">4000</span><span class="p">,</span>
+                <span class="nt">&quot;maxIOPS&quot;</span><span class="p">:</span> <span class="mi">5999</span><span class="p">,</span>
+                <span class="nt">&quot;burstIOPS&quot;</span><span class="p">:</span> <span class="mi">6500</span>
+            <span class="p">}</span>
+        <span class="p">},</span>
+        <span class="p">{</span>
+            <span class="nt">&quot;Type&quot;</span><span class="p">:</span> <span class="s2">&quot;Gold&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;Qos&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="nt">&quot;minIOPS&quot;</span><span class="p">:</span> <span class="mi">6000</span><span class="p">,</span>
+                <span class="nt">&quot;maxIOPS&quot;</span><span class="p">:</span> <span class="mi">8000</span><span class="p">,</span>
+                <span class="nt">&quot;burstIOPS&quot;</span><span class="p">:</span> <span class="mi">10000</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>同様にバックエンド登録を実施します。</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> ./tridentctl -n trident create backend -f setup/solidfire-backend.json
+
+<span class="go">+------------------+----------------+--------+---------+</span>
+<span class="go">|       NAME       | STORAGE DRIVER | ONLINE | VOLUMES |</span>
+<span class="go">+------------------+----------------+--------+---------+</span>
+<span class="go">| iSCSI_SF_Backend | solidfire-san  | true   |       0 |</span>
+<span class="go">+------------------+----------------+--------+---------+</span>
+</pre></div>
+</div>
+<p>今までに登録したストレージバックエンドを確認します。</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> ./tridentctl get backend -n trident
+
+<span class="go">+-------------------+----------------+--------+---------+</span>
+<span class="go">|       NAME        | STORAGE DRIVER | ONLINE | VOLUMES |</span>
+<span class="go">+-------------------+----------------+--------+---------+</span>
+<span class="go">| NFS_ONTAP_Backend | ontap-nas      | true   |       0 |</span>
+<span class="go">| iSCSI_SF_Backend  | solidfire-san  | true   |       0 |</span>
+<span class="go">+-------------------+----------------+--------+---------+</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">注釈</p>
+<p><code class="docutils literal notranslate"><span class="pre">tridentctl</span></code> ユーティリティにはアンインストール用のサブコマンドがあります。</p>
+<p>以下のように <code class="docutils literal notranslate"><span class="pre">-a</span></code> オプションを付与して実行すると生成した管理用のetcdのデータなどすべてを削除した上でアンインストールします。
+インストール実行時に失敗したときなど、クリーンに再インストールしたい場合に使います。</p>
+<div class="last highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> ./tridentctl uninstall -n trident -a
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="storageclass">
+<h2>StorageClassの定義<a class="headerlink" href="#storageclass" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>StorageClassを定義して、ストレージのサービスカタログを作りましょう。</p>
+<p>Trident v18.07 ではStorageClassを作成するときに以下の属性を設定できます。
+これらの属性のパラメータを組み合わせてストレージサービスをデザインします。</p>
+<table border="1" class="docutils" id="id13">
+<caption><span class="caption-text">StorageClass の parameters に設定可能な属性</span><a class="headerlink" href="#id13" title="このテーブルへのパーマリンク">¶</a></caption>
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">設定可能な属性</th>
+<th class="head">例</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>性能に関する属性</td>
+<td>メデイアタイプ(hdd, hybrid, ssd)、プロビジョニングのタイプ（シン、シック)、IOPS</td>
+</tr>
+<tr class="row-odd"><td>データ保護・管理に関する属性</td>
+<td>スナップショット有無、クローニング有効化、暗号化の有効化</td>
+</tr>
+<tr class="row-even"><td>バックエンドのストレージプラットフォーム属性</td>
+<td>ontap-nas, ontap-nas-economy, ontap-nas-flexgroup, ontap-san, solidfire-san, eseries-iscsi</td>
+</tr>
+</tbody>
+</table>
+<p>全てのパラメータ設定については以下のURLに記載があります。</p>
+<ul class="simple">
+<li><a class="reference external" href="https://netapp-trident.readthedocs.io/en/stable-v18.07/kubernetes/concepts/objects.html#kubernetes-storageclass-objects">https://netapp-trident.readthedocs.io/en/stable-v18.07/kubernetes/concepts/objects.html#kubernetes-storageclass-objects</a></li>
+</ul>
+<div class="section" id="nfsontapstorageclass">
+<h3>NFSバックエンドのONTAPでのStorageClass<a class="headerlink" href="#nfsontapstorageclass" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<p>ストレージ構成は以下の通りです。
+今回、意識する必要があるところは異なるメディアタイプ(HDDとSSD)のアグリゲートを保有しているところです。</p>
+<ul>
+<li><p class="first">各SVMにHDD, SSDのアグリゲートを割り当て済み</p>
+<blockquote>
+<div><ul class="simple">
+<li>aggr1_01:SSDのアグリゲート</li>
+<li>aggr2_01:HDDのアグリゲート</li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+<p>以下のようなイメージでStoageClassを作成しましょう。</p>
+<ul class="simple">
+<li>DB 用の高速領域: SSD を使ったストレージサービス</li>
+<li>Web コンテンツ用のリポジトリ: HDDを使ったストレージサービス</li>
+</ul>
+<p>以下は上記の「DB 用の高速領域」のStorageClass作成方法のサンプルです。</p>
+<div class="literal-block-wrapper docutils container" id="id14">
+<div class="code-block-caption"><span class="caption-text">高速ストレージ用のマニフェストファイル例 StorageClassFastest.yml</span><a class="headerlink" href="#id14" title="このコードへのパーマリンク">¶</a></div>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">apiVersion</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">storage.k8s.io/v1</span>
+<span class="l l-Scalar l-Scalar-Plain">kind</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">StorageClass</span>
+<span class="l l-Scalar l-Scalar-Plain">metadata</span><span class="p p-Indicator">:</span>
+  <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">ontap-gold</span>
+<span class="l l-Scalar l-Scalar-Plain">provisioner</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">netapp.io/trident</span>
+<span class="l l-Scalar l-Scalar-Plain">parameters</span><span class="p p-Indicator">:</span>
+  <span class="l l-Scalar l-Scalar-Plain">backendType</span><span class="p p-Indicator">:</span> <span class="s">&quot;ontap-nas&quot;</span>
+  <span class="l l-Scalar l-Scalar-Plain">media</span><span class="p p-Indicator">:</span> <span class="s">&quot;ssd&quot;</span>
+  <span class="l l-Scalar l-Scalar-Plain">provisioningType</span><span class="p p-Indicator">:</span> <span class="s">&quot;thin&quot;</span>
+  <span class="l l-Scalar l-Scalar-Plain">snapshots</span><span class="p p-Indicator">:</span> <span class="s">&quot;true&quot;</span>
+</pre></div>
+</div>
+</div>
+<p>ストレージクラスを作成します。</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> kubectl create -f StorageClassFastest.yml
+
+<span class="go">storageclass &quot;ontap-gold&quot; created</span>
+
+<span class="gp">$</span> kubectl get sc
+
+<span class="go">NAME         PROVISIONER         AGE</span>
+<span class="go">ontap-gold   netapp.io/trident   10s</span>
+</pre></div>
+</div>
+<p>同様にブロックデバイスバックエンドとして設定したSolidFireに対応するStorageClassを作成します。</p>
+<p>バックエンド登録時に３つの性能別のQoSを作成しました。</p>
+<p>それぞれに該当するStoageClassを作成します。StorageClassで指定されたIOPSを実現できるバックエンドのQoSがボリューム作成時に自動設定されます。</p>
+<div class="literal-block-wrapper docutils container" id="id15">
+<div class="code-block-caption"><span class="caption-text">1000IOPSの性能が出せるStorageClass</span><a class="headerlink" href="#id15" title="このコードへのパーマリンク">¶</a></div>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">apiVersion</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">storage.k8s.io/v1</span>
+<span class="l l-Scalar l-Scalar-Plain">kind</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">StorageClass</span>
+<span class="l l-Scalar l-Scalar-Plain">metadata</span><span class="p p-Indicator">:</span>
+  <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">solidfire-bronze</span>
+<span class="l l-Scalar l-Scalar-Plain">provisioner</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">netapp.io/trident</span>
+<span class="l l-Scalar l-Scalar-Plain">parameters</span><span class="p p-Indicator">:</span>
+  <span class="l l-Scalar l-Scalar-Plain">backendType</span><span class="p p-Indicator">:</span> <span class="s">&quot;solidfire-san&quot;</span>
+  <span class="l l-Scalar l-Scalar-Plain">IOPS</span><span class="p p-Indicator">:</span> <span class="s">&quot;1500&quot;</span>
+  <span class="l l-Scalar l-Scalar-Plain">fsType</span><span class="p p-Indicator">:</span> <span class="s">&quot;ext4&quot;</span>
+</pre></div>
+</div>
+</div>
+<div class="literal-block-wrapper docutils container" id="id16">
+<div class="code-block-caption"><span class="caption-text">4000IOPSの性能が出せるStoageClass</span><a class="headerlink" href="#id16" title="このコードへのパーマリンク">¶</a></div>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">apiVersion</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">storage.k8s.io/v1</span>
+<span class="l l-Scalar l-Scalar-Plain">kind</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">StorageClass</span>
+<span class="l l-Scalar l-Scalar-Plain">metadata</span><span class="p p-Indicator">:</span>
+  <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">solidfire-silver</span>
+<span class="l l-Scalar l-Scalar-Plain">provisioner</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">netapp.io/trident</span>
+<span class="l l-Scalar l-Scalar-Plain">parameters</span><span class="p p-Indicator">:</span>
+  <span class="l l-Scalar l-Scalar-Plain">backendType</span><span class="p p-Indicator">:</span> <span class="s">&quot;solidfire-san&quot;</span>
+  <span class="l l-Scalar l-Scalar-Plain">IOPS</span><span class="p p-Indicator">:</span> <span class="s">&quot;4000&quot;</span>
+  <span class="l l-Scalar l-Scalar-Plain">fsType</span><span class="p p-Indicator">:</span> <span class="s">&quot;ext4&quot;</span>
+</pre></div>
+</div>
+</div>
+<div class="literal-block-wrapper docutils container" id="id17">
+<div class="code-block-caption"><span class="caption-text">8000IOPSの性能が出せるStoageClass</span><a class="headerlink" href="#id17" title="このコードへのパーマリンク">¶</a></div>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">apiVersion</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">storage.k8s.io/v1</span>
+<span class="l l-Scalar l-Scalar-Plain">kind</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">StorageClass</span>
+<span class="l l-Scalar l-Scalar-Plain">metadata</span><span class="p p-Indicator">:</span>
+  <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">solidfire-gold</span>
+<span class="l l-Scalar l-Scalar-Plain">provisioner</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">netapp.io/trident</span>
+<span class="l l-Scalar l-Scalar-Plain">parameters</span><span class="p p-Indicator">:</span>
+  <span class="l l-Scalar l-Scalar-Plain">backendType</span><span class="p p-Indicator">:</span> <span class="s">&quot;solidfire-san&quot;</span>
+  <span class="l l-Scalar l-Scalar-Plain">IOPS</span><span class="p p-Indicator">:</span> <span class="s">&quot;8000&quot;</span>
+  <span class="l l-Scalar l-Scalar-Plain">fsType</span><span class="p p-Indicator">:</span> <span class="s">&quot;ext4&quot;</span>
+</pre></div>
+</div>
+</div>
+<p>以降のセクションではここまでで作成したStorageClassを適切に使い分けてすすめましょう。</p>
+<div class="admonition note">
+<p class="first admonition-title">注釈</p>
+<p>デフォルトのStorageClassの設定</p>
+<p>StorageClassは記載がないときに使用するStorageClassを指定できます。</p>
+<div class="last highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">kubectl patch storageclass ストレージクラス名 -p &#39;{&quot;metadata&quot;: {&quot;annotations&quot;:{&quot;storageclass.kubernetes.io/is-default-class&quot;:&quot;true&quot;}}}&#39;</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="persistent-volume-claim">
+<h2>Persistent Volume Claimの作成<a class="headerlink" href="#persistent-volume-claim" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>アプリケーションで必要とされる永続化領域の定義をします。
+PVCを作成時に独自の機能を有効化することができます。</p>
+<p>データの保管ポリシー、データ保護ポリシー、SnapShotの取得ポリシー、クローニングの有効化、暗号化の有効化などを設定できます。</p>
+<p>一覧については以下のURLに記載があります。
+<code class="docutils literal notranslate"><span class="pre">metadata.annotation</span></code> 配下に記述することで様々な機能を使用することが可能となります。</p>
+<ul class="simple">
+<li><a class="reference external" href="https://netapp-trident.readthedocs.io/en/stable-v18.07/kubernetes/concepts/objects.html#kubernetes-persistentvolumeclaim-objects">https://netapp-trident.readthedocs.io/en/stable-v18.07/kubernetes/concepts/objects.html#kubernetes-persistentvolumeclaim-objects</a></li>
+</ul>
+</div>
+<div class="section" id="pvc">
+<h2>デプロイ用のマニフェストファイルにPVCを追加<a class="headerlink" href="#pvc" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>Level1で作成したマニフェストファイルにPVCの項目を追加し、ダイナミックプロビジョニングを使用しデータを永続化出来るアプリケーションを定義します。</p>
+<div class="literal-block-wrapper docutils container" id="id18">
+<div class="code-block-caption"><span class="caption-text">高速ストレージ用の定義ファイルの例 PVCFastest.yml</span><a class="headerlink" href="#id18" title="このコードへのパーマリンク">¶</a></div>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">apiVersion</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">v1</span>
+<span class="l l-Scalar l-Scalar-Plain">kind</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">PersistentVolumeClaim</span>
+<span class="l l-Scalar l-Scalar-Plain">metadata</span><span class="p p-Indicator">:</span>
+  <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">sample-pv-claim</span>
+  <span class="l l-Scalar l-Scalar-Plain">labels</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">app</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">アプリケーション名</span>
+  <span class="l l-Scalar l-Scalar-Plain">annotations</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">trident.netapp.io/reclaimPolicy</span><span class="p p-Indicator">:</span> <span class="s">&quot;Retain&quot;</span>
+    <span class="l l-Scalar l-Scalar-Plain">trident.netapp.io/exportPolicy</span><span class="p p-Indicator">:</span> <span class="s">&quot;default&quot;</span>
+<span class="l l-Scalar l-Scalar-Plain">spec</span><span class="p p-Indicator">:</span>
+  <span class="l l-Scalar l-Scalar-Plain">accessModes</span><span class="p p-Indicator">:</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">ReadWriteOnce</span>
+  <span class="l l-Scalar l-Scalar-Plain">resources</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">requests</span><span class="p p-Indicator">:</span>
+      <span class="l l-Scalar l-Scalar-Plain">storage</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">20Gi</span>
+  <span class="l l-Scalar l-Scalar-Plain">storageClassName</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">ontap-gold</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="id6">
+<h2>デプロイメント実施<a class="headerlink" href="#id6" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>上記のPVCの設定が終わったら再度アプリケーションをデプロイします。</p>
+<p>その後、アプリケーションからデータを保存するようオペレーションを行います。
+WordPressであれば記事を投稿することで簡単に確認ができます。</p>
+</div>
+<div class="section" id="id7">
+<h2>アプリケーションの停止・起動<a class="headerlink" href="#id7" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>永続化されていることを確認するため、一度アプリケーションを停止します。</p>
+<p>Deploymentで必要となるポッドは起動するような設定になっているため、
+簡単にアプリケーションの停止・起動を行う方法として <code class="docutils literal notranslate"><span class="pre">Deployment</span></code> 配下の <code class="docutils literal notranslate"><span class="pre">Pod</span></code> を削除する方法がとれます。</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> kubectl delete pod -l <span class="s2">&quot;ラベル名&quot;</span>
+
+<span class="gp">$</span> kubectl get deploy
+</pre></div>
+</div>
+<p>実行例は以下の通りです。</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> kubectl delete pod -l <span class="nv">app</span><span class="o">=</span>wordpress
+
+<span class="go">pod &quot;wordpress-5bc75fd7bd-kzc5l&quot; deleted</span>
+<span class="go">pod &quot;wordpress-mysql-565494758-jjdl4&quot; deleted</span>
+
+<span class="gp">$</span> kubectl get deploy
+
+<span class="go">NAME              DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE</span>
+<span class="go">wordpress         1         1         1            0           31d</span>
+<span class="go">wordpress-mysql   1         1         1            0           31d</span>
+</pre></div>
+</div>
+<p>DeploymentによってPodの起動数は管理されるため新たにPodが起動します。
+<code class="docutils literal notranslate"><span class="pre">AVAILABLE</span></code> の数が正常になるまで待ちましょう。</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> kubectl get deploy
+
+<span class="go">NAME              DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE</span>
+<span class="go">wordpress         1         1         1            1           31d</span>
+<span class="go">wordpress-mysql   1         1         1            1           31d</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id8">
+<h2>再デプロイメント後の確認<a class="headerlink" href="#id8" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>再起動したPodに対して永続化されたデータが使用されていることを確認します。
+2つの視点から確認したいと思います。</p>
+<ol class="arabic simple">
+<li>アプリケーションであれば再度ログインして保存したデータを確認します。</li>
+<li>バックエンドストレージに動的にボリュームが作成されていることを確認します。</li>
+</ol>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> ssh vsadmin@192.168.XX.20 vol show
+
+<span class="go">Password:</span>
+<span class="go">Vserver   Volume       Aggregate    State      Type       Size  Available Used%</span>
+<span class="go">--------- ------------ ------------ ---------- ---- ---------- ---------- -----</span>
+<span class="go">tridentsvm root        aggr1        online     RW          1GB    972.2MB    5%</span>
+<span class="go">tridentsvm trident_trident aggr1    online     RW       1.86GB     1.77GB    5%</span>
+<span class="go">tridentsvm trident_trident_basic_f4048 aggr1 online RW     1GB    972.4MB    5%</span>
+<span class="go">3 entries were displayed.</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="trident-fast-cloning">
+<h2>Tridentの特徴的な機能: Fast Cloning<a class="headerlink" href="#trident-fast-cloning" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>Tridentには特徴的な機能であるクローニングの機能が存在します。</p>
+<p><strong>巨大なボリュームでも容量消費せずに超高速にデータをコピーする</strong> クローニングテクノロジーがkubernetesでも使用可能となります。</p>
+<p>ユーザーが既存のボリュームを複製することによって新しいボリュームをプロビジョニングできる機能を提供しています。
+PVCアノテーションである、<code class="docutils literal notranslate"><span class="pre">trident.netapp.io/cloneFromPVC</span></code> を介してクローン機能を利用できます。</p>
+<p>引数にPVC名を指定します。</p>
+<div class="literal-block-wrapper docutils container" id="id19">
+<div class="code-block-caption"><span class="caption-text">クローニングのマニフェストファイルの例 pvccloning.yml</span><a class="headerlink" href="#id19" title="このコードへのパーマリンク">¶</a></div>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">kind</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">PersistentVolumeClaim</span>
+<span class="l l-Scalar l-Scalar-Plain">apiVersion</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">v1</span>
+<span class="l l-Scalar l-Scalar-Plain">metadata</span><span class="p p-Indicator">:</span>
+  <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">basicclone</span>
+  <span class="l l-Scalar l-Scalar-Plain">annotations</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">trident.netapp.io/cloneFromPVC</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">database (&lt;-ここにクローンしたい既存のPVC名(ボリューム名）を記述）</span>
+<span class="l l-Scalar l-Scalar-Plain">spec</span><span class="p p-Indicator">:</span>
+  <span class="l l-Scalar l-Scalar-Plain">accessModes</span><span class="p p-Indicator">:</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">ReadWriteOnce</span>
+  <span class="l l-Scalar l-Scalar-Plain">resources</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">requests</span><span class="p p-Indicator">:</span>
+      <span class="l l-Scalar l-Scalar-Plain">storage</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">20Gi</span>
+  <span class="l l-Scalar l-Scalar-Plain">storageClassName</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">ontap-gold</span>
+</pre></div>
+</div>
+</div>
+<p>ここではサンプルでPVC Cloning を活用したOracle Databaseを複数デプロイするデモ動画をご覧ください。</p>
+<iframe width="760" height="500" src="https://www.youtube.com/embed/6X7p8_G9ucY" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe><div class="section" id="id9">
+<h3>クローニング技術によって実現可能なこと<a class="headerlink" href="#id9" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<p>クローニング技術はシンプルですが非常に多く用途で使用することができます。
+例としてあげられるのが以下の用途です。</p>
+<ul class="simple">
+<li>プレビルド環境の高速展開</li>
+<li>本番環境に影響せずに大規模な並列テスト</li>
+<li>運用時のデータリストアの高速化、瞬時に論理障害を戻す</li>
+</ul>
+</div>
+</div>
+<div class="section" id="trident18-07-csi-container-storage-interface">
+<h2>Tridentの18.07でのアップデート: CSI (Container Storage Interface)への対応<a class="headerlink" href="#trident18-07-csi-container-storage-interface" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>最新のTridentではCSIモードでのデプロイが可能となっています。(インストール時に <code class="docutils literal notranslate"><span class="pre">--csi</span></code> を付与する）
+CSIは仕様自体がまだαステージということもあり実験的なモードですが、いち早くCSIをお試しいただくことが可能となっています。</p>
+<ul class="simple">
+<li>Trident CSI モードでの動作：<a class="reference external" href="https://netapp-trident.readthedocs.io/en/latest/kubernetes/trident-csi.html">https://netapp-trident.readthedocs.io/en/latest/kubernetes/trident-csi.html</a></li>
+<li>Trident CSI に書かれた記事: <a class="reference external" href="https://netapp.io/2018/07/03/netapp-trident-and-the-csi-oh-my/">https://netapp.io/2018/07/03/netapp-trident-and-the-csi-oh-my/</a></li>
+</ul>
+<p>CSI自体についてはこちら
+- <a class="reference external" href="https://kubernetes.io/blog/2018/01/introducing-container-storage-interface/">https://kubernetes.io/blog/2018/01/introducing-container-storage-interface/</a></p>
+<div class="admonition note">
+<p class="first admonition-title">注釈</p>
+<p class="last">理論的にはCSIの仕様でドライバを実装すれば、そのドライバはkubernetes、Mesos, Docker, Cloud Foundryなど
+CSIを実装したコンテナオーケストレーターから使用できるようになります。</p>
+</div>
+</div>
+<div class="section" id="id10">
+<h2>まとめ<a class="headerlink" href="#id10" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>アプリケーションに対して動的に永続化領域をプロビジョニングしデータの永続化を実現しました。</p>
+<p>今回はStorageClassの作成からアプリケーションにPersistentVolumeを割り当てるところまでを一連の流れで実現しました。</p>
+<p>運用を考えた場合、それぞれのコンポーネントで担当が異なるため以下のような分担になるかと思います。</p>
+<blockquote>
+<div><ul class="simple">
+<li>StorageClassの作成: インフラ・kubernetesクラスタの管理者</li>
+<li>PersistentVolumeClaimの作成: アプリケーション開発者</li>
+</ul>
+</div></blockquote>
+<p>今後障害時の動作が気になると思いますが、 <a class="reference internal" href="../Level4/index.html"><span class="doc">Level 4: 運用編</span></a> での検討事項とします。</p>
+<p>ここまでで Level2 は終了です。</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../Level3/index.html" class="btn btn-neutral float-right" title="Level 3: CI／CDパイプラインを構築" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../Level1/index.html" class="btn btn-neutral" title="Level 1: アプリケーションをコンテナ化する" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, NetApp.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'18.08 NDX vol2',
+            LANGUAGE:'ja',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="../_static/translations.js"></script>
+
+  
+
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

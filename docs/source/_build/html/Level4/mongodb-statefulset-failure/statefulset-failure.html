@@ -1,0 +1,304 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="ja" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="ja" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Statefulset を使った障害時の動作 &mdash; NetApp Digital Transformation Lab 18.08 NDX vol2 ドキュメント</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/custom-width.css" type="text/css" />
+    <link rel="index" title="索引" href="../../genindex.html" />
+    <link rel="search" title="検索" href="../../search.html" /> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> NetApp Digital Transformation Lab
+          
+
+          
+            
+            <img src="../../_static/netapp_logo.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                18.08
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../Level0/index.html">Level 0: 環境の確認・基本操作</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Level1/index.html">Level 1: アプリケーションをコンテナ化する</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Level2/index.html">Level 2: ステートフルコンテナの実現</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Level3/index.html">Level 3: CI／CDパイプラインを構築</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Level 4: 運用編</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Level5/index.html">Level 5: Microservice化</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../others/cmdreferences.html">コマンドリファレンス</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../others/terms.html">用語集</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../others/references.html">References</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ingress/ingress.html">Ingressを導入</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../others/installed.html">Installed apps</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../others/todos.html">ToDos</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../others/design.html">Design: kubernetes クラスタの設計要素について</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">NetApp Digital Transformation Lab</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+      <li>Statefulset を使った障害時の動作</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/Level4/mongodb-statefulset-failure/statefulset-failure.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="statefulset">
+<h1>Statefulset を使った障害時の動作<a class="headerlink" href="#statefulset" title="このヘッドラインへのパーマリンク">¶</a></h1>
+<div class="section" id="mongodb-pod">
+<h2>MongoDBを使って確認 Pod停止時の動作<a class="headerlink" href="#mongodb-pod" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>Helmを使ってmongodbをデプロイします。
+今回はreplicaを作ることを想定し、<code class="docutils literal notranslate"><span class="pre">replicaset</span></code> を使い、ストレージをダイナミックにプロビジョニングするようにします。</p>
+<p>Helm を使いmongodbをデプロイします。</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> helm install --name mongodb --namespace mongo-replica -f values.yaml stable/mongodb-replicaset --debug
+</pre></div>
+</div>
+<p>ノード障害が発生し、別のポッドが上がった場合にもデータが永続化されていることを確認する。
+確認のためのテストデータを投入します。</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> kubectl <span class="nb">exec</span> mongodb-mongodb-replicaset-0 -- mongo --eval<span class="o">=</span><span class="s2">&quot;printjson(db.test.insert({key1: &#39;trident fail test&#39;}))&quot;</span>
+</pre></div>
+</div>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> kubectl <span class="nb">exec</span> mongodb-mongodb-replicaset-0 -n mongo-replica -- mongo --eval<span class="o">=</span><span class="s2">&quot;printjson(db.test.insert({key1: &#39;trident fail test&#39;}))&quot;</span>
+
+<span class="go">MongoDB shell version v3.6.6</span>
+<span class="go">connecting to: mongodb://127.0.0.1:27017</span>
+<span class="go">MongoDB server version: 3.6.6</span>
+<span class="go">{ &quot;nInserted&quot; : 1 }</span>
+</pre></div>
+</div>
+<p>値を確認します。</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> kubectl <span class="nb">exec</span> mongodb-mongodb-replicaset-0 -n mongo-replica -- mongo --eval<span class="o">=</span><span class="s2">&quot;rs.slaveOk(); db.test.find({key1:{\$exists:true}}).forEach(printjson)&quot;</span>
+
+<span class="go">MongoDB shell version v3.6.6</span>
+<span class="go">connecting to: mongodb://127.0.0.1:27017</span>
+<span class="go">MongoDB server version: 3.6.6</span>
+<span class="go">{</span>
+<span class="go">        &quot;_id&quot; : ObjectId(&quot;5b5b0d43e521f72e61cf2f9f&quot;),</span>
+<span class="go">        &quot;key1&quot; : &quot;trident fail test&quot;</span>
+<span class="go">}</span>
+</pre></div>
+</div>
+<p>Podを停止させ、別ノードで起動することを確認します。</p>
+<p>まずは起動状態を確認し、それぞれのPodがどのノードで稼働しているかを確認します。</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">mongodb-mongodb-replicaset-0   1/1       Running   0          5m        10.244.3.6   node2              │</span>
+<span class="go">mongodb-mongodb-replicaset-1   1/1       Running   0          5m        10.244.4.8   node3              │</span>
+<span class="go">mongodb-mongodb-replicaset-2   1/1       Running   0          4m        10.244.1.5   node0</span>
+</pre></div>
+</div>
+<p>ラベルを使って対象のPodをすべて削除します。</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> kubectl delete po -l <span class="s2">&quot;app=mongodb-replicaset,release=mongodb&quot;</span> -n mongo-replica
+<span class="go">pod &quot;mongodb-mongodb-replicaset-0&quot; deleted</span>
+<span class="go">pod &quot;mongodb-mongodb-replicaset-1&quot; deleted</span>
+<span class="go">pod &quot;mongodb-mongodb-replicaset-2&quot; deleted</span>
+</pre></div>
+</div>
+<p>起動確認後、すべてのPodが別ノードで起動していることを確認します。</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> kubectl get po -n mongo-replica -o wide
+
+<span class="go">NAME                           READY     STATUS    RESTARTS   AGE       IP           NODE</span>
+<span class="go">mongodb-mongodb-replicaset-0   1/1       Running   0          2m        10.244.4.9   node3</span>
+<span class="go">mongodb-mongodb-replicaset-1   1/1       Running   0          1m        10.244.3.7   node2</span>
+<span class="go">mongodb-mongodb-replicaset-2   1/1       Running   0          1m        10.244.2.6   node1</span>
+</pre></div>
+</div>
+<p>テスト前に保存したデータベースの値を確認します。</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> kubectl <span class="nb">exec</span> mongodb-mongodb-replicaset-0 -n mongo-replica -- mongo --eval<span class="o">=</span><span class="s2">&quot;rs.slaveOk(); db.test.find({key1:{\$exists:true}}).forEach(printjson)&quot;</span>
+
+<span class="go">MongoDB shell version v3.6.6</span>
+<span class="go">connecting to: mongodb://127.0.0.1:27017</span>
+<span class="go">MongoDB server version: 3.6.6</span>
+<span class="go">{</span>
+<span class="go">        &quot;_id&quot; : ObjectId(&quot;5b5b0d43e521f72e61cf2f9f&quot;),</span>
+<span class="go">        &quot;key1&quot; : &quot;trident fail test&quot;</span>
+<span class="go">}</span>
+</pre></div>
+</div>
+<p>ポッドが削除され、再作成されたあとでもデータは永続化している状態を確認できました。</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, NetApp.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'18.08 NDX vol2',
+            LANGUAGE:'ja',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../_static/translations.js"></script>
+
+  
+
+  <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

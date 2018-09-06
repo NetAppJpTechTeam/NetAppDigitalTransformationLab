@@ -1,0 +1,424 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="ja" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="ja" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>NetApp Digital Transformation Lab (NDX) (formerly Data Technology Lab Guide) &mdash; NetApp Digital Transformation Lab 18.08 NDX vol2 ドキュメント</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/custom-width.css" type="text/css" />
+    <link rel="index" title="索引" href="genindex.html" />
+    <link rel="search" title="検索" href="search.html" />
+    <link rel="next" title="Level 0: 環境の確認・基本操作" href="Level0/index.html" /> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="#" class="icon icon-home"> NetApp Digital Transformation Lab
+          
+
+          
+            
+            <img src="_static/netapp_logo.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                18.08
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="Level0/index.html">Level 0: 環境の確認・基本操作</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Level1/index.html">Level 1: アプリケーションをコンテナ化する</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Level2/index.html">Level 2: ステートフルコンテナの実現</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Level3/index.html">Level 3: CI／CDパイプラインを構築</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Level4/index.html">Level 4: 運用編</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Level5/index.html">Level 5: Microservice化</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="others/cmdreferences.html">コマンドリファレンス</a></li>
+<li class="toctree-l1"><a class="reference internal" href="others/terms.html">用語集</a></li>
+<li class="toctree-l1"><a class="reference internal" href="others/references.html">References</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Level4/ingress/ingress.html">Ingressを導入</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="others/installed.html">Installed apps</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="others/todos.html">ToDos</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="others/design.html">Design: kubernetes クラスタの設計要素について</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">NetApp Digital Transformation Lab</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="#">Docs</a> &raquo;</li>
+        
+      <li>NetApp Digital Transformation Lab (NDX) (formerly Data Technology Lab Guide)</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="netapp-digital-transformation-lab-ndx-formerly-data-technology-lab-guide">
+<h1>NetApp Digital Transformation Lab (NDX) (formerly Data Technology Lab Guide)<a class="headerlink" href="#netapp-digital-transformation-lab-ndx-formerly-data-technology-lab-guide" title="このヘッドラインへのパーマリンク">¶</a></h1>
+<a class="reference external image-reference" href="https://travis-ci.org/NetAppJpTechTeam/NetAppDigitalTransformationLab"><img alt="https://travis-ci.org/NetAppJpTechTeam/NetAppDigitalTransformationLab.svg?branch=master" src="https://travis-ci.org/NetAppJpTechTeam/NetAppDigitalTransformationLab.svg?branch=master" /></a>
+<div class="section" id="id1">
+<h2>はじめに<a class="headerlink" href="#id1" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<div class="section" id="id2">
+<h3>目的<a class="headerlink" href="#id2" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<ul class="simple">
+<li>デジタルトランスフォーメーションを支える根幹技術とNetApp製品を組み合わせることによる価値を触りながら体験</li>
+<li>特定のシナリオに沿った関連技術の組み合わせ検証</li>
+<li>Labを通じての技術者コミュニティの創出</li>
+</ul>
+</div>
+<div class="section" id="id3">
+<h3>連絡方法<a class="headerlink" href="#id3" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<p>連絡先は以下を準備しています。</p>
+<ul class="simple">
+<li>本ドキュメントのリポジトリにIssueまたはPull-request<ul>
+<li>GitHub リポジトリ: <a class="reference external" href="https://github.com/NetAppJpTechTeam/NetAppDigitalTransformationLab">https://github.com/NetAppJpTechTeam/NetAppDigitalTransformationLab</a></li>
+</ul>
+</li>
+<li>Twitter:<ul>
+<li><a class="reference external" href="https://twitter.com/NetAppJPTech">&#64;NetAppJPTech</a></li>
+</ul>
+</li>
+<li>Slack:<ul>
+<li><a class="reference external" href="https://bit.ly/2HsbpHw">継続的なコミュニケーション用 NetAppJpTech #datatechnologylab</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="contents">
+<h2>Contents<a class="headerlink" href="#contents" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="Level0/index.html">Level 0: 環境の確認・基本操作</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Level0/index.html#id1">目的・ゴール: ラボを実施する環境の確認</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Level0/index.html#id2">流れ</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Level0/index.html#kubernetes">kubernetes環境へのログイン</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Level0/index.html#id3">kubernetesにデプロイ</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Level0/index.html#id9">まとめ</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Level1/index.html">Level 1: アプリケーションをコンテナ化する</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Level1/index.html#id1">目的・ゴール: アプリケーションをコンテナ化する</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Level1/index.html#id2">流れ</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Level1/index.html#id3">コンテナ化の準備</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Level1/index.html#id4">コンテナイメージの作成</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Level1/index.html#id5">コンテナイメージのビルド</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Level1/index.html#id6">イメージレポジトリに登録</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Level1/index.html#deploywithmanifest">アプリケーションのマニフェストファイルを作成してデプロイ</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Level1/index.html#id9">アプリケーションの稼働確認</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Level1/index.html#id10">まとめ</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Level2/index.html">Level 2: ステートフルコンテナの実現</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Level2/index.html#id1">目的・ゴール: アプリケーションのデータ永続化を実現</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Level2/index.html#id2">流れ</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Level2/index.html#id3">コンテナでの永続データのカテゴライズ</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Level2/index.html#dynamic-provisioning">Dynamic provisioning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Level2/index.html#netapp-trident">NetApp Tridentのインストール</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Level2/index.html#trident">Tridentインストール事前準備</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Level2/index.html#id4">Tridentインストール</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Level2/index.html#id5">Tridentへバックエンドストレージの登録</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Level2/index.html#storageclass">StorageClassの定義</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Level2/index.html#persistent-volume-claim">Persistent Volume Claimの作成</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Level2/index.html#pvc">デプロイ用のマニフェストファイルにPVCを追加</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Level2/index.html#id6">デプロイメント実施</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Level2/index.html#id7">アプリケーションの停止・起動</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Level2/index.html#id8">再デプロイメント後の確認</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Level2/index.html#trident-fast-cloning">Tridentの特徴的な機能: Fast Cloning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Level2/index.html#trident18-07-csi-container-storage-interface">Tridentの18.07でのアップデート: CSI (Container Storage Interface)への対応</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Level2/index.html#id10">まとめ</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Level3/index.html">Level 3: CI／CDパイプラインを構築</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Level3/index.html#cicd">目的・ゴール: コンテナ化したアプリケーションのCICDを実現する</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Level3/index.html#id1">流れ</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Level3/index.html#ci-cd">CI/CDパイプラインの定義</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Level3/index.html#jenkins">Jenkinsのデプロイ方法について</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Level3/index.html#helmjenkins">Helmを使ってJenkinsをデプロイ</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Level3/index.html#id5">Helm以外でJenkinsをデプロイした場合</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Level3/index.html#id6">Jenkinsの設定をする</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Level3/index.html#jenkins-pipeline">Jenkins Pipelineの作成</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Level3/index.html#id7">アプリケーションの変更を検知してデプロイメント可能にする</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Level3/index.html#ci-cd-helm">コンテナをCI/CDする方法 Helmを使ってみる</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Level3/index.html#id8">デプロイメントのさらなる進化</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Level3/index.html#id9">まとめ</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Level4/index.html">Level 4: 運用編</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Level4/index.html#id1">目的・ゴール: 運用を行うにあたり必要となる検討事項を把握する</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Level4/index.html#id2">流れ</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Level4/index.html#id3">アプリケーションの可用性を向上させる</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Level4/index.html#kubernetes">Kubernetes クラスタの操作性を向上させる</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Level4/index.html#id11">インフラの可用性を向上させる</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Level5/index.html">Level 5: Microservice化</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Level5/index.html#microservice">目的・ゴール:　Microserviceを支えるインフラの技術・テクノロジースタックを活用</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Level5/index.html#id1">流れ</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Level5/index.html#id2">Microservice化していくにあたって発生する課題</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Level5/index.html#istio">解決する技術の１つ &quot;Istio&quot;</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Level5/index.html#id3">さらなる進化</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="references">
+<h2>References<a class="headerlink" href="#references" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="others/cmdreferences.html">コマンドリファレンス</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="others/cmdreferences.html#kubectl">kubectlの使い方・本家へのリンク</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="others/terms.html">用語集</a></li>
+<li class="toctree-l1"><a class="reference internal" href="others/references.html">References</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="others/references.html#id1">サンプルアプリケーション</a></li>
+<li class="toctree-l2"><a class="reference internal" href="others/references.html#kubernetes">Kubernetes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="others/references.html#kubernetes-monitoring">Kubernetes Monitoring</a></li>
+<li class="toctree-l2"><a class="reference internal" href="others/references.html#kubernetes-configuration">Kubernetes configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="others/references.html#test-tools">Test tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="others/references.html#ci-cd-for-kubernetes-applications">CI/CD for kubernetes applications</a></li>
+<li class="toctree-l2"><a class="reference internal" href="others/references.html#kubernets-network-expose-application-for-external">Kubernets Network (Expose application for external)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="others/references.html#kubernetes-security">Kubernetes Security</a></li>
+<li class="toctree-l2"><a class="reference internal" href="others/references.html#netapp-demo">NetApp demo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="others/references.html#id2">コンテナデザインパターン</a></li>
+<li class="toctree-l2"><a class="reference internal" href="others/references.html#id3">コンテナストレージの選択</a></li>
+<li class="toctree-l2"><a class="reference internal" href="others/references.html#dr">バックアップ・DRの検討</a></li>
+<li class="toctree-l2"><a class="reference internal" href="others/references.html#data-mobility">Data Mobility</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Level4/ingress/ingress.html">Ingressを導入</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Level4/ingress/ingress.html#id1">Ingress用のネームスペースを作成</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Level4/ingress/ingress.html#nginx-ingress">Nginx Ingressのデプロイメント</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Level4/ingress/ingress.html#dns">DNS登録実施</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="id4">
+<h2>インストールするもの・あると便利なもの<a class="headerlink" href="#id4" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="others/installed.html">Installed apps</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="others/installed.html#kubernetes">kubernetes 関係</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="id5">
+<h2>やるべきこと一覧<a class="headerlink" href="#id5" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>このドキュメント全体のTODOをまとめたもの</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="others/todos.html">ToDos</a></li>
+</ul>
+</div>
+</div>
+<div class="section" id="designdoc">
+<h2>DesignDoc<a class="headerlink" href="#designdoc" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="others/design.html">Design: kubernetes クラスタの設計要素について</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="others/design.html#id1">ネットワーク設計</a></li>
+<li class="toctree-l2"><a class="reference internal" href="others/design.html#id2">ストレージ設計</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="indices-and-tables">
+<h2>Indices and tables<a class="headerlink" href="#indices-and-tables" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<ul class="simple">
+<li><a class="reference internal" href="genindex.html"><span class="std std-ref">索引</span></a></li>
+<li><a class="reference internal" href="py-modindex.html"><span class="std std-ref">モジュール索引</span></a></li>
+<li><a class="reference internal" href="search.html"><span class="std std-ref">検索ページ</span></a></li>
+</ul>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="Level0/index.html" class="btn btn-neutral float-right" title="Level 0: 環境の確認・基本操作" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, NetApp.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'18.08 NDX vol2',
+            LANGUAGE:'ja',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="_static/translations.js"></script>
+
+  
+
+  <script type="text/javascript" src="_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

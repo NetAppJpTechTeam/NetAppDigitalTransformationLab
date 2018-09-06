@@ -1,0 +1,288 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="ja" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="ja" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Level 5: Microservice化 &mdash; NetApp Digital Transformation Lab 18.08 NDX vol2 ドキュメント</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/custom-width.css" type="text/css" />
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="検索" href="../search.html" />
+    <link rel="next" title="コマンドリファレンス" href="../others/cmdreferences.html" />
+    <link rel="prev" title="Level 4: 運用編" href="../Level4/index.html" /> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> NetApp Digital Transformation Lab
+          
+
+          
+            
+            <img src="../_static/netapp_logo.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                18.08
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../Level0/index.html">Level 0: 環境の確認・基本操作</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Level1/index.html">Level 1: アプリケーションをコンテナ化する</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Level2/index.html">Level 2: ステートフルコンテナの実現</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Level3/index.html">Level 3: CI／CDパイプラインを構築</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Level4/index.html">Level 4: 運用編</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Level 5: Microservice化</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#microservice">目的・ゴール:　Microserviceを支えるインフラの技術・テクノロジースタックを活用</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id1">流れ</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id2">Microservice化していくにあたって発生する課題</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#istio">解決する技術の１つ &quot;Istio&quot;</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id3">さらなる進化</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../others/cmdreferences.html">コマンドリファレンス</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../others/terms.html">用語集</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../others/references.html">References</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Level4/ingress/ingress.html">Ingressを導入</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../others/installed.html">Installed apps</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../others/todos.html">ToDos</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../others/design.html">Design: kubernetes クラスタの設計要素について</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">NetApp Digital Transformation Lab</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>Level 5: Microservice化</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/Level5/index.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <span class="target" id="index-0"></span><p>このチャプターはドラフト段階です。</p>
+<div class="section" id="level-5-microservice">
+<h1>Level 5: Microservice化<a class="headerlink" href="#level-5-microservice" title="このヘッドラインへのパーマリンク">¶</a></h1>
+<div class="section" id="microservice">
+<h2>目的・ゴール:　Microserviceを支えるインフラの技術・テクノロジースタックを活用<a class="headerlink" href="#microservice" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>Level4までで既存のアプリケーションをコンテナ化して本番運用可能かつ迅速にリリースできる仕組みを作りました。
+このレベルではアプリケーションをコンポーネント単位に分割していった際に必要となるインフラの仕組みを適用します。</p>
+</div>
+<div class="section" id="id1">
+<h2>流れ<a class="headerlink" href="#id1" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<ol class="arabic simple">
+<li>Microservice化していくにあたって発生する課題</li>
+<li>解決する技術の１つ &quot;Istio&quot;</li>
+</ol>
+</div>
+<div class="section" id="id2">
+<h2>Microservice化していくにあたって発生する課題<a class="headerlink" href="#id2" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>マイクロサービス化が進むと１つのシステムを複数の細かいコンポーネントにわけ、独立したサービスとして迅速にデプロイできるようになり、</p>
+<p>その反面、モノリスなアプリケーションでは問題とならなかったサービス間の接続、モニタリング、通信の制御、エンドツーエンドの認証などが課題として顕在化してきます。</p>
+<p>マイクロサービスを実現するためには上記の課題を解決する必要があります。</p>
+</div>
+<div class="section" id="istio">
+<h2>解決する技術の１つ &quot;Istio&quot;<a class="headerlink" href="#istio" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>ここでは上記の課題を解決するための&quot;Istio&quot;について紹介します。</p>
+<ul class="simple">
+<li><a class="reference external" href="https://istio.io/docs/concepts/what-is-istio/overview.html">https://istio.io/docs/concepts/what-is-istio/overview.html</a></li>
+</ul>
+<p>モノリスなアプリケーションから分散型・コンポーネントに分割されたアプリケーションへコンポーネント分割際に発生する課題に対して有効です。</p>
+<p>最初はモノリスなアプリケーションをそのままコンテナ化し徐々にコンポーネントに分けていく、そしてサービス間通信をうまくやるためのServiceMeshとして開発されました。</p>
+<p>ポイントはアプリケーションに影響なくIstioを導入できます。</p>
+</div>
+<div class="section" id="id3">
+<h2>さらなる進化<a class="headerlink" href="#id3" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<ul class="simple">
+<li>マルチクラウド化</li>
+<li>ハイブリッドクラウド化</li>
+</ul>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../others/cmdreferences.html" class="btn btn-neutral float-right" title="コマンドリファレンス" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../Level4/index.html" class="btn btn-neutral" title="Level 4: 運用編" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, NetApp.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'18.08 NDX vol2',
+            LANGUAGE:'ja',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="../_static/translations.js"></script>
+
+  
+
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
