@@ -57,14 +57,16 @@ Rancher へログイン
 
 上記のRancherをインストールしたホストのIPアドレスでブラウザーを開くと以下のような画面が表示されます。
 
-.. image:: images/login.png
+.. image:: resources/login.png
 
 パスワードを指定するか、ランダムのパスワードを生成して **Continue** を押します。
 
-Rancher Catalogの有効化
+Kubernetes クラスターのインポート
 ----------------------
 
+Kubernetesクラスターを Rancherから認識できるようにインポートします。
 
+.. image:: resources/
 
 
 
@@ -72,6 +74,8 @@ Rancher Catalogの有効化
 ------------------------
 
 Prometheus+Grafanaのデプロイ
+
+
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 
