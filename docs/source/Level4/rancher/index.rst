@@ -57,14 +57,27 @@ Rancher へログイン
 
 上記のRancherをインストールしたホストのIPアドレスでブラウザーを開くと以下のような画面が表示されます。
 
-.. image:: images/login.png
+.. image:: resources/login.png
 
 パスワードを指定するか、ランダムのパスワードを生成して **Continue** を押します。
 
-Rancher Catalogの有効化
+Kubernetes クラスターのインポート
 ----------------------
 
+Kubernetesクラスターを Rancherから認識できるようにインポートします。
 
+.. image:: resources/
+
+上記のページで表示されたコマンドを実行します。
+kubectlコマンドは事前にインストール、設定しておいてください。
+
+```kubectl create clusterrolebinding cluster-admin-binding --clusterrole cluster-admin --user [USER_ACCOUNT]```
+上記の [USER_ACCOUNT] は上記コマンドを実行するユーザーIDを指定します。
+
+```kubectl apply -f https://xxxxxxxxxxxxxx.com/v3/import/XXXXXXXXXXXXXXXXXXXXXXXXX.yaml```
+
+上記のコマンドで証明書の問題のエラーが発生する場合は、以下のコマンドを実行して下さい。
+```curl --insecure -sfL https://xxxxxxxxxxxxxx.com/v3/import/XXXXXXXXXXXXXXXXXXXXXXXXX.yaml | kubectl apply -f -```
 
 
 
@@ -72,6 +85,8 @@ Rancher Catalogの有効化
 ------------------------
 
 Prometheus+Grafanaのデプロイ
+
+
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 
