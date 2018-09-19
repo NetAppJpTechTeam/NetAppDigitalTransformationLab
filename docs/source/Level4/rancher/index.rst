@@ -64,20 +64,39 @@ Rancher へログイン
 Kubernetes クラスターのインポート
 ----------------------
 
-Kubernetesクラスターを Rancherから認識できるようにインポートします。
+次に、作っておいた Kubernetesクラスターを Rancherから認識できるようにインポートします。
+Globalから **Add Cluster** ボタンを押します。
 
-.. image:: resources/
+.. image:: resources/Add-Cluster-Dashboard.png
 
-上記のページで表示されたコマンドを実行します。
-kubectlコマンドは事前にインストール、設定しておいてください。
+クラスター追加画面が出てきますが、右上の **IMPORT** ボタンを押します。
 
-```kubectl create clusterrolebinding cluster-admin-binding --clusterrole cluster-admin --user [USER_ACCOUNT]```
+.. image:: resources/Import-Cluster.png
+
+次に、Cluster Nameを指定して **Create** ボタンを押します(Memberは自分一人で使う分には追加する必要はありません)。
+
+.. image:: resources/Set-ClusterName.png
+
+以下のページで表示されたコマンドを実行します。
+kubectlコマンドは事前にインストールし、kubernetesに接続できるよう設定しておいてください。
+
+.. image:: resources/Import-command.png
+
+.. code-block:: none
+
+    kubectl create clusterrolebinding cluster-admin-binding --clusterrole cluster-admin --user [USER_ACCOUNT]
+
 上記の [USER_ACCOUNT] は上記コマンドを実行するユーザーIDを指定します。
 
-```kubectl apply -f https://xxxxxxxxxxxxxx.com/v3/import/XXXXXXXXXXXXXXXXXXXXXXXXX.yaml```
+.. code-block:: none
+
+    kubectl apply -f https://xxxxxxxxxxxxxx.com/v3/import/XXXXXXXXXXXXXXXXXXXXXXXXX.yaml
 
 上記のコマンドで証明書の問題のエラーが発生する場合は、以下のコマンドを実行して下さい。
-```curl --insecure -sfL https://xxxxxxxxxxxxxx.com/v3/import/XXXXXXXXXXXXXXXXXXXXXXXXX.yaml | kubectl apply -f -```
+
+.. code-block:: none
+
+    curl --insecure -sfL https://xxxxxxxxxxxxxx.com/v3/import/XXXXXXXXXXXXXXXXXXXXXXXXX.yaml | kubectl apply -f -
 
 
 
