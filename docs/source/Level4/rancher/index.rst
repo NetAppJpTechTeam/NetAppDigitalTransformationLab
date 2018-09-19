@@ -56,7 +56,7 @@ Rancher へログイン
 
 上記のRancherをインストールしたホストのIPアドレスでブラウザーを開くと以下のような画面が表示されます。
 
-.. image:: resources/login.png
+.. image:: rancher/resources/login.png
 
 パスワードを指定するか、ランダムのパスワードを生成して **Continue** を押します。
 
@@ -66,20 +66,20 @@ Kubernetes クラスターのインポート
 次に、作っておいた Kubernetesクラスターを Rancherから認識できるようにインポートします。
 Globalから **Add Cluster** ボタンを押します。
 
-.. image:: resources/Add-Cluster-Dashboard.png
+.. image:: rancher/resources/Add-Cluster-Dashboard.png
 
 クラスター追加画面が出てきますが、右上の **IMPORT** ボタンを押します。
 
-.. image:: resources/Import-Cluster.png
+.. image:: rancher/resources/Import-Cluster.png
 
 次に、Cluster Nameを指定して **Create** ボタンを押します(Memberは自分一人で使う分には追加する必要はありません)。
 
-.. image:: resources/Set-ClusterName.png
+.. image:: rancher/resources/Set-ClusterName.png
 
 以下のページで表示されたコマンドを実行します。
 kubectlコマンドは事前にインストールし、kubernetesに接続できるよう設定しておいてください。
 
-.. image:: resources/Import-command.png
+.. image:: rancher/resources/Import-command.png
 
 .. code-block:: none
 
@@ -99,7 +99,7 @@ kubectlコマンドは事前にインストールし、kubernetesに接続でき
 
 KubernetesクラスターがRancherにインポートされると以下のようにGlobalのClusterダッシュボードにインポートされたクラスターが表示されます。
 
-.. image:: resources/cluster-list.png
+.. image:: rancher/resources/cluster-list.png
 
 アプリケーションをデプロイ
 ----------------------------
@@ -110,41 +110,41 @@ Prometheus+Grafanaのデプロイする
 上記、クラスターがインポートされた状態でPrometheus+Grafanaをデプロイしてみましょう。
 まず、インポートされたKubernetesクラスターのDefaultネームスペースに切り換えます。
 
-.. image:: resources/change-name-default.png
+.. image:: rancher/resources/change-name-default.png
 
 **Global** を押してドロップダウンしたメニューの **Default** をクリックします。
 ワークロードのダッシュボード画面に切り替わります。
 
-.. image:: resources/cluster-default-dashboard.png
+.. image:: rancher/resources/cluster-default-dashboard.png
 
 この画面の **Catalog Apps** をクリックします。
 
-.. image:: resources/CatalogApp-list.png
+.. image:: rancher/resources/CatalogApp-list.png
 
 カタログリストから 右側の Search 検索ボックスに ``Prometheus`` を入力します。
 
-.. image:: resources/CatalogApp-Prometheus.png
+.. image:: rancher/resources/CatalogApp-Prometheus.png
 
 **View Details** をクリックします。
 様々な設定項目がありますが、``Grafana Admin Password`` だけ任意のパスワード入力します。
 
-.. image:: resources/Settings-Prometheus-Grafana.png
+.. image:: rancher/resources/Settings-Prometheus-Grafana.png
 
 デプロイが開始されると以下のような画面になります。
 
-.. image:: resources/Deployed-Prometheus.png
+.. image:: rancher/resources/Deployed-Prometheus.png
 
 Prometheusをクリックします。
 
-.. image:: resources/Prometheus-Details.png
+.. image:: rancher/resources/Prometheus-Details.png
     :scale: 20 %
 
 上記の ``Workloads`` を確認します。
 
-.. image:: resources/Workloads-prometheus.png
+.. image:: rancher/resources/Workloads-prometheus.png
 
 **prometheus-grafana** の80/http をクリックします。
 
-.. image:: resources/Grafana-Dashboard.png
+.. image:: rancher/resources/Grafana-Dashboard.png
 
 画面が表示されれば正常にデプロイされています。
