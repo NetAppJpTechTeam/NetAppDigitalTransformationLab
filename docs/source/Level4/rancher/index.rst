@@ -13,7 +13,7 @@ Rancher を導入する
 ------------------------
 
 dockerをインストールする
-^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Rancherの導入には、Dockerコマンドを利用します。もし、Dockerをインストールしていない場合にはDockerをインストールします。
 
@@ -34,7 +34,7 @@ https://rancher.com/docs/rancher/v2.x/en/installation/requirements/
 でインストールしてください。
 
 Rancherをインストールする
-^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 次にRancherをインストールします。
 
@@ -51,9 +51,8 @@ Rancherをインストールする
     rancher/rancher:v2.0.8
 
 
-
 Rancher へログイン
------------------
+---------------------
 
 上記のRancherをインストールしたホストのIPアドレスでブラウザーを開くと以下のような画面が表示されます。
 
@@ -62,7 +61,7 @@ Rancher へログイン
 パスワードを指定するか、ランダムのパスワードを生成して **Continue** を押します。
 
 Kubernetes クラスターのインポート
-----------------------
+----------------------------------
 
 次に、作っておいた Kubernetesクラスターを Rancherから認識できるようにインポートします。
 Globalから **Add Cluster** ボタンを押します。
@@ -98,15 +97,54 @@ kubectlコマンドは事前にインストールし、kubernetesに接続でき
 
     curl --insecure -sfL https://xxxxxxxxxxxxxx.com/v3/import/XXXXXXXXXXXXXXXXXXXXXXXXX.yaml | kubectl apply -f -
 
+KubernetesクラスターがRancherにインポートされると以下のようにGlobalのClusterダッシュボードにインポートされたクラスターが表示されます。
 
+.. image:: resources/cluster-list.png
 
 アプリケーションをデプロイ
-------------------------
+----------------------------
 
-Prometheus+Grafanaのデプロイ
+Prometheus+Grafanaのデプロイする
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+上記、クラスターがインポートされた状態でPrometheus+Grafanaをデプロイしてみましょう。
+まず、インポートされたKubernetesクラスターのDefaultネームスペースに切り換えます。
 
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.. image:: resources/change-name-default.png
 
+**Global** を押してドロップダウンしたメニューの **Default** をクリックします。
+ワークロードのダッシュボード画面に切り替わります。
 
+.. image:: resources/cluster-default-dashboard.png
 
+この画面の **Catalog Apps** をクリックします。
+
+.. image:: resources/CatalogApp-list.png
+
+カタログリストから 右側の Search 検索ボックスに ``Prometheus`` を入力します。
+
+.. image:: resources/CatalogApp-Prometheus.png
+
+**View Details** をクリックします。
+様々な設定項目がありますが、``Grafana Admin Password`` だけ任意のパスワード入力します。
+
+.. image:: resources/Settings-Prometheus-Grafana.png
+
+デプロイが開始されると以下のような画面になります。
+
+.. image:: resources/Deployed-Prometheus.png
+
+Prometheusをクリックします。
+
+.. image:: resources/Prometheus-Details.png
+    :scale: 20 %
+
+上記の ``Workloads`` を確認します。
+
+.. image:: resources/Workloads-prometheus.png
+
+**prometheus-grafana** の80/http をクリックします。
+
+.. image:: resources/Grafana-Dashboard.png
+
+画面が表示されれば正常にデプロイされています。
