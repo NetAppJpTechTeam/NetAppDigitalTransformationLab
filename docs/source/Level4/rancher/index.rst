@@ -1,13 +1,15 @@
 Rancher でできること
 ------------------------
 
-Rancherは様々な環境のkubernetesクラスタを管理するとともに、アプリケーションの管理も行うことができます。
+RancherはブラウザーのUIを通したグラフィカルなインターフェースを持っており、様々な環境のkubernetesクラスタを管理するとともに、コンテナーの管理、アプリケーションの管理も行うことができます。ここでいうアプリケーションは kubernetes 上で動くものすべてです。
 
-ここではRancherの導入から、アプリケーションのデプロイまでを簡単に実施します。
+Rancherの機能については、以下のサイトからご確認ください。
 
-ここでいうアプリケーションとは kubernetes 上で動くものすべてです。
+Your Enterprise Kubernetes Platform | Rancher Labs
+https://rancher.com/
 
-例えば、kubernetes クラスタを監視するソフトウェアスタック(Prometheus+Grafana+InfluxDB）をkubernetes上で簡単に起動することが可能です。
+ここではRancherの導入から、アプリケーションのデプロイを実施します。
+アプリケーションとして、kubernetes クラスタを監視するソフトウェアスタック(Prometheus+Grafana）をkubernetes上で簡単に起動してみます。
 
 Rancher を導入する
 ------------------------
