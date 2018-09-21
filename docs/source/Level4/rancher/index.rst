@@ -8,8 +8,7 @@ Rancherの機能については、以下のサイトからご確認ください�
 Your Enterprise Kubernetes Platform | Rancher Labs
 https://rancher.com/
 
-ここではRancherの導入から、アプリケーションのデプロイまでを簡単に実施します。ここでいうアプリケーションとは kubernetes 上で動くものすべてです。
-
+ここではRancherの導入から、アプリケーションのデプロイを実施します。
 例えば、kubernetes クラスタを監視するソフトウェアスタック(Prometheus+Grafana）をkubernetes上で簡単に起動することが可能です。
 
 Rancher を導入する
