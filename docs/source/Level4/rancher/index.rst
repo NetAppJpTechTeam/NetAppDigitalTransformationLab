@@ -9,7 +9,7 @@ Your Enterprise Kubernetes Platform | Rancher Labs
 https://rancher.com/
 
 ここではRancherの導入から、アプリケーションのデプロイを実施します。
-例えば、kubernetes クラスタを監視するソフトウェアスタック(Prometheus+Grafana）をkubernetes上で簡単に起動することが可能です。
+アプリケーションとして、kubernetes クラスタを監視するソフトウェアスタック(Prometheus+Grafana）をkubernetes上で簡単に起動してみます。
 
 Rancher を導入する
 ------------------------
