@@ -5,8 +5,12 @@ RancherはブラウザーのUIを通したグラフィカルなインターフ�
 様々な環境のkubernetesクラスタを管理するとともに、コンテナーの管理とともに
 アプリケーションの管理も行うことができます。
 
-ここではRancherの導入から、アプリケーションのデプロイまでを簡単に実施します。
+Rancherの機能については、以下のサイトからご確認ください。
 
+Your Enterprise Kubernetes Platform | Rancher Labs
+https://rancher.com/
+
+ここではRancherの導入から、アプリケーションのデプロイまでを簡単に実施します。
 ここでいうアプリケーションとは kubernetes 上で動くものすべてです。
 
 例えば、kubernetes クラスタを監視するソフトウェアスタック(Prometheus+Grafana）を
