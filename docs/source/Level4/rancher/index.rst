@@ -58,7 +58,7 @@ Rancher へログイン
 
 上記のRancherをインストールしたホストのIPアドレスでブラウザーを開くと以下のような画面が表示されます。
 
-.. image:: rancher/resources/login.png
+.. image:: rancher/resources/Login.png
     :scale: 50 %
 
 パスワードを指定するか、ランダムのパスワードを生成して **Continue** を押します。
