@@ -19,7 +19,7 @@
   "devDependencies": {},
   "scripts": {
     "lint": "node_modules/.bin/textlint source/",
-    "fix" : "node_modules/.bin/textlint --fix source/",
+    "fix": "node_modules/.bin/textlint --fix source/",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
