@@ -24,7 +24,7 @@ Ingress用のネームスペースを作成
 
 Nginx Ingressをデプロイするネームスペースを作成します。
 
-.. literalinclude:: resources/ingress/ingress-ns.yaml
+.. literalinclude:: ingress-ns.yaml
         :language: yaml
         :caption: Nginx Ingressをデプロイするネームスペース用マニフェストファイル
 
@@ -220,7 +220,7 @@ Aレコードのエントリは以下のようなスクリプトを準備する�
 
 名前解決ができているか確認します。
 
-.. code-block:: console:
+.. code-block:: console
 
         $ nslookup app-name.user1X.ndxlab.net
 
