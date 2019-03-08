@@ -4,7 +4,7 @@
    contain the root `toctree` directive.
 
 =============================================================
-NetApp Digital Transformation Lab (NDX) (formerly Data Technology Lab Guide)
+NetApp Digital Transformation Lab (NDX)
 =============================================================
 
 .. image:: https://travis-ci.org/NetAppJpTechTeam/NetAppDigitalTransformationLab.svg?branch=master
@@ -35,32 +35,53 @@ NetApp Digital Transformation Lab (NDX) (formerly Data Technology Lab Guide)
 
 * Slack:
 
-  * `継続的なコミュニケーション用 NetAppJpTech #datatechnologylab <https://bit.ly/2HsbpHw>`_
+  * `継続的なコミュニケーション用 NetAppJpTech #ndx <https://bit.ly/2HsbpHw>`_
 
 Contents
 =============================================================
 
+.. todo:: 基礎編、実践編で分ける。
+
+
+基礎編
+----------
+
+コンテナ化のシナリオを実施する
+
 .. toctree::
    :maxdepth: 2
 
-   Level0/index
-   Level1/index
-   Level2/index
-   Level3/index
-   Level4/index
-   Level5/index
+   container/Level0/index
+   container/Level1/index
+   container/Level2/index
+   container/Level3/index
+   container/Level4/index
+   container/Level5/index
 
+
+実践編
+----------
+
+画像解析AIのシナリオを実施する
+
+.. toctree::
+   :maxdepth: 2
+
+   MLWorkflow/index
+   MLWorkflow/eda/index
+   MLWorkflow/training/index
+   MLWorkflow/serve/index
+   MLWorkflow/hybrid-deploy/index
 
 References
 =============================================================
 .. toctree::
     :maxdepth: 2
 
-    others/cmdreferences
-    others/terms
-    others/references
-    Level4/ingress/ingress
-
+    container/others/cmdreferences
+    container/others/terms
+    container/others/references
+    container/Level4/ingress/ingress
 
 
 インストールするもの・あると便利なもの
@@ -69,7 +90,7 @@ References
 .. toctree::
    :maxdepth: 2
 
-   others/installed
+   commons/installed
 
 やるべきこと一覧
 =============================================================
@@ -79,14 +100,14 @@ References
 .. toctree::
    :maxdepth: 2
 
-   others/todos
+   commons/todos
 
 DesignDoc
 =============================================================
 .. toctree::
     :maxdepth: 2
 
-    others/design
+    container/others/design
 
 
 Indices and tables
