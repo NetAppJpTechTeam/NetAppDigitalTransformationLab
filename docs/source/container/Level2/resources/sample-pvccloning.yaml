@@ -1,0 +1,13 @@
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: basicclone
+  annotations:
+    trident.netapp.io/cloneFromPVC: database (<-ここにクローンしたい既存のPVC名(ボリューム名）を記述）
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 20Gi
+  storageClassName: ontap-gold
