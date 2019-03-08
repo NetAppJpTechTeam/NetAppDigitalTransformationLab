@@ -17,14 +17,16 @@ Trident のインストールでk8sクラスタの管理者権限が必要にな
 Tridentインストール
 =============================================================
 
-バイナリをダウンロードしてインストールします。(例はバージョン18.07)
-バックエンドストレージのための ``setup/backend.json`` を編集します。
+バイナリをダウンロードしてインストールします。(例はバージョン19.01)
+Tridentのメタデータの保存先を定義した ``setup/backend.json`` を編集します。
 
 .. code-block:: console
 
-    $ wget https://github.com/NetApp/trident/releases/download/v18.07.0/trident-installer-18.07.0.tar.gz
+    $ wget https://github.com/NetApp/trident/releases/download/v19.01.0/trident-installer-19.01.0.tar.gz
 
-    $ tar xzf trident*.tar.gz && cd trident-installer
+    $ tar -xf trident-installer-19.01.0.tar.gz
+
+    $ cd trident-installer
 
     $ cp sample-input/backend-ontap-nas.json setup/backend.json
 
@@ -73,6 +75,7 @@ Tridentインストール
 
 .. code-block:: console
 
+    $ kubectl create ns trident
     $ ./tridentctl install --dry-run -n trident -d
 
     DEBU Initialized logging.                          logLevel=debug
@@ -84,26 +87,7 @@ Tridentインストール
     DEBU Namespace does not exist.                     namespace=trident
     DEBU PVC does not exist.                           pvc=trident
     DEBU PV does not exist.                            pv=trident
-    INFO Starting storage driver.                      backend=/home/localadmin/manifest/trident/trident-installer/setup/backend.json
-    DEBU config: {"backendName":"NFS_ONTAP_Backend","dataLIF":"192.168.14.200","managementLIF":"192.168.14.200","password":"netapp123","storageDriverName":"ontap-nas","svm":"svm14","username":"vsadmin","version":1}
-    DEBU Storage prefix is absent, will use default prefix.
-    DEBU Parsed commonConfig: {Version:1 StorageDriverName:ontap-nas BackendName:NFS_ONTAP_Backend Debug:false DebugTraceFlags:map[] DisableDelete:false StoragePrefixRaw:[] StoragePrefix:<nil> SerialNumbers:[] DriverContext:}
-    DEBU Initializing storage driver.                  driver=ontap-nas
-    DEBU Addresses found from ManagementLIF lookup.    addresses="[192.168.14.200]" hostname=192.168.14.200
-    DEBU Using specified SVM.                          SVM=svm14
-    DEBU ONTAP API version.                            Ontapi=1.130
-    WARN Could not determine controller serial numbers. API status: failed, Reason: Unable to find API: system-node-get-iter, Code: 13005
-    DEBU Configuration defaults                        Encryption=false ExportPolicy=default FileSystemType=ext4 NfsMountOptions="-o nfsvers=3" SecurityStyle=unix Size=1G SnapshotDir=false SnapshotPolicy=none SpaceReserve=none SplitOnClone=false StoragePrefix=trident_ UnixPermissions=---rwxrwxrwx
-    DEBU Data LIFs                                     dataLIFs="[192.168.14.200]"
-    DEBU Found NAS LIFs.                               dataLIFs="[192.168.14.200]"
-    DEBU Addresses found from hostname lookup.         addresses="[192.168.14.200]" hostname=192.168.14.200
-    DEBU Found matching Data LIF.                      hostNameAddress=192.168.14.200
-    DEBU Configured EMS heartbeat.                     intervalHours=24
-    DEBU Read storage pools assigned to SVM.           pools="[aggr1_01 aggr2_01]" svm=svm14
-    DEBU Read aggregate attributes.                    aggregate=aggr1_01 mediaType=ssd
-    DEBU Read aggregate attributes.                    aggregate=aggr2_01 mediaType=hdd
-    DEBU Storage driver initialized.                   driver=ontap-nas
-    INFO Storage driver loaded.                        driver=ontap-nas
+    - snip
     INFO Dry run completed, no problems found.
 
 ドライランモードで実施すると最後に問題ない旨(INFO Dry run completed, no problems found.) が表示されれば、インストールに必要な事前要件を満たしていることが確認できます。
@@ -123,72 +107,7 @@ Tridentインストール
     DEBU Namespace does not exist.                     namespace=trident
     DEBU PVC does not exist.                           pvc=trident
     DEBU PV does not exist.                            pv=trident
-    INFO Starting storage driver.                      backend=/home/localadmin/manifest/trident/trident-installer/setup/backend.json
-    DEBU config: {"backendName":"NFS_ONTAP_Backend","dataLIF":"192.168.14.200","managementLIF":"192.168.14.200","password":"netapp123","storageDriverName":"ontap-nas","svm":"svm14","username":"vsadmin","version":1}
-    DEBU Storage prefix is absent, will use default prefix.
-    DEBU Parsed commonConfig: {Version:1 StorageDriverName:ontap-nas BackendName:NFS_ONTAP_Backend Debug:false DebugTraceFlags:map[] DisableDelete:false StoragePrefixRaw:[] StoragePrefix:<nil> SerialNumbers:[] DriverContext:}
-    DEBU Initializing storage driver.                  driver=ontap-nas
-    DEBU Addresses found from ManagementLIF lookup.    addresses="[192.168.14.200]" hostname=192.168.14.200
-    DEBU Using specified SVM.                          SVM=svm14
-    DEBU ONTAP API version.                            Ontapi=1.130
-    WARN Could not determine controller serial numbers. API status: failed, Reason: Unable to find API: system-node-get-iter, Code: 13005
-    DEBU Configuration defaults                        Encryption=false ExportPolicy=default FileSystemType=ext4 NfsMountOptions="-o nfsvers=3" SecurityStyle=unix Size=1G SnapshotDir=false SnapshotPolicy=none SpaceReserve=none SplitOnClone=false StoragePrefix=trident_ UnixPermissions=---rwxrwxrwx
-    DEBU Data LIFs                                     dataLIFs="[192.168.14.200]"
-    DEBU Found NAS LIFs.                               dataLIFs="[192.168.14.200]"
-    DEBU Addresses found from hostname lookup.         addresses="[192.168.14.200]" hostname=192.168.14.200
-    DEBU Found matching Data LIF.                      hostNameAddress=192.168.14.200
-    DEBU Configured EMS heartbeat.                     intervalHours=24
-    DEBU Read storage pools assigned to SVM.           pools="[aggr1_01 aggr2_01]" svm=svm14
-    DEBU Read aggregate attributes.                    aggregate=aggr1_01 mediaType=ssd
-    DEBU Read aggregate attributes.                    aggregate=aggr2_01 mediaType=hdd
-    DEBU Storage driver initialized.                   driver=ontap-nas
-    INFO Storage driver loaded.                        driver=ontap-nas
-    INFO Starting Trident installation.                namespace=trident
-    DEBU Created Kubernetes object by YAML.
-    INFO Created namespace.                            namespace=trident
-    DEBU Deleted Kubernetes object by YAML.
-    DEBU Deleted cluster role binding.
-    DEBU Deleted Kubernetes object by YAML.
-    DEBU Deleted cluster role.
-    DEBU Deleted Kubernetes object by YAML.
-    DEBU Deleted service account.
-    DEBU Created Kubernetes object by YAML.
-    INFO Created service account.
-    DEBU Created Kubernetes object by YAML.
-    INFO Created cluster role.
-    DEBU Created Kubernetes object by YAML.
-    INFO Created cluster role binding.
-    DEBU Created Kubernetes object by YAML.
-    INFO Created PVC.
-    DEBU Attempting volume create.                     size=2147483648 storagePool=aggr1_01 volConfig.StorageClass=
-    DEBU Creating Flexvol.                             aggregate=aggr1_01 encryption=false exportPolicy=default name=trident_trident securityStyle=unix size=2147483648 snapshotDir=false snapshotPolicy=none snapshotReserve=0 spaceReserve=none unixPermissions=---rwxrwxrwx
-    DEBU SVM root volume has no load-sharing mirrors.  rootVolume=svm_root
-    DEBU Created Kubernetes object by YAML.
-    INFO Created PV.                                   pv=trident
-    INFO Waiting for PVC to be bound.                  pvc=trident
-    DEBU PVC not yet bound, waiting.                   increment=282.430263ms pvc=trident
-    DEBU PVC not yet bound, waiting.                   increment=907.038791ms pvc=trident
-    DEBU PVC not yet bound, waiting.                   increment=1.497234254s pvc=trident
-    DEBU PVC not yet bound, waiting.                   increment=1.182346358s pvc=trident
-    DEBU PVC not yet bound, waiting.                   increment=3.794274009s pvc=trident
-    DEBU Logged EMS message.                           driver=ontap-nas
-    DEBU PVC not yet bound, waiting.                   increment=2.554707984s pvc=trident
-    DEBU Created Kubernetes object by YAML.
-    INFO Created Trident deployment.
-    INFO Waiting for Trident pod to start.
-    DEBU Trident pod not yet running, waiting.         increment=481.632837ms
-    DEBU Trident pod not yet running, waiting.         increment=848.840617ms
-    DEBU Trident pod not yet running, waiting.         increment=1.171028148s
-    DEBU Trident pod not yet running, waiting.         increment=871.68468ms
-    DEBU Trident pod not yet running, waiting.         increment=2.784723303s
-    DEBU Trident pod not yet running, waiting.         increment=3.037298468s
-    DEBU Trident pod not yet running, waiting.         increment=7.540652793s
-    DEBU Trident pod not yet running, waiting.         increment=12.611925219s
-    DEBU Trident pod not yet running, waiting.         increment=18.389729895s
-    INFO Trident pod started.                          namespace=trident pod=trident-6946fdf6d8-8cb8q
-    INFO Waiting for Trident REST interface.
-    DEBU Invoking tunneled command: kubectl exec trident-6946fdf6d8-8cb8q -n trident -c trident-main -- tridentctl -s 127.0.0.1:8000 version -o json
-    INFO Trident REST interface is up.                 version=18.07.0
+    - snip
     INFO Trident installation succeeded.
 
 「INFO Trident installation succeeded.」が出力されればインストール成功です。
@@ -216,12 +135,12 @@ Tridentへバックエンドストレージの登録
     +----------------+----------------+
     | SERVER VERSION | CLIENT VERSION |
     +----------------+----------------+
-    | 18.07.0        | 18.07.0        |
+    | 19.01.0        | 19.01.0        |
     +----------------+----------------+
 
 バージョンが表示されていればインストール成功です。
-作成した定義ファイル、 ``setup/backend.json`` を使用し、バックエンド登録を実行します。
-まずは NFS ストレージバックエンドであるONTAPを登録します。
+
+Trident 19.01 からはこれまでと挙動が変わっており、Tridentのメタデータ保存先をバックエンドストレージとして登録されます。
 
 .. code-block:: console
 

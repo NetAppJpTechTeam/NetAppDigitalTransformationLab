@@ -158,6 +158,8 @@ Dockerイメージのビルド、pushのサンプルは以下の通りです。
 
 サンプルファイルを準備しましたのでそれぞれの項目の意味を考え作成してみましょう。
 
+.. todo:: シンプルなマニフェストファイルとする。
+
 (https://kubernetes.io/docs/tutorials/stateful-application/mysql-wordpress-persistent-volume/ を参考としています。）
 
 
