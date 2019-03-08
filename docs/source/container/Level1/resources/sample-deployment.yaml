@@ -23,8 +23,6 @@ spec:
     matchLabels:
       app: アプリケーション名
       tier: ティア名
-  strategy:
-    type: Recreate
   template:
     metadata:
       labels:

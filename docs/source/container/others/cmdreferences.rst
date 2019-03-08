@@ -14,7 +14,7 @@ kubectlの使い方・本家へのリンク
 * https://kubernetes.io/docs/reference/kubectl/cheatsheet/
 * https://kubernetes.io/docs/tasks/debug-application-cluster/debug-application-introspection/
 * https://kubernetes.io/docs/concepts/cluster-administration/manage-deployment/
-
+*  .. todo::cheat sheetへのリンク
 
 
 デプロイメントの実施
