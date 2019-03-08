@@ -16,7 +16,7 @@ WORK_DIR           := $(CURDIR)/$(DOC_DIR)
 
 # sphinx autobuild parameters
 SRC_DIR            := source
-OUTPUT_DIR         := docs/_build/html
+OUTPUT_DIR         := build/html
 PORT               := 8000
 
 ## Shortcuts
