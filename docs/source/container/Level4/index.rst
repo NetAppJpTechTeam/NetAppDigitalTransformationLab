@@ -179,6 +179,7 @@ Helmで提供されているGrafana+Prometheusをデプロイし監視するこ�
 * :doc:`./prometheus/deploy-monitoring`
 
 .. todo:: Prometheusの長期保管について記載する。
+
 Prometheusは長期保管はできないため長期保管の際は別途保管が必要。
 
 
