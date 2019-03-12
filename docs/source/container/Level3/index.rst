@@ -10,8 +10,18 @@ Level 3: CI／CDパイプラインを構築
 
 そのためのCI/CDパイプラインを作成するのがこのレベルの目標です。
 
+以下の図はこのレベルでCICDパイプラインを実現するためのツールを表したものになります。
+実現するためには様々なツールが存在します。以下のツールはあくまで１例と捉えてください。
+
 .. image:: resources/cicd_pipeline.png
 
+登場しているツールの以下のように分類でき、それぞれ代表的なものをキーワードとして上げます。
+
+- SCM: Git, GitHub, GitLab
+- CICD: Jenkins, JenkinsX, Spinnaker, GitLab Runner
+- アーティファクト管理: JFrog
+- Image Registry: Harbor, DockerRegistry, GitLab
+- Package管理: Helm
 
 本ラボでは Level1, Level2 で行ったオペレーションをベースにCI/CDパイプラインを構築します。
 
@@ -172,15 +182,18 @@ Helm Chartの開発ガイドは以下のURLを確認ください。
 デプロイメントのさらなる進化
 =============================================================
 
-.. todo:: istioをここで導入する。Level5へ遷移させる。
-
 CI/CDプロセスを成熟させていくと常にリリース可能な状態となっていきます。
 そのような状態になると本番環境へのデプロイを迅速にし、ダウンタイムを最小化するための方法が必要になってきます。
 元々存在するプラクティスや考え方となりますがコンテナ技術、kubernetesのスケジューラー機能を使うことで今までの環境とくらべて実現がしやすくなっています。
 
 Blue/Greenデプロイメント, Canary リリースというキーワードで紹介したいと思います。
 
-.. tips::
+:doc:`../Level4/index` , :doc:`../Level5/index` で登場するサービスメッシュ、Istioの機能で実現できます。
+
+また、NetAppが提供しているNetApp Kubernetes ServiceでもKubernetesクラスタのデプロイから、Istioを使ったルーティングを視覚的に操作できる機能を提供しています。
+詳細は :doc:`../Level4/stack-management/index` で章を設けます。
+
+.. tip::
 
     CDには２つの意味を含んでいるケースがあります。文脈に応じて見分けるか、どちらの意味か確認しましょう。
 
