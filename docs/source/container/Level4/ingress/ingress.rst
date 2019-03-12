@@ -143,7 +143,7 @@ helm chartを使ったNginx Ingressのデプロイメントです。
 
 Ingressを作成するサンプルです。
 
-.. literalinclude:: resources/ingress/ingress-controller.yaml
+.. literalinclude:: ingress-controller.yaml
         :language: yaml
         :caption: L7ロードバランス的なもの
 
