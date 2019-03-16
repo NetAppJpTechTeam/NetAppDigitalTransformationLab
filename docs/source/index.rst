@@ -89,16 +89,6 @@ References
 
    commons/installed
 
-やるべきこと一覧
-=============================================================
-
-このドキュメント全体のTODOをまとめたもの
-
-.. toctree::
-   :maxdepth: 2
-
-   commons/todos
-
 DesignDoc
 =============================================================
 .. toctree::
@@ -106,10 +96,21 @@ DesignDoc
 
     container/others/design
 
+..
+   やるべきこと一覧
+   =============================================================
 
-Indices and tables
-=============================================================
+   このドキュメント全体のTODOをまとめたもの
+   ..
+      .. toctree::
+      :maxdepth: 2
 
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+      commons/todos
+
+
+   Indices and tables
+   =============================================================
+
+   * :ref:`genindex`
+   * :ref:`modindex`
+   * :ref:`search`
