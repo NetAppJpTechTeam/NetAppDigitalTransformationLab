@@ -167,7 +167,7 @@ PVCを作成時に独自の機能を有効化することができます。
 一覧については以下のURLに記載があります。
 ``metadata.annotation`` 配下に記述することで様々な機能を使用することが可能となります。
 
-* https://netapp-trident.readthedocs.io/en/stable-v18.07/kubernetes/concepts/objects.html#kubernetes-persistentvolumeclaim-objects
+* https://netapp-trident.readthedocs.io/en/stable-v19.01/kubernetes/concepts/objects.html#kubernetes-persistentvolumeclaim-objects
 
 デプロイ用のマニフェストファイルにPVCを追加
 =============================================================
