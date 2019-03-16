@@ -25,4 +25,3 @@ Level3まででアプリケーションを迅速にリリースする仕組み�
     infra-availability/index
     stack-management/index
 
-.. todo:: IstioのFault Injectionを使ったテスタビリティの向上
