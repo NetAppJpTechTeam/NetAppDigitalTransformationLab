@@ -38,13 +38,11 @@ API受付をするマスタ系のノードやetcdやkubernetesサービスの高
 
 Helmで提供されているGrafana+Prometheusをデプロイし監視することにチャレンジしてみましょう。
 
-.. include:: ./prometheus/deploy-monitoring.rst
-
+:doc:`./prometheus/deploy-monitoring.rst`
 
 .. todo:: Prometheusの長期保管について記載する。
 
-Prometheusは長期保管はできないため長期保管の際は別途保管が必要。
-
+Prometheusは長期保管はできないため長期保管の際は別途保管が必要です。
 
 バックアップはどうするか？
 =============================================================
@@ -106,9 +104,10 @@ DRをどうするか？
 * CSI (Container Storage Interface)の既存ボリュームのインポートに対応をまつ
 * Heptio ark: https://github.com/heptio/ark + SVM-DR
 
-Heptio ark を使ったDRについては以下の章でまとめました。
+..
+    Heptio ark を使ったDRについては以下の章でまとめました。
 
-.. include:: ./ark-svmdr/dr.rst
+    .. include:: ./ark-svmdr/dr.rst
 
 
 Podが停止した場合のアプリケーションの動作
@@ -122,4 +121,4 @@ PVCはTridentを使ってデプロイしたものです。
 
 ``Stateful Set`` を使い、MongoDBを複数ノードで構成し上記の検証を行った結果が以下のリンク先で確認できます。
 
-.. include:: ./mongodb-statefulset-failure/statefulset-failure.rst
+:doc:`./mongodb-statefulset-failure/statefulset-failure.rst`

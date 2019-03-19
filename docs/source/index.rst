@@ -48,6 +48,7 @@ Contents
 .. toctree::
    :maxdepth: 2
 
+   container/index
    container/Level0/index
    container/Level1/index
    container/Level2/index
@@ -55,6 +56,7 @@ Contents
    container/Level4/index
    container/Level5/index
 
+-----------
 
 実践編
 ----------
@@ -65,6 +67,7 @@ Contents
    :maxdepth: 2
 
    MLWorkflow/index
+   MLWorkflow/intro/index
    MLWorkflow/eda/index
    MLWorkflow/training/index
    MLWorkflow/serve/index
