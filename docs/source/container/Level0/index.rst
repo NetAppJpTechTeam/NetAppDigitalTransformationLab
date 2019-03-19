@@ -36,10 +36,12 @@ kubernetes基本操作
 
 .. code-block:: console
 
-    $ kubectl version
+    $ kubectl version --short
 
-    Client Version: version.Info{Major:"1", Minor:"11", GitVersion:"v1.11.2", GitCommit:"bb9ffb1654d4a729bb4cec18ff088eacc153c239", GitTreeState:"clean", BuildDate:"2018-08-07T23:17:28Z", GoVersion:"go1.10.3", Compiler:"gc", Platform:"linux/amd64"}
-    Server Version: version.Info{Major:"1", Minor:"11", GitVersion:"v1.11.2", GitCommit:"bb9ffb1654d4a729bb4cec18ff088eacc153c239", GitTreeState:"clean", BuildDate:"2018-08-07T23:08:19Z", GoVersion:"go1.10.3", Compiler:"gc", Platform:"linux/amd64"}
+    Client Version: v1.13.X
+    Server Version: v1.13.X
+
+v1.13系で有ることを確認ください。
 
 次にクラスタを形成するノードを確認します。
 
@@ -48,10 +50,10 @@ kubernetes基本操作
     $ kubectl get nodes
 
     NAME      STATUS    ROLES     AGE       VERSION
-    master    Ready     master    1d        v1.11.2
-    node0     Ready     <none>    1d        v1.11.2
-    node1     Ready     <none>    1d        v1.11.2
-    node2     Ready     <none>    1d        v1.11.2
+    master    Ready     master    1d        v1.13.X
+    node0     Ready     <none>    1d        v1.13.X
+    node1     Ready     <none>    1d        v1.13.X
+    node2     Ready     <none>    1d        v1.13.X
 
 デプロイメント
 -------------------------------------------------------------
