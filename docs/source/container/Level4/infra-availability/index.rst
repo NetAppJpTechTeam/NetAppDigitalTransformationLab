@@ -38,7 +38,7 @@ API受付をするマスタ系のノードやetcdやkubernetesサービスの高
 
 Helmで提供されているGrafana+Prometheusをデプロイし監視することにチャレンジしてみましょう。
 
-:doc:`./prometheus/deploy-monitoring.rst`
+:doc:`./prometheus/deploy-monitoring`
 
 .. todo:: Prometheusの長期保管について記載する。
 
@@ -85,8 +85,6 @@ kubernetes の構成情報が保存されているetcdのバックアップを�
 クラウドのサービスを使う上では可用性や冗長性はSLAに従うことになり、ユーザ側で意識することはあまりありません。
 プライベートレジストリを利用する場合は、ダウンしてしまうと新たにアプリケーションがデプロイできないという自体になってしまいます。
 
-
-
 セキュリティアップグレード
 =============================================================
 
@@ -121,4 +119,4 @@ PVCはTridentを使ってデプロイしたものです。
 
 ``Stateful Set`` を使い、MongoDBを複数ノードで構成し上記の検証を行った結果が以下のリンク先で確認できます。
 
-:doc:`./mongodb-statefulset-failure/statefulset-failure.rst`
+:doc:`./mongodb-statefulset-failure/statefulset-failure`

@@ -14,7 +14,7 @@ Design: kubernetes クラスタの設計要素について
 ストレージ設計
 ==============================================================
 
-* 
+* Trident Design Guide: https://netapp-trident.readthedocs.io/en/stable-v19.01/dag/kubernetes/storage_configuration_trident.html?highlight=vserver%20create#storage-configuration-for-trident
 * 管理ポートのネットワークはどうするか？
 * アーキテクチャとして、cluster管理 LIF を公開するか？それともSVM管理LIFか？
 
