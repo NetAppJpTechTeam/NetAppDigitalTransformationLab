@@ -45,7 +45,7 @@ Kubeflow のインストール
     $ ssh localadmin@192.168.xxx.10
     $ kubectl get node
 
-上記の `` kubectl get node `` で複数のノードが出力されることを確認してください。
+上記の``kubectl get node``で複数のノードが出力されることを確認してください。
 
 続いてKubeflowのインストールになります。
 いくつかログは出力されますがワーニングやエラーになっていないことを確認してください。
@@ -78,7 +78,7 @@ Kubeflowのインストールを開始します。
 
 Kubeflowのインストールユーティリティである``kfctl.sh``をダウンロードします。
 
-``kubeflow_src``を作成し作業ディレクトリとします。
+``kubeflow_src`` を作成し作業ディレクトリとします。
 
 .. code-block:: console
 
@@ -92,7 +92,7 @@ Kubeflowのインストールユーティリティである``kfctl.sh``をダウ
 - デプロイメント名は以下のサンプルでは``ndxlab-kubeflow``としますが任意の名称です。
 
 .. code-block:: console
-　　　
+
     $ scripts/kfctl.sh init ndx-kubeflow --platform none
     $ cd ndx-kubeflow/
     $ ../scripts/kfctl.sh generate k8s
@@ -127,3 +127,6 @@ Kubeflowのインストールユーティリティである``kfctl.sh``をダウ
     vizier-suggestion-random                 ClusterIP   10.104.19.84     <none>        6789/TCP            54m
 
     Deploy and play!
+
+ここまででデプロイが完了です。
+ここからは実際にKubeflowを使った位置一連の流れを実施していきます。
