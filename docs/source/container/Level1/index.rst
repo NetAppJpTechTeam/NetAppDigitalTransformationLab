@@ -162,10 +162,80 @@ Dockerイメージのビルド、pushのサンプルは以下の通りです。
 
 (https://kubernetes.io/docs/tutorials/stateful-application/mysql-wordpress-persistent-volume/ を参考としています。）
 
+ここではサンプルとしてWordPressとMySQLをデプロイします。
+MySQLではSecretオブジェクトを使用しパスワードを渡すようになっています。
 
-.. literalinclude:: resources/sample-deployment.yaml
+流れとしては、以下の3つを実施します。
+
+どの部分を実施しているかを把握しながらすすめましょう。
+
+1. MySQL 用のSecretオブジェクトを作成
+2. MySQL をデプロイ
+3. WordPressをデプロイ
+
+Secretの作成
+-------------------
+
+ここではKubernetes上でパスワードを受け渡すときなどに使う、Secretを作成します。
+
+Secretの説明はこちらです。
+
+- https://kubernetes.io/docs/concepts/configuration/secret/
+
+.. code-block:: console
+
+    $ kubectl create secret generic mysql-pass --from-literal=password=YOUR_PASSWORD
+
+作成後は以下のコマンドで結果を確認します。
+
+.. code-block:: console
+
+    $ kubectl get secrets
+
+         NAME                  TYPE                    DATA      AGE
+          mysql-pass            Opaque                  1         42s
+
+
+MySQLのデプロイ
+-------------------
+
+``mysql-pass`` という名前でSecretができたのでそのSecretを使ってMySQLを起動します。
+
+.. literalinclude:: resources/sample-mysql-deployment.yaml
     :language: yaml
-    :caption: アプリケーションをデプロイするマニフェストファイルの例 deployment.yaml
+    :caption: アプリケーションをデプロイするマニフェストファイルの例 mysql-deployment.yaml
+
+上記のマニフェストをもとにDeploymentを作成します。
+
+.. code-block:: console
+
+    kubectl create -f mysql-deployment.yaml
+
+少々時間がかかるのでどのように状態が移って行くか確認し、「Status」が「Running」になることを確認してください。
+
+.. code-block:: console
+
+      $ kubectl get pods
+
+      NAME                               READY     STATUS    RESTARTS   AGE
+      wordpress-mysql-1894417608-x5dzt   1/1       Running   0          40s
+
+
+
+WordPressのデプロイ
+-----------------------------
+
+MySQLのコンテナが立ち上がったらそのMySQLに接続するWordPressをデプロイします。
+
+.. literalinclude:: resources/sample-wordpress-deployment.yaml
+    :language: yaml
+    :caption: アプリケーションをデプロイするマニフェストファイルの例 wordpress-deployment.yaml
+
+MySQLと同様にデプロイします。
+
+.. code-block:: console
+
+    kubectl create -f wordpress-deployment.yaml
 
 
 .. sidebar:: 本番運用に関して
@@ -176,9 +246,13 @@ Dockerイメージのビルド、pushのサンプルは以下の通りです。
 kubectlの操作を容易にする
 -------------------------------------------------------------
 
-kubectlのオペレーションの簡易化のためlabelをつけることをおすすめします。
+上記のマニフェストにも記載がありますが、Labelには複数の使い方があります。
+Serviceが接続先を見つけるために使っている例が上記のマニフェストとなります。
 
 * 参考URL: `k8s label <https://kubernetes.io/docs/concepts/configuration/overview/#using-labels>`_
+
+kubectlのオペレーションの簡易化のためlabelをつけることをおすすめします。
+例えば以下のような使い方があります。
 
 ``kubectl get pods -l app=nginx`` などのようにlabelがついているPod一覧を取得といったことが簡単にできます。
 ほかにも以下の様なことが可能となります。
@@ -186,17 +260,6 @@ kubectlのオペレーションの簡易化のためlabelをつけることを�
 * ``kubectl delete deployment -l app=app_label``
 * ``kubectl delete service -l app=app_label``
 * ``kubectl delete pvc -l app=wordpress``
-
-kubectlを使ってアプリケーションをデプロイ
--------------------------------------------------------------
-
-
-以下のコマンドを実行してデプロイしましょう。
-
-.. code-block:: console
-
-    $ kubectl create -f deployment.yaml
-
 
 アプリケーションの稼働確認
 =============================================================
@@ -211,14 +274,23 @@ kubectlを使ってアプリケーションをデプロイ
 
 結果として以下のような出力が得られます。
 
-今回はServiceのtypeをNodePortで指定しているため、PORT(S)の":"で区切られた右側のポート(以下の例だと32048)にアクセスしてみましょう。
+今回はService.typeをLoadBalancerで指定しているため、EXTERNAL-IP欄に表示されたIPでアクセスしてみましょう。
+
 
 .. code-block:: console
 
     NAME              TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)        AGE
     kubernetes        ClusterIP   10.96.0.1      <none>        443/TCP        6d
-    wordpress         NodePort    10.98.247.58   <none>        80:32048/TCP   2h
+    wordpress         LoadBalancer    10.98.247.58   192.168.10.210        80:32048/TCP   2h
     wordpress-mysql   ClusterIP   None           <none>        3306/TCP       2h
+
+* 今回はオンプレミスでMetalLBを使用しLoadBalancerでExternal-IPを使用できるようにしました。
+
+Service.Type=NodePortについても確認しましょう。
+
+- 参考URL: https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types
+
+
 
 .. note:: kubectl引数の省略系について
 
