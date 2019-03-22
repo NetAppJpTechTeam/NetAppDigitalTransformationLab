@@ -47,6 +47,7 @@ Contents
 
 .. toctree::
    :maxdepth: 2
+   :caption: 基礎編: アプリケーションのコンテナ化からサービスメッシュまで
 
    container/index
    container/Level0/index
@@ -58,13 +59,10 @@ Contents
 
 -----------
 
-実践編
-----------
-
-画像解析AIのシナリオを実施する
 
 .. toctree::
    :maxdepth: 2
+   :caption: 実践編: 画像解析AIの作成を体験
 
    MLWorkflow/index
    MLWorkflow/intro/index
@@ -76,7 +74,7 @@ Contents
 References
 =============================================================
 .. toctree::
-    :maxdepth: 2
+    :maxdepth: 1
 
     container/others/cmdreferences
     container/others/terms
