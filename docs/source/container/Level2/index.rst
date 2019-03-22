@@ -238,7 +238,7 @@ DeploymentによってPodの起動数は管理されるため新たにPodが起�
 
 .. code-block:: console
 
-    $ ssh vsadmin@192.168.XX.20 vol show
+    $ ssh vsadmin@192.168.XX.200 vol show
 
     Password:
     Vserver   Volume       Aggregate    State      Type       Size  Available Used%
