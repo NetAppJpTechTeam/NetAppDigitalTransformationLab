@@ -112,8 +112,30 @@ kubeflow-deployディレクトリが作成されました。
 
 .. code-block:: console
 
-    $ cd kubeflow-exe/
+    $ cd kubeflow-deploy/
     $ ../scripts/kfctl.sh generate k8s
+
+生成された設定をそのままapplyするとambassador等UIを提供するサービスはClusterIPで公開されます。
+外部からはアクセス出来ませんのでサービスのタイプを変更します。
+
+.. note::
+
+    下記ではNodePortに変更していますが、ラボの環境ではLoadBalancerを使う事も可能です。
+    また、公開は必須ではなくkubectlを動作させている端末上のポートにフォワードして
+    uiを使う事も可能です。
+    また、JupyterについてはAmbassador上からアクセスする事が可能ですので必須ではありません。
+
+.. code-block:: console
+
+    $ cd ks_app/
+    $ ks param set ambassador ambassadorServiceType NodePort
+    $ ks param set jupyter serviceType NodePort
+    $ cd ..
+
+設定が出来たら適用してKubernetesに投入します。
+
+.. code-block:: console
+
     $ ../scripts/kfctl.sh apply k8s
 
 ここまででデプロイが完了です。
@@ -149,5 +171,31 @@ kubeflow-deployディレクトリが作成されました。
     vizier-suggestion-random                 1         1         1            1           26m
     workflow-controller                      1         1         1            1           48m
 
+minio/mysql/vizier-dbはDB等の永続化ボリューム(Persistent Volume)を必要とします。
+ボリュームの状態を確認します。
+
+.. code-block:: console
+
+    $ kubectl get pvc -n kubeflow
+
+    NAME             STATUS   VOLUME   CAPACITY   ACCESS MODES   STORAGECLASS   AGE
+    katib-mysql      Bound    vol3     10Gi       RWO                           73s
+    minio-pv-claim   Bound    vol1     10Gi       RWO                           89s
+    mysql-pv-claim   Bound    vol2     10Gi       RWO                           89s
+
+    $ kubectl get pv
+
+    NAME   CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM                     STORAGECLASS   REASON   AGE
+    vol1   10Gi       RWO            Retain           Bound    kubeflow/minio-pv-claim                           3m17s
+    vol2   10Gi       RWO            Retain           Bound    kubeflow/mysql-pv-claim                           3m17s
+    vol3   10Gi       RWO            Retain           Bound    kubeflow/katib-mysql                              3m17s
+
+.. todo:: tridentのlog貼り付ける
+
+.. note::
+
+    Tridentの設定が終わっていない場合、永続化ボリュームがプロビジョニングされず
+    コンテナが起動できません。Tridentの導入と、デフォルトストレージクラスの設定まで
+    を完了させてください。
 
 ここからは実際にKubeflowを使った一連の流れを実施していきます。
