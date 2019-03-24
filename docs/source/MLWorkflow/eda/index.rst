@@ -13,24 +13,20 @@
 ==============================================
 
 ここでは以下のフローで進んでいきます。
+一覧としては以下の通りです。一つ一つの用語がわからない場合があるかもしれませんがまずは動かし体験することを目標としています。
 
-このハンズオンではksonnetコンポーネントを適応していきます。
-一覧としては以下の通りです。一つ一つの用語は
+#. テスト、トレニングデータ、トレーニング結果（モデル）を保管するPersistentVolumeClaimをデプロイする
+#. データセットのダウンロード、データセットのアノテーション、事前トレーニング済みモデルチェックポイント、トレーニングパイプラインの構成ファイルをダウンロード
+#. ダウンロードしたデータ・セット、事前トレーニング済みデータ・セット、データ・セットアノテーションの解凍
+#. ペット検知器モデルをトレーニングするので、TensorFlowペットレコードを作成
 
-- テスト、トレニングデータ、トレーニング結果（モデル）を保管するPersistentVolumeClaim
-- データセットのダウンロード、データセットのアノテーション、事前トレーニング済みモデルチェックポイント、トレーングパイプラインの構成ファイル
-- ダウンロードしたデータ・セット、事前トレーニング済みデータ・セット、データ・セットアノテーションの解凍
-- ペット検知器モデルをトレーニングするので、TensorFlowペットレコードを作成
-- 上記のコンフィグレーションを使用して分散TensorFlowオブジェクト検出トレーニングジョブを実行
-- トレーニングしたペット判定機のモデルをTF-Servingを使用してサーブ　
+ハンズオンではこのksonnetアプリを使用し進めます。
 
 この例で使用する一連のコンポーネントを含むksonnetアプリks-appが存在します。
 コンポーネントはks-app/componentsディレクトリにあります、カスタマイズしたい場合はここを編集します。
 
-ハンズオンではこのksonnetアプリを使用し進めます。
-
-前章から続けている場合はKubeflowのディレクトリにいるため、一旦ホームに戻り、今回のお題の画像解析AI用のディレクトリに移動します。
-なお、このサンプルアプリケーションはベースとしてはKubeflowのExampleを使用しております。
+前章から続けている場合はKubeflowのディレクトリに移動しているため、一旦ホームに戻り、今回のお題の画像解析AI用のディレクトリに移動します。
+なお、このサンプルアプリケーションはベースとしてKubeflowのExampleを使用しております。
 
 - https://github.com/kubeflow/examples
 
@@ -51,7 +47,7 @@
 トレーニングデータの準備
 ====================================================================================
 
-作業ディレクトリ pwd を実行し以下のディレクトリであることを確認ください。
+作業ディレクトリ pwd を実行し以下のディレクトリであることを確認しましょう。
 
 .. code-block:: console
 
@@ -59,12 +55,15 @@
 
     /home/localadmin/exmaples/object_detection/ks-app
 
+データ保管用の領域を作成
+--------------------------------------------------------------------------------------
 
-はじめにデータを保管するPVCを作成します。
+はじめにデータを保管するPersistentVolumeClaim(PVC)を作成します。
 
-ハンズオンではダイナミックストレージプロビジョニングが必要となるため、
+ハンズオンではダイナミックストレージプロビジョニングが必要となります。
+ここでは基礎編を参照しTridentの導入をしましょう。
 
-:doc: `../../container/Level2/` を参照してダイナックストレージプロビジョニングを設定しましょう。
+:doc:`../../container/Level2/index` を参照してダイナミックストレージプロビジョニングを設定しましょう。
 
 以下の項目を設定し、 ``ontap-gold`` を作成します。
 
@@ -72,15 +71,20 @@
 - StorageClassの定義
 - NFSバックエンドのONTAPでのStorageClass
 
-実行後以下の表記担っていたら完了です。
+ハンズオン簡易化のため作成したストレージクラスをデフォルトとします。
+
+.. code-block:: console
+
+    $ kubectl patch storageclass ontap-gold -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}'
+
+実行後以下の表記となっていたら完了です。
 
 .. code-block:: console
 
     $ kubectl get storageclass
 
     NAME                 PROVISIONER            AGE
-    ontap-gold           netapp.io/trident      3d15h
-    standard (default)   kubernetes.io/gce-pd   3d16h
+    ontap-gold (default) netapp.io/trident      3d15h
 
 
 ksonnet のコンポーネントを編集します。
@@ -89,7 +93,9 @@ ksonnet のコンポーネントを編集します。
 
     $ ks param set pets-pvc accessMode "ReadWriteMany"
     $ ks param set pets-pvc storage "20Gi"
-    $ ks param set pets-pvc storageclass "ontap-gold"
+    $ ks param set pets-pvc storageClassName "ontap-gold"
+
+
 
 .. todo::  ks param set pets-pvc cloneFromPVC "pets-org"
 
@@ -99,12 +105,50 @@ ksonnet のコンポーネントを編集します。
 
     $ ks param list pets-pvc
 
-    COMPONENT PARAM      VALUE
-    ========= =====      =====
-    pets-pvc  accessMode 'ReadWriteMany'
-    pets-pvc  name       'pets-pvc'
-    pets-pvc  storage    '20Gi'
+    COMPONENT PARAM            VALUE
+    ========= =====            =====
+    pets-pvc  accessMode       'ReadWriteMany'
+    pets-pvc  name             'pets-pvc'
+    pets-pvc  storage          '20Gi'
     pets-pvc  storageClassName 'ontap-gold'
+
+展開したファイルだと、StorageClassを定義する項目がないため追加します。
+
+.. code-block:: console
+
+    $ vim components/pets-pvc.jsonnet
+
+
+``storageClassName: params.storageClassName`` を追記しましょう。
+
+追記後は以下のファイルとなっていれば完了です。
+
+.. code-block:: js
+
+    local env = std.extVar("__ksonnet/environments");
+    local params = std.extVar("__ksonnet/params").components["pets-pvc"];
+
+    local k = import "k.libsonnet";
+
+    local pvc = {
+      apiVersion: "v1",
+      kind: "PersistentVolumeClaim",
+      metadata:{
+        name: params.name,
+        namespace: env.namespace,
+      },
+      spec:{
+        accessModes: [params.accessMode],
+        volumeMode: "Block",
+        resources: {
+          requests: {
+            storage: params.storage,
+          },
+        },
+        storageClassName: params.storageClassName
+      },
+    };
+
 
 以下のコマンドを実行するとデータ保管用の領域であるPVCが作成されます。
 
@@ -124,16 +168,22 @@ ksonnet のコンポーネントを編集します。
     NAME       STATUS   VOLUME                    CAPACITY   ACCESS MODES   STORAGECLASS   AGE
     pets-pvc   Bound    kubeflow-pets-pvc-e2be6   20Gi       RWX            ontap-gold     6m55s
 
-ここまででデータを保管するPVCが作成できたため、PVCに必要なデータをダウンロードします。
+ここまででデータを保管するPVCが作成できたため、次はPVCに必要なデータをダウンロードします。
+
+
+AI作成に必要なデータをダウンロード
+--------------------------------------------------------------------------------------
+
+ここまでに作成した``pets-pvc``へデータをダウンロードし保管します。
 
 .. code-block:: console
 
-    PVC="pets-pvc"
-    MOUNT_PATH="/pets_data"
-    DATASET_URL="http://www.robots.ox.ac.uk/~vgg/data/pets/data/images.tar.gz"
-    ANNOTATIONS_URL="http://www.robots.ox.ac.uk/~vgg/data/pets/data/annotations.tar.gz"
-    MODEL_URL="http://download.tensorflow.org/models/object_detection/faster_rcnn_resnet101_coco_2018_01_28.tar.gz"
-    PIPELINE_CONFIG_URL="https://raw.githubusercontent.com/kubeflow/examples/master/object_detection/conf/faster_rcnn_resnet101_pets.config"
+    $ PVC="pets-pvc"
+    $ MOUNT_PATH="/pets_data"
+    $ DATASET_URL="http://www.robots.ox.ac.uk/~vgg/data/pets/data/images.tar.gz"
+    $ ANNOTATIONS_URL="http://www.robots.ox.ac.uk/~vgg/data/pets/data/annotations.tar.gz"
+    $ MODEL_URL="http://download.tensorflow.org/models/object_detection/faster_rcnn_resnet101_coco_2018_01_28.tar.gz"
+    $ PIPELINE_CONFIG_URL="https://raw.githubusercontent.com/kubeflow/examples/master/object_detection/conf/faster_rcnn_resnet101_pets.config"
 
 
 ksonnetにパラメータを指定します。
@@ -148,7 +198,7 @@ ksonnetにパラメータを指定します。
     $ ks param set get-data-job urlPipelineConfig ${PIPELINE_CONFIG_URL}
 
 
-指定されたパラメータを確認します
+指定したパラメータを確認します
 
 .. code-block:: console
 
@@ -157,13 +207,77 @@ ksonnetにパラメータを指定します。
     COMPONENT    PARAM             VALUE
     =========    =====             =====
     get-data-job mountPath         '/pets_data'
-    get-data-job mounthPath        '/pets_data'
     get-data-job name              'get-data-job'
     get-data-job pvc               'pets-pvc'
     get-data-job urlAnnotations    'http://www.robots.ox.ac.uk/~vgg/data/pets/data/annotations.tar.gz'
     get-data-job urlData           'http://www.robots.ox.ac.uk/~vgg/data/pets/data/images.tar.gz'
     get-data-job urlModel          'http://download.tensorflow.org/models/object_detection/faster_rcnn_resnet101_coco_2018_01_28.tar.gz'
     get-data-job urlPipelineConfig 'https://raw.githubusercontent.com/kubeflow/examples/master/object_detection/conf/faster_rcnn_resnet101_pets.config'
+
+ここで使用しているサンプルの一部ではkubernetesクラスタないから外部への名前解決が失敗する状態になっています。
+同じ動作をするコンテナイメージを作成しましたので以下のファイルの``image``の部分を変更してください。
+
+image: "inutano/wget" から　image: "makotow/wget:dns-fix-0.1.2"　へ変更してください。
+
+.. code-block:: console
+
+    $ vim components/get-data-job.jsonnet
+
+最終的にファイル全体が以下のようになっていれば完了です。
+
+.. code-block:: console
+
+    local env = std.extVar("__ksonnet/environments");
+    local params = std.extVar("__ksonnet/params").components["get-data-job"];
+
+    local k = import "k.libsonnet";
+
+    local getDataJob(namespace, name, pvc, url, mountPath) = {
+          apiVersion: "batch/v1",
+          kind: "Job",
+          metadata: {
+            name: name,
+            namespace: namespace,
+          },
+          spec: {
+            template: {
+              spec: {
+                containers: [{
+                  name: "get-data",
+                  image: "makotow/wget:dns-fix-0.1.2", <- ここをこの用に変更します。
+                  imagePullPolicy: "IfNotPresent",
+                  command: ["wget",  url, "-P", mountPath, "--no-check-certificate"],
+                  volumeMounts: [{
+                      mountPath: mountPath,
+                      name: "pets-data",
+                  },],
+                  },],
+                volumes: [{
+                    name: "pets-data",
+                    persistentVolumeClaim: {
+                      claimName: pvc,
+                    },
+                },],
+                restartPolicy: "Never",
+              },
+            },
+            backoffLimit: 4,
+          },
+        };
+
+    std.prune(k.core.v1.list.new([
+      getDataJob(env.namespace, params.name + "-dataset", params.pvc, params.urlData, params.mountPath),
+      getDataJob(env.namespace, params.name + "-annotations", params.pvc, params.urlAnnotations, params.mountPath),
+      getDataJob(env.namespace, params.name + "-model", params.pvc, params.urlModel, params.mountPath),
+      getDataJob(env.namespace, params.name + "-config", params.pvc, params.urlPipelineConfig, params.mountPath)]))
+
+
+
+.. note::
+
+    なぜ名前解決が失敗しているかについて詳しく知りたい方は以下のGitHub Issues のやりとりが参考になります。
+
+    https://github.com/kubernetes/kubernetes/issues/64924
 
 kubernetesクラスタに適応します。
 
@@ -183,7 +297,7 @@ kubernetesクラスタに適応します。
 
 ダウンロード完了しているかを確認します。
 
-「COMPLETIONS」がすべて　「1/1」となれば完了です。
+「COMPLETIONS」がすべて「1/1」となれば完了です。
 
 .. code-block:: console
 
@@ -195,6 +309,8 @@ kubernetesクラスタに適応します。
     get-data-job-dataset       1/1           74s        96s
     get-data-job-model         1/1           20s        95s
 
+ダウンロードしたデータを解凍
+--------------------------------------------------------------------------------------
 
 ダウンロードしたデータを解凍します。
 
@@ -203,11 +319,36 @@ kubernetesクラスタに適応します。
     $ ANNOTATIONS_PATH="${MOUNT_PATH}/annotations.tar.gz"
     $ DATASET_PATH="${MOUNT_PATH}/images.tar.gz"
     $ PRE_TRAINED_MODEL_PATH="${MOUNT_PATH}/faster_rcnn_resnet101_coco_2018_01_28.tar.gz"
+
+ksonnetにパラメータを指定します。
+
+.. code-block:: console
+
     $ ks param set decompress-data-job mountPath ${MOUNT_PATH}
     $ ks param set decompress-data-job pvc ${PVC}
     $ ks param set decompress-data-job pathToAnnotations ${ANNOTATIONS_PATH}
     $ ks param set decompress-data-job pathToDataset ${DATASET_PATH}
     $ ks param set decompress-data-job pathToModel ${PRE_TRAINED_MODEL_PATH}
+
+パラメータの定義を確認します
+
+.. code-block:: console
+
+    $ ks param list decompress-data-job
+
+    COMPONENT           PARAM             VALUE
+    =========           =====             =====
+    decompress-data-job mountPath         '/pets_data'
+    decompress-data-job name              'decompress-data-job'
+    decompress-data-job pathToAnnotations '/pets_data/annotations.tar.gz'
+    decompress-data-job pathToDataset     '/pets_data/images.tar.gz'
+    decompress-data-job pathToModel       '/pets_data/faster_rcnn_resnet101_coco_2018_01_28.tar.gz'
+    decompress-data-job pvc               'pets-pvc'
+
+kubernetesクラスタに適応します。
+
+.. code-block:: console
+
     $ ks apply ${ENV} -c decompress-data-job
 
     INFO Applying jobs kubeflow.decompress-data-job-dataset
@@ -217,11 +358,15 @@ kubernetesクラスタに適応します。
     INFO Applying jobs kubeflow.decompress-data-job-model
     INFO Creating non-existent jobs kubeflow.decompress-data-job-model
 
+
 モニタリングするため ``--watch``をコマンドに付与します。
+
+
 
 .. code-block:: console
 
     $ kubectl get job -n kubeflow --watch
+
     NAME                              COMPLETIONS   DURATION   AGE
     decompress-data-job-annotations   0/1           25s        25s
     decompress-data-job-dataset       0/1           25s        25s
@@ -231,7 +376,7 @@ kubernetesクラスタに適応します。
     get-data-job-dataset              1/1           74s        12m
     get-data-job-model                1/1           20s        12m
 
-最終的に以下の作業が表示されれば、解凍完了です。
+最終的に以下のように``decompress-data-job`` が表示されれば、解凍完了です。
 
 .. code-block:: console
 
@@ -239,9 +384,15 @@ kubernetesクラスタに適応します。
     decompress-data-job-dataset       1/1           108s       16m
     decompress-data-job-model         1/1           27s        16m
 
+
+トレーニングに利用するTensorFlowペットレコードを作成
+--------------------------------------------------------------------------------------
+
 今回は``TensorFlow Detection API``を使用します、そこで使えるTFRecordフォーマットに変換する必要があります。
 
 そのための``create-pet-record-job``を準備しています。このジョブを構成し、適応していきましょう。
+
+変数定義を行います。
 
 .. code-block:: console
 
@@ -249,6 +400,7 @@ kubernetesクラスタに適応します。
     $ DATA_DIR_PATH="${MOUNT_PATH}"
     $ OUTPUT_DIR_PATH="${MOUNT_PATH}"
 
+ksonnetのパラメータを設定します。
 
 .. code-block:: console
 
@@ -257,7 +409,13 @@ kubernetesクラスタに適応します。
     $ ks param set create-pet-record-job outputDirPath ${OUTPUT_DIR_PATH}
     $ ks param set create-pet-record-job mountPath ${MOUNT_PATH}
     $ ks param set create-pet-record-job pvc ${PVC}
+
+kubernetesクラスタに適応します。。
+
+.. code-block:: console
+
     $ ks apply ${ENV} -c create-pet-record-job
+
     INFO Applying jobs kubeflow.create-pet-record-job
     INFO Creating non-existent jobs kubeflow.create-pet-record-job
 
@@ -281,4 +439,3 @@ kubernetesクラスタに適応します。
 ここまででデータの準備ができました。
 
 次からはトレーニングの実施をしていきます。
-
