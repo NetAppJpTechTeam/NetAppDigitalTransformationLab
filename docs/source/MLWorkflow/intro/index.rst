@@ -40,30 +40,11 @@ Kubeflow のインストール
 
 上記の ``kubectl get node`` で複数のノードが出力されることを確認してください。
 
+.. todo:: kbueflow インストールの前段にTridentを入れる。DynamicStorageProvisioningが必要なため。
+
 Kubeflowのインストールを続けます。
 
 Kubeflowを導入するために使う ``ksonnet`` のバージョンを確認します。
-
-..
-    .. code-block:: console
-
-        $ export KS_VER=0.13.1
-
-        $ export KS_PKG=ks_${KS_VER}_linux_amd64
-
-        $ wget -O /tmp/${KS_PKG}.tar.gz https://github.com/ksonnet/ksonnet/releases/download/v${KS_VER}/${KS_PKG}.tar.gz
-
-        -- snip
-        Saving to: ‘/tmp/ks_0.13.1_linux_amd64.tar.gz’
-
-        /tmp/ks_0.13.1_linux_am 100%[============================>]  21.97M  8.79MB/s    in 2.5s
-
-        2019-03-18 15:15:25 (8.79 MB/s) - ‘/tmp/ks_0.13.1_linux_amd64.tar.gz’ saved [23034111/23034111]
-
-        $ mkdir -p ${HOME}/bin
-        $ tar -xvf /tmp/$KS_PKG.tar.gz -C ${HOME}/bin
-        $ export PATH=$PATH:${HOME}/bin/$KS_PKG
-
 
 .. code-block:: console
 
