@@ -174,7 +174,7 @@ ksonnet のコンポーネントを編集します。
 AI作成に必要なデータをダウンロード
 --------------------------------------------------------------------------------------
 
-ここまでに作成した``pets-pvc``へデータをダウンロードし保管します。
+ここまでに作成した ``pets-pvc`` へデータをダウンロードし保管します。
 
 .. code-block:: console
 
@@ -215,9 +215,9 @@ ksonnetにパラメータを指定します。
     get-data-job urlPipelineConfig 'https://raw.githubusercontent.com/kubeflow/examples/master/object_detection/conf/faster_rcnn_resnet101_pets.config'
 
 ここで使用しているサンプルの一部ではkubernetesクラスタないから外部への名前解決が失敗する状態になっています。
-同じ動作をするコンテナイメージを作成しましたので以下のファイルの``image``の部分を変更してください。
+同じ動作をするコンテナイメージを作成しましたので以下のファイルの ``image`` の部分を変更してください。
 
-image: "inutano/wget" から　image: "makotow/wget:dns-fix-0.1.2"　へ変更してください。
+image: "inutano/wget" から image: "makotow/wget:dns-fix-0.1.2"へ変更してください。
 
 .. code-block:: console
 
@@ -225,7 +225,7 @@ image: "inutano/wget" から　image: "makotow/wget:dns-fix-0.1.2"　へ変更�
 
 最終的にファイル全体が以下のようになっていれば完了です。
 
-.. code-block:: console
+.. code-block:: js
 
     local env = std.extVar("__ksonnet/environments");
     local params = std.extVar("__ksonnet/params").components["get-data-job"];
@@ -359,7 +359,7 @@ kubernetesクラスタに適応します。
     INFO Creating non-existent jobs kubeflow.decompress-data-job-model
 
 
-モニタリングするため ``--watch``をコマンドに付与します。
+モニタリングするため ``--watch`` をコマンドに付与します。
 
 
 
@@ -376,7 +376,7 @@ kubernetesクラスタに適応します。
     get-data-job-dataset              1/1           74s        12m
     get-data-job-model                1/1           20s        12m
 
-最終的に以下のように``decompress-data-job`` が表示されれば、解凍完了です。
+最終的に以下のように ``decompress-data-job`` が表示されれば、解凍完了です。
 
 .. code-block:: console
 
@@ -388,9 +388,9 @@ kubernetesクラスタに適応します。
 トレーニングに利用するTensorFlowペットレコードを作成
 --------------------------------------------------------------------------------------
 
-今回は``TensorFlow Detection API``を使用します、そこで使えるTFRecordフォーマットに変換する必要があります。
+今回は ``TensorFlow Detection API`` を使用します、そこで使えるTFRecordフォーマットに変換する必要があります。
 
-そのための``create-pet-record-job``を準備しています。このジョブを構成し、適応していきましょう。
+そのための ``create-pet-record-job`` を準備しています。このジョブを構成し、適応していきましょう。
 
 変数定義を行います。
 
