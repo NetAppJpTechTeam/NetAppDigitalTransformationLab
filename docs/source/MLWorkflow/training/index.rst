@@ -19,10 +19,22 @@
 .. code-block:: console
 
     $ cd ~/examples/object_detection/docker
+
+ここでは ``Dockerfile.training`` をしようしますが、TensorFlowのバージョンを以下のように変更します。
+
+.. code-block:: console
+
+    $ vim Docerfile.training
+
+- 変更前:tensorflow==1.10.0
+- 変更後 tensorflow==1.13.1
+
+.. code-block:: console
+
     $ docker build --pull -t pets_object_detection -f ./Dockerfile.training .
 
 コンテナイメージのビルドは割と時間がかかります。
-このタイミングで休憩をとったり、今までの流れで疑問点がないかを確認しましょう。
+このタイミングで今までの流れで疑問点がないかを確認しましょう。
 
 ビルドが終わったら生成されたイメージの確認をします。
 
@@ -39,8 +51,8 @@ docker imageへタグ付けし、コンテナレジストリへpushします。
 その際には以下のID、パスワードを入力してください。
 
 
-ユーザ名：user[XX]
-パスワード: netapp123
+- ユーザ名：user[XX]
+- パスワード: Netapp1!
 
 XX: ユーザ番号
 
@@ -228,6 +240,7 @@ KubeflowではTensorFlowのジョブをKubernetes上で稼働させるため、
 tfjobsというCustomerResouceDefinition(CRD)で定義しています。
 
 ここでは使われているイメージがなにか？
+
 中でどのようなものが稼働しているかを確認しましょう。
 
 .. code-block:: console
@@ -385,8 +398,25 @@ tfjobsというCustomerResouceDefinition(CRD)で定義しています。
 
 ここまででトレーニングの実施が完了です。
 
-CPUのみで実施していると非常に時間がかかってしまいます。
-ここでは一旦CFJobsを削除し作成されているモデルを使いアプリケーションを作成しましょう。
+今回のサンプルは200000回ステップを実行します。
+現在の実行数を確認してみましょう。
+
+CPUだと非常に時間がかかってしまうためGPUが必要になります。
+GPUの活用は今後実施します。
+
+Checkpoint が生成されていることを確認して、一旦CFJobsを削除し作成されているモデルを使いアプリケーションを作成しましょう。
+
+Checkpointがあるかを確認し、存在していればジョブを削除するため後続へ進みます。
+
+.. code-block:: console
+
+    $ kubectl -n kubeflow exec tf-training-job-master-0 -- ls ${MOUNT_PATH}/train
+
+model.ckpt-X というファイルがあれば完了です。
+
+
+CFJobsを削除します。
+
 
 .. code-block:: console
 
