@@ -20,14 +20,102 @@
 
     $ cd ~/examples/object_detection/docker
 
-ここでは ``Dockerfile.training`` をしようしますが、TensorFlowのバージョンを以下のように変更します。
+ここでは ``Dockerfile.training`` を使用します。
+
+TensorFlowのバージョンを以下のように変更します。
 
 .. code-block:: console
 
     $ vim Docerfile.training
 
 - 変更前:tensorflow==1.10.0
-- 変更後 tensorflow==1.13.1
+- 変更後:tensorflow==1.13.1
+
+最終的なファイルは以下の通りです
+
+.. code-block:: console
+
+    # Copyright 2018 Intel Corporation.
+    #
+    # Licensed under the Apache License, Version 2.0 (the "License");
+    # you may not use this file except in compliance with the License.
+    # You may obtain a copy of the License at
+    #
+    #     https://www.apache.org/licenses/LICENSE-2.0
+    #
+    # Unless required by applicable law or agreed to in writing, software
+    # distributed under the License is distributed on an "AS IS" BASIS,
+    # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    # See the License for the specific language governing permissions and
+    # limitations under the License.
+
+    FROM ubuntu:16.04
+
+    LABEL maintainer="Soila Kavulya <soila.p.kavulya@intel.com>"
+
+    # Pick up some TF dependencies
+    RUN apt-get update && apt-get install -y --no-install-recommends \
+            build-essential \
+            curl \
+            libfreetype6-dev \
+            libpng12-dev \
+            libzmq3-dev \
+            pkg-config \
+            python \
+            python-dev \
+            python-pil \
+            python-tk \
+            python-lxml \
+            rsync \
+            git \
+            software-properties-common \
+            unzip \
+            wget \
+            && \
+        apt-get clean && \
+        rm -rf /var/lib/apt/lists/*
+
+    RUN curl -O https://bootstrap.pypa.io/get-pip.py && \
+        python get-pip.py && \
+        rm get-pip.py
+
+    RUN pip --no-cache-dir install \
+            tensorflow==1.13.1
+
+    RUN pip --no-cache-dir install \
+            Cython \
+            contextlib2 \
+            jupyter \
+            matplotlib
+
+    # Setup Universal Object Detection
+    ENV MODELS_HOME "/models"
+    RUN git clone https://github.com/tensorflow/models.git $MODELS_HOME
+
+    RUN cd $MODELS_HOME/research && \
+        wget -O protobuf.zip https://github.com/google/protobuf/releases/download/v3.0.0/protoc-3.0.0-linux-x86_64.zip && \
+        unzip protobuf.zip && \
+        ./bin/protoc object_detection/protos/*.proto --python_out=.
+
+    RUN git clone https://github.com/cocodataset/cocoapi.git && \
+        cd cocoapi/PythonAPI && \
+        make && \
+        cp -r pycocotools $MODELS_HOME/research
+
+    ENV PYTHONPATH "$MODELS_HOME/research:$MODELS_HOME/research/slim:$PYTHONPATH"
+
+    # TensorBoard
+    EXPOSE 6006
+
+    WORKDIR $MODELS_HOME
+
+    # Run training job
+    ARG pipeline_config_path
+    ARG train_dir
+
+    CMD ["python", "$MODELS_HOME/research/object_detection/legacy/train.py", "--pipeline_config_path=$pipeline_config_path"  "--train_dir=$train_dir"]
+
+編集後、本ハンズオンで使用するコンテナイメージをビルドします。
 
 .. code-block:: console
 
@@ -56,8 +144,6 @@ docker imageへタグ付けし、コンテナレジストリへpushします。
 
 XX: ユーザ番号
 
-.. todo:: NDXオンプレで確認
-
 .. code-block:: console
 
     $ docker login https://registry.ndxlab.net
@@ -66,18 +152,15 @@ XX: ユーザ番号
 
 .. code-block:: console
 
-    $ cd ../ks-app/
     $ cd ~/examples/object_detection/ks-app
 
 トレーニングに関連するパラメータを設定します。
-
-.. todo:: private repositoryの場合の設定方法を確認。
 
 .. code-block:: console
 
     $ PIPELINE_CONFIG_PATH="${MOUNT_PATH}/faster_rcnn_resnet101_pets.config"
     $ TRAINING_DIR="${MOUNT_PATH}/train"
-    $ OBJ_DETECTION_IMAGE="makotow/pets_object_detection:1.0"
+    $ OBJ_DETECTION_IMAGE="user[番号]/pets_object_detection:1.0"
 
 .. code-block:: console
 
@@ -97,7 +180,7 @@ XX: ユーザ番号
 
     COMPONENT       PARAM              VALUE
     =========       =====              =====
-    tf-training-job image              'makotow/pets_object_detection:1.0'
+    tf-training-job image              'user[番号]/pets_object_detection:1.0'
     tf-training-job mountPath          '/pets_data'
     tf-training-job name               'tf-training-job'
     tf-training-job numGpu             0
@@ -107,50 +190,15 @@ XX: ユーザ番号
     tf-training-job pvc                'pets-pvc'
     tf-training-job trainDir           '/pets_data/train'
 
-.. ここがほとんどいらなくなる。
-
-    トレーニング用のコンポーネントを導入します。
-
-    .. code-block:: console
-
-        $ ks pkg install kubeflow/tf-training
-
-        INFO Retrieved 4 files
-
-    プロトタイプのリストを表示、tf-job-operator  が存在することを確認します。
-
-    .. code-block:: console
-
-        $ ks prototype list
-
-        NAME                                  DESCRIPTION
-        ====                                  ===========
-        io.ksonnet.pkg.configMap              A simple config map with optional user-specified data
-        io.ksonnet.pkg.deployed-service       A deployment exposed with a service
-        io.ksonnet.pkg.namespace              Namespace with labels automatically populated from the name
-        io.ksonnet.pkg.single-port-deployment Replicates a container n times, exposes a single port
-        io.ksonnet.pkg.single-port-service    Service that exposes a single port
-        io.ksonnet.pkg.tf-job-operator        A TensorFlow job operator.
-        io.ksonnet.pkg.tf-serving             A TensorFlow serving deployment
-
-.. 本来はkubeflowデプロイ時に実施すべき
-    オペレーターコンポーネントをプロトタイプから生成します。
-
-    .. code-block:: console
-
-        $ ks generate tf-job-operator tf-job-operator
-
-        INFO Writing component at 'examples/object_detection/ks-app/components/tf-job-operator.jsonnet'
-
 Exampleフォルダへ依存ライブラリをコピーします。
 
 .. code-block:: console
 
     $ cp -r ../../../kubeflow_src/kubeflow-deploy/ks_app/vendor/ ./vendor/
 
-Jobを実行するために必要な環境変数を定義します。
 
 tf-operatorをデプロイします。
+
 デプロイする場所は ``kubeflow_src/kubeflow-deploy/ks_app`` となり、サンプルのディレクトリは異なるため注意してください。
 
 .. code-block:: console
@@ -230,18 +278,18 @@ tf-operator をデプロイします。
 
     ks apply ${ENV} -c tf-training-job
 
+ここまででトレーニングを開始することができました。
+
 
 モニタリングする
 ----------------------------------
 
-適応後に稼働状況を確認しましょう。
+トレーニング開始後に稼働状況を確認しましょう。
 
 KubeflowではTensorFlowのジョブをKubernetes上で稼働させるため、
 tfjobsというCustomerResouceDefinition(CRD)で定義しています。
 
-ここでは使われているイメージがなにか？
-
-中でどのようなものが稼働しているかを確認しましょう。
+ここでは使われているイメージがなにか？中でどのようなものが稼働しているかを確認しましょう。
 
 .. code-block:: console
 
@@ -390,7 +438,7 @@ tfjobsというCustomerResouceDefinition(CRD)で定義しています。
       Normal   SuccessfulCreateService         5m18s                  tf-operator  Created service: tf-training-job-master-0
 
 
-またはハンズオン環境に入っているsternというツールを使うことでPodのログを確認することができます。
+また、ハンズオン環境に入っているsternというツールを使うことでPodのログを確認することができます。
 
 .. code-block:: console
 
@@ -399,6 +447,7 @@ tfjobsというCustomerResouceDefinition(CRD)で定義しています。
 ここまででトレーニングの実施が完了です。
 
 今回のサンプルは200000回ステップを実行します。
+
 現在の実行数を確認してみましょう。
 
 CPUだと非常に時間がかかってしまうためGPUが必要になります。
@@ -406,14 +455,13 @@ GPUの活用は今後実施します。
 
 Checkpoint が生成されていることを確認して、一旦CFJobsを削除し作成されているモデルを使いアプリケーションを作成しましょう。
 
-Checkpointがあるかを確認し、存在していればジョブを削除するため後続へ進みます。
+Checkpointのファイル生成状況を確認します。
 
 .. code-block:: console
 
     $ kubectl -n kubeflow exec tf-training-job-master-0 -- ls ${MOUNT_PATH}/train
 
 model.ckpt-X というファイルがあれば完了です。
-
 
 CFJobsを削除します。
 
@@ -422,5 +470,6 @@ CFJobsを削除します。
 
     $ ks delete ${ENV} -c tf-training-job
 
+ここまででトレーニングが終了しました。
 
 
