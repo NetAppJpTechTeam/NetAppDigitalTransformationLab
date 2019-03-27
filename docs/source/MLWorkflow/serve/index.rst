@@ -60,7 +60,7 @@ ksonnetのパラメータに設定します。
     export-tf-graph-job pvc                'pets-pvc'
     export-tf-graph-job trainedCheckpoint  '/pets_data/train/model.ckpt-687'
 
-Jobを実行します。
+kubernetesクラスタに適応します。
 
 .. code-block:: console
 
@@ -116,7 +116,7 @@ export-tf-graph-job の Completionが ``1/1`` になっていれば完了です�
 
 上記の例では ``pets_pvc`` というキーワードが入っているボリュームをマウントします。
 ボリューム名は各自読み替えてください。
-    Jobが完了すると以下の通りファイルが作成されています。
+Jobが完了すると以下の通りファイルが作成されています。
 
 .. code-block:: console
 
@@ -158,11 +158,11 @@ ksonnetに変数を反映します。
 
 .. code-block:: console
 
-    ks param set ${MODEL_COMPONENT} modelPath ${MODEL_PATH}
-    ks param set ${MODEL_COMPONENT} modelStorageType ${MODEL_STORAGE_TYPE}
-    ks param set ${MODEL_COMPONENT} nfsPVC ${NFS_PVC_NAME}
-    ks param set pets-model defaultCpuImage tensorflow/serving:1.13.0
-    ks param set pets-model defaultGpuImage tensorflow/serving:1.13.0-gpu
+    $ ks param set ${MODEL_COMPONENT} modelPath ${MODEL_PATH}
+    $ ks param set ${MODEL_COMPONENT} modelStorageType ${MODEL_STORAGE_TYPE}
+    $ ks param set ${MODEL_COMPONENT} nfsPVC ${NFS_PVC_NAME}
+    $ ks param set ${MODEL_COMPONENT} defaultCpuImage tensorflow/serving:1.13.0
+    $ ks param set ${MODEL_COMPONENT} defaultGpuImage tensorflow/serving:1.13.0-gpu
 
 設定した値を確認します。
 
@@ -172,8 +172,8 @@ ksonnetに変数を反映します。
 
     COMPONENT  PARAM            VALUE
     =========  =====            =====
-    pets-model defaultCpuImage  'tensorflow/serving:1.10.0'
-    pets-model defaultGpuImage  'tensorflow/serving:1.10.0-gpu'
+    pets-model defaultCpuImage  'tensorflow/serving:1.13.0'
+    pets-model defaultGpuImage  'tensorflow/serving:1.13.0-gpu'
     pets-model deployHttpProxy  true
     pets-model modelPath        '/mnt/exported_graphs/saved_model'
     pets-model modelStorageType 'nfs'
@@ -267,18 +267,37 @@ DESIREDとAVAILABLEが同一の値になっており正常稼働しているこ�
 
 別コンソールから以下のコマンドを実行しましょう。
 
+
+Kubernetes外部からモデルサーバにアクセスできるようにポートフォワーディングを設定します。
+
 .. code-block:: console
 
-    cd ~/examples/object_detection/serving_script
-    OUT_DIR=`pwd`
-    INPUT_IMG="image1.jpg"
-    python object_detection_grpc_client.py \
-    --server=localhost:9000 \
-    --input_image=${INPUT_IMG} \
-    --output_directory=${OUT_DIR} \
-    --label_map=${TF_MODELS}/models/research/object_detection/data/pet_label_map.pbtxt  \
-    --model_name=pets-model
+    $ kubectl -n kubeflow port-forward serce/pets-model 9000:9000
+
+サンプルフォルダにある画像を推論させます。
+
+.. code-block:: console
+
+    $ cd ~/examples/object_detection/serving_script
+    $ OUT_DIR=`pwd`
+    $ INPUT_IMG="image1.jpg"
+    $ python object_detection_grpc_client.py \
+        --server=localhost:9000 \
+        --input_image=${INPUT_IMG} \
+        --output_directory=${OUT_DIR} \
+        --label_map=${TF_MODELS}/models/research/object_detection/data/pet_label_map.pbtxt  \
+        --model_name=pets-model
 
 
-実行が完了すると ``OUT_DIR`` で指定した箇所物体が四角で囲われた画像になっている状態です。
+実行が完了すると ``OUT_DIR`` で指定した箇所に ``image1-output.jpg`` というファイル名で物体が四角で囲われた画像になっている状態で保存されています。
+
+ローカル環境へコピーしてどのような画像になっているかを確認しましょう。
+
+ここまででAIを創るための一連の流れを体験しました。
+実際は非常に泥臭い内容になっていることをご理解いただけたかと思います。
+
+この先はより発展した内容をオプショナルで提供します。
+
+
+
 
