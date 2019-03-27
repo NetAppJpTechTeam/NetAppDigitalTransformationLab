@@ -58,34 +58,10 @@
 データ保管用の領域を作成
 --------------------------------------------------------------------------------------
 
-はじめにデータを保管するPersistentVolumeClaim(PVC)を作成します。
+データを保管するPersistentVolumeClaim(PVC)を作成します。
 
 ハンズオンではダイナミックストレージプロビジョニングが必要となります。
-ここでは基礎編を参照しTridentの導入をしましょう。
-
-:doc:`../../container/Level2/index` を参照してダイナミックストレージプロビジョニングを設定しましょう。
-
-以下の項目を設定し、 ``ontap-gold`` を作成します。
-
-- NetApp Tridentのインストール
-- StorageClassの定義
-- NFSバックエンドのONTAPでのStorageClass
-
-ハンズオン簡易化のため作成したストレージクラスをデフォルトとします。
-
-.. code-block:: console
-
-    $ kubectl patch storageclass ontap-gold -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}'
-
-実行後以下の表記となっていたら完了です。
-
-.. code-block:: console
-
-    $ kubectl get storageclass
-
-    NAME                 PROVISIONER            AGE
-    ontap-gold (default) netapp.io/trident      3d15h
-
+前章でインストール、設定したTridentを使用します。
 
 ksonnet のコンポーネントを編集します。
 
@@ -176,6 +152,8 @@ AI作成に必要なデータをダウンロード
 
 ここまでに作成した ``pets-pvc`` へデータをダウンロードし保管します。
 
+変数定義を実施します。
+
 .. code-block:: console
 
     $ PVC="pets-pvc"
@@ -198,7 +176,7 @@ ksonnetにパラメータを指定します。
     $ ks param set get-data-job urlPipelineConfig ${PIPELINE_CONFIG_URL}
 
 
-指定したパラメータを確認します
+指定したパラメータを確認します。
 
 .. code-block:: console
 
@@ -214,7 +192,7 @@ ksonnetにパラメータを指定します。
     get-data-job urlModel          'http://download.tensorflow.org/models/object_detection/faster_rcnn_resnet101_coco_2018_01_28.tar.gz'
     get-data-job urlPipelineConfig 'https://raw.githubusercontent.com/kubeflow/examples/master/object_detection/conf/faster_rcnn_resnet101_pets.config'
 
-ここで使用しているサンプルの一部ではkubernetesクラスタないから外部への名前解決が失敗する状態になっています。
+ここで使用しているサンプルの一部ではkubernetesクラスタ内から外部への名前解決が失敗する状態になっています。
 同じ動作をするコンテナイメージを作成しましたので以下のファイルの ``image`` の部分を変更してください。
 
 image: "inutano/wget" から image: "makotow/wget:dns-fix-0.1.2"へ変更してください。
@@ -330,7 +308,7 @@ ksonnetにパラメータを指定します。
     $ ks param set decompress-data-job pathToDataset ${DATASET_PATH}
     $ ks param set decompress-data-job pathToModel ${PRE_TRAINED_MODEL_PATH}
 
-パラメータの定義を確認します
+パラメータの定義を確認します。
 
 .. code-block:: console
 
@@ -358,14 +336,9 @@ kubernetesクラスタに適応します。
     INFO Applying jobs kubeflow.decompress-data-job-model
     INFO Creating non-existent jobs kubeflow.decompress-data-job-model
 
-
-モニタリングするため ``--watch`` をコマンドに付与します。
-
-
-
 .. code-block:: console
 
-    $ kubectl get job -n kubeflow --watch
+    $ kubectl get job -n kubeflow
 
     NAME                              COMPLETIONS   DURATION   AGE
     decompress-data-job-annotations   0/1           25s        25s
@@ -376,7 +349,7 @@ kubernetesクラスタに適応します。
     get-data-job-dataset              1/1           74s        12m
     get-data-job-model                1/1           20s        12m
 
-最終的に以下のように ``decompress-data-job`` が表示されれば、解凍完了です。
+最終的に以下のように ``decompress-data-job`` のCOMPLETIONSが「1/1」と表示されれば、解凍完了です。
 
 .. code-block:: console
 
@@ -400,7 +373,7 @@ kubernetesクラスタに適応します。
     $ DATA_DIR_PATH="${MOUNT_PATH}"
     $ OUTPUT_DIR_PATH="${MOUNT_PATH}"
 
-ksonnetのパラメータを設定します。
+ksonnetにパラメータを指定します。
 
 .. code-block:: console
 
@@ -410,7 +383,7 @@ ksonnetのパラメータを設定します。
     $ ks param set create-pet-record-job mountPath ${MOUNT_PATH}
     $ ks param set create-pet-record-job pvc ${PVC}
 
-kubernetesクラスタに適応します。。
+kubernetesクラスタに適応します。
 
 .. code-block:: console
 
@@ -423,7 +396,7 @@ kubernetesクラスタに適応します。。
 
 .. code-block:: console
 
-    $ kubectl get jobs -n kubeflow --watch
+    $ kubectl get jobs -n kubeflow
 
     NAME                              COMPLETIONS   DURATION   AGE
     create-pet-record-job             0/1           47s        47s
@@ -434,6 +407,11 @@ kubernetesクラスタに適応します。。
     get-data-job-config               1/1           8s         34m
     get-data-job-dataset              1/1           74s        34m
     get-data-job-model                1/1           20s        34m
+
+COMPLETIONSが「1/1」となれば完了です。
+
+.. code-block:: console
+
     create-pet-record-job   1/1   4m15s   4m15s
 
 ここまででデータの準備ができました。

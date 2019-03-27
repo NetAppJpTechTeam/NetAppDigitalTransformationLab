@@ -5,7 +5,7 @@
 目的・ゴール: Kubeflowのインストールと環境の確認
 ==================================================================================
 
-最初に今回の環境の確認とハンズオンを行うために使う``Kubeflow``のインストールを行います。
+最初に今回の環境の確認とハンズオンを行うために使う ``Kubeflow`` のインストールを行います。
 
 - https://github.com/kubeflow/kubeflow
 
@@ -24,7 +24,7 @@
 - **Kubeflow オンプレミス: ハンズオンでインストール**
 - Kubernetes 1.12 Google Cloud Platform : Kubeflowをインストール済み、GPU 枯渇時にクラスタを切り替えて使用、アプリケーションのサーブ時に使用
 
-Kubeflow のインストール
+環境の確認
 ==================================================================================
 
 自身に与えられた環境にログインできるかを確認します。
@@ -40,7 +40,37 @@ Kubeflow のインストール
 
 上記の ``kubectl get node`` で複数のノードが出力されることを確認してください。
 
-.. todo:: kbueflow インストールの前段にTridentを入れる。DynamicStorageProvisioningが必要なため。
+Tridentのインストール
+==================================================================================
+
+ここでは基礎編を参照しTridentの導入をしましょう。
+
+:doc:`../../container/Level2/index` を参照してダイナミックストレージプロビジョニングを設定しましょう。
+
+以下の項目を設定し、 ``ontap-gold`` を作成します。
+
+- NetApp Tridentのインストール
+- StorageClassの定義
+- NFSバックエンドのONTAPでのStorageClass
+
+ハンズオン簡易化のため作成したストレージクラスをデフォルトとします。
+
+.. code-block:: console
+
+    $ kubectl patch storageclass ontap-gold -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}'
+
+実行後以下の表記となっていたら完了です。
+
+.. code-block:: console
+
+    $ kubectl get storageclass
+
+    NAME                 PROVISIONER            AGE
+    ontap-gold (default) netapp.io/trident      3d15h
+
+
+Kubeflow のインストール
+==================================================================================
 
 Kubeflowのインストールを続けます。
 
@@ -54,7 +84,7 @@ Kubeflowを導入するために使う ``ksonnet`` のバージョンを確認�
 
 Kubeflowのインストールを開始します。
 
-Kubeflowのインストールユーティリティである``kfctl.sh``をダウンロードします。
+Kubeflowのインストールユーティリティである ``kfctl.sh`` をダウンロードします。
 
 ``kubeflow_src`` を作成し作業ディレクトリとします。
 
@@ -74,11 +104,11 @@ kubeflowがダウンロードできたことを確認します。
     deployment/	kubeflow/	scripts/
 
 
-``kfctl.sh init　デプロイメント名`` でセットアップ、デプロイを実施します。
+``kfctl.sh init デプロイメント名`` でセットアップ、デプロイを実施します。
 
-デプロイメント名は以下のサンプルでは``kubeflow-deploy``としますが任意の名称です。
+デプロイメント名は以下のサンプルでは ``kubeflow-deploy`` としますが任意の名称です。
 
-kubeflow-deploy フォルダが作成され、その配下にデプロイメント用のファイル郡が作成されます。
+kubeflow-deploy フォルダが作成され、その配下にデプロイメント用のファイルが作成されます。
 
 .. code-block:: console
 
