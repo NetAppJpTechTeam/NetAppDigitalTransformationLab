@@ -33,7 +33,7 @@
 .. code-block:: console
 
     $ cd
-    $ git clone git@github.com:kubeflow/examples.git
+    $ git clone https://github.com/kubeflow/examples.git
 
 
 .. code-block:: console

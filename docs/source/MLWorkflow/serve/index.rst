@@ -145,7 +145,20 @@ Jobが完了すると以下の通りファイルが作成されています。
 今回はバックエンドのストレージはNFSを使用しているため、
 ``MODEL_STORAGE_TYPE`` はnfsを設定します。
 
+本日時点(2019/3/28時点)ではこのままだとServe時にエラーが出てしまうため、
+一部編集します。（TensorFlowのバージョンアップによりコマンドラインが一部変更による影響）
 
+編集対象のファイルは以下のUパスに存在刷るものです。  
+
+.. code-block:: console
+
+    $ vim ~/examples/object_detection/ks-app/vendor/kubeflow/tf-serving/tf-serving.libsonnet
+
+行数としては123行目を削除します。内容としては以下の行となります。
+
+.. code-block:: console
+
+    "/usr/bin/tensorflow_model_server"
 
 .. code-block:: console
 
@@ -261,7 +274,7 @@ DESIREDとAVAILABLEが同一の値になっており正常稼働しているこ�
     $ git clone https://github.com/tensorflow/models.git
     $ cd models/research
     $ protoc object_detection/protos/*.proto --python_out=.
-    $ PYTHONPATH=:${TF_MODELS}/models/research:${TF_MODELS}/models/research/slim:${PYTHONPATH}
+    $ export PYTHONPATH=:${TF_MODELS}/models/research:${TF_MODELS}/models/research/slim:${PYTHONPATH}
 
 ここまででクライアント側も準備完了です。
 

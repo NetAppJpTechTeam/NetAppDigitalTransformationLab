@@ -2,30 +2,99 @@
 GPUの活用,異なる環境でのトレーニング、デプロイ
 =============================================================
 
-目的・ゴール: GPU・クラウドを活用する
+目的・ゴール: GPU・クラウドを活用する・CI/CDパイプラインの作成
 ===================================================================================
 
 この前の章ではデータサイエンスワークフローの一連の流れを体験しました。
 基本的なワークフローは今までのとおりですが実施してみて課題がいくつかわかってきました。
 
-例えば、CPUでは処理しきれない計算量、複数環境でのユースケース等が出てきます。
+例えば、CPUでは処理しきれない計算量をどのように高速化するか？
+ステージングはオンプレ、本番はクラウドといった複数環境でのユースケースにどう対応するかが挙げられます。
 
-ここからはオプションとして以下の課題に対応していきます。
+ここからはオプションとして以下のシナリオで対応していきます。
 
-環境へのアクセス方法についてはハンズオンが完了している方へお渡ししますので、
-お声がけください。
+環境へのアクセス方法についてはハンズオンが完了している方へお渡ししますのでお声がけください。
 
 
-- CPUでは処理しきれなかったものをGPUで実行
-- 今回使用しているアーキテクチャはオンプレ、クラウドどちらでも動作すること
+- フローの中を更に高速化
+    - GPUの活用: GPUを活用し演算の高速化を体験
+    - KubeflowのコンポーネントであるArogo CI を使い自動化を体験
+- クラウドの活用: メインはオンプレの環境を使用しましたが、これがクラウドに行ってもアーキテクチャの変更なしに同じことができることを確認
+
+フローの中を更に高速化
+===================================================================================
+
+フローの中の高速化としては２つ題材を挙げています。
+
+１つ目はGPUの活用となります。
+
+２つ目は自動化という観点です、こちらについてはKubeflowのコンポーネントであるArgoCIを使用することで実現できます。
+
 
 GPUの活用
 ===================================================================================
+GPUの活用は容易です。
+
+:doc:`../training/index` で実施したトレーニングをおこなうところで、GPUの数を指定することで自動でGPUを活用できるようになります。
+
+接続用のコンフィグファイルを配布されたことを確認します。
+
+.. code-block:: console
+
+    $ kubectl get node --kubeconfig=config.gpu
+
+Nameの箇所でdgxが表示されていることを確認ください、これがGPUが搭載されたノードになります。
+
+ksonnetの環境にGPUクラスタを追加します。
+
+    $ cd ~/examples/object_detection/ks-app
+    $ ks env add gpu --kubeconfig config.gpu
+
+現在のパラメータを確認します。
+
+ここでは ``numGpu`` が０であることを確認ください。
+
+.. code-block:: console
+
+    $ ks param list tf-training-job
+
+    COMPONENT       PARAM              VALUE
+    =========       =====              =====
+    tf-training-job image              'user[番号]/pets_object_detection:1.0'
+    tf-training-job mountPath          '/pets_data'
+    tf-training-job name               'tf-training-job'
+    tf-training-job numGpu             0
+    tf-training-job numPs              1
+    tf-training-job numWorkers         1
+    tf-training-job pipelineConfigPath '/pets_data/faster_rcnn_resnet101_pets.config'
+    tf-training-job pvc                'pets-pvc'
+    tf-training-job trainDir           '/pets_data/train'
 
 
 
+.. code-block:: console
 
+    $ ks param set tf-training-job numGpu 1
+
+これで tf-train-job を実行するとGPUが使用できるようになります。
+
+tf-train-job を実行については :doc:`../training/index`  を参考に実行ください。
 
 クラウドを活用する
 ===================================================================================
 
+こちらもGPU同様で接続用のコンフィグが配布されたことを確認ください。
+以下のようにgkeというキーワードがついているノードが表示されれば切り替え完了です。
+
+.. code-block:: console
+
+    $ kubectl get node
+
+    NAME                                                STATUS   ROLES    AGE     VERSION
+    gke-ndxsharedcluster-gpu-pool-2-8d5049c9-r35b       Ready    <none>   7h48m   v1.12.5-gke.5
+    gke-ndxsharedcluster-gpu-pool-83731492-tvqx         Ready    <none>   18h     v1.12.5-gke.5
+    gke-ndxsharedcluster-standardpool01-8b5da289-2pw3   Ready    <none>   4d11h   v1.12.5-gke.5
+    gke-ndxsharedcluster-standardpool01-8b5da289-ffws   Ready    <none>   4d11h   v1.12.5-gke.5
+    gke-ndxsharedcluster-standardpool01-8b5da289-hs4b   Ready    <none>   4d11h   v1.12.5-gke.5
+
+ここからは最初から手順を実行しなにも変更することなく実現できることを確認ください。

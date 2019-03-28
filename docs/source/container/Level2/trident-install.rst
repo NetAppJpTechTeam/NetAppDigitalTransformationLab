@@ -61,6 +61,7 @@ Tridentのメタデータの保存先を定義した ``setup/backend.json`` を�
     {
         "version": 1,
         "storageDriverName": "ontap-nas",
+        "backendName": "userXXBackendName",
         "managementLIF": "192.168.XX.200",
         "dataLIF": "192.168.XX.200",
         "svm": "svmXX",
