@@ -254,6 +254,7 @@ tf-operator をデプロイします。
 
 .. code-block:: console
 
+    $ cd ~/examples/object_detection/ks-app
     $ vim components/tf-training-job.jsonnet
 
 編集後に7行目のようになっていれば完了です。

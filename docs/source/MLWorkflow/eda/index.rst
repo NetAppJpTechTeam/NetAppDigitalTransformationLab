@@ -222,7 +222,7 @@ image: "inutano/wget" から image: "makotow/wget:dns-fix-0.1.2"へ変更して�
               spec: {
                 containers: [{
                   name: "get-data",
-                  image: "makotow/wget:dns-fix-0.1.2", <- ここをこの用に変更します。
+                  image: "makotow/wget:dns-fix-0.1.2", <- このように変更します。
                   imagePullPolicy: "IfNotPresent",
                   command: ["wget",  url, "-P", mountPath, "--no-check-certificate"],
                   volumeMounts: [{
