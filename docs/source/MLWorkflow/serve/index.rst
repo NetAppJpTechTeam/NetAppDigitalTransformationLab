@@ -104,7 +104,7 @@ export-tf-graph-job の Completionが ``1/1`` になっていれば完了です�
 
     $ cd
     $ mkdir models
-    $ ssh vsadmin@192.168.120.210 vol show
+    $ ssh vsadmin@192.168.[ユーザ番号].200 vol show
 
     Password:
     Vserver   Volume       Aggregate    State      Type       Size  Available Used%
@@ -120,8 +120,8 @@ Jobが完了すると以下の通りファイルが作成されています。
 
 .. code-block:: console
 
-    $ sudo mount -t 192.168.XX.200:/trident_kubeflow_pets_pvc_9373b ./models
-    $ cd /models/exported_graphs
+    $ sudo mount -t nfs 192.168.XX.200:/trident_kubeflow_pets_pvc_9373b ./models
+    $ cd ~/models/exported_graphs
     $ ls
 
     checkpoint			model.ckpt.index  saved_model
@@ -132,8 +132,8 @@ Jobが完了すると以下の通りファイルが作成されています。
 
 .. code-block:: console
 
-    $ mkdir saved_model/1
-    $ cp saved_model/* saved_model/1
+    $ sudo mkdir saved_model/1
+    $ sudo cp saved_model/* saved_model/1
 
 ここまででモデルの準備ができました。
 
