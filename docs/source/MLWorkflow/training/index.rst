@@ -160,7 +160,7 @@ XX: ユーザ番号
 
     $ PIPELINE_CONFIG_PATH="${MOUNT_PATH}/faster_rcnn_resnet101_pets.config"
     $ TRAINING_DIR="${MOUNT_PATH}/train"
-    $ OBJ_DETECTION_IMAGE="user[番号]/pets_object_detection:1.0"
+    $ OBJ_DETECTION_IMAGE="registry.ndxlab.net/user[番号]/pets_object_detection:1.0"
 
 .. code-block:: console
 
