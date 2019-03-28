@@ -41,7 +41,7 @@
     $ cd examples/object_detection/ks-app
     $ export ENV=default
     $ ks env add ${ENV} --context=`kubectl config current-context`
-    $ ks ugprade
+    $ ks upgrade
     $ ks env set ${ENV} --namespace kubeflow
 
 トレーニングデータの準備
