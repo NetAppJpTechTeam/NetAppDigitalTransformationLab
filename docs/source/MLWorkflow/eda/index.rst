@@ -38,7 +38,7 @@
 
 .. code-block:: console
 
-    $ cd exmaples/object_detection/ks-app
+    $ cd examples/object_detection/ks-app
     $ export ENV=default
     $ ks ugprade
     $ ks env add ${ENV} --context=`kubectl config current-context`
