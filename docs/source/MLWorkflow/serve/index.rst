@@ -104,7 +104,7 @@ export-tf-graph-job の Completionが ``1/1`` になっていれば完了です�
 
     $ cd
     $ mkdir models
-    $ ssh vsadmin@192.168.120.210 vol show
+    $ ssh vsadmin@192.168.[ユーザ番号].200 vol show
 
     Password:
     Vserver   Volume       Aggregate    State      Type       Size  Available Used%
@@ -120,8 +120,8 @@ Jobが完了すると以下の通りファイルが作成されています。
 
 .. code-block:: console
 
-    $ sudo mount -t 192.168.XX.200:/trident_kubeflow_pets_pvc_9373b ./models
-    $ cd /models/exported_graphs
+    $ sudo mount -t nfs 192.168.XX.200:/trident_kubeflow_pets_pvc_9373b ./models
+    $ cd ~/models/exported_graphs
     $ ls
 
     checkpoint			model.ckpt.index  saved_model
@@ -132,8 +132,8 @@ Jobが完了すると以下の通りファイルが作成されています。
 
 .. code-block:: console
 
-    $ mkdir saved_model/1
-    $ cp saved_model/* saved_model/1
+    $ sudo mkdir saved_model/1
+    $ sudo cp saved_model/* saved_model/1
 
 ここまででモデルの準備ができました。
 
@@ -145,7 +145,20 @@ Jobが完了すると以下の通りファイルが作成されています。
 今回はバックエンドのストレージはNFSを使用しているため、
 ``MODEL_STORAGE_TYPE`` はnfsを設定します。
 
+本日時点(2019/3/28時点)ではこのままだとServe時にエラーが出てしまうため、
+一部編集します。（TensorFlowのバージョンアップによりコマンドラインが一部変更による影響）
 
+編集対象のファイルは以下のUパスに存在刷るものです。  
+
+.. code-block:: console
+
+    $ vim ~/examples/object_detection/ks-app/vendor/kubeflow/tf-serving/tf-serving.libsonnet
+
+行数としては123行目を削除します。内容としては以下の行となります。
+
+.. code-block:: console
+
+    "/usr/bin/tensorflow_model_server"
 
 .. code-block:: console
 
@@ -261,7 +274,7 @@ DESIREDとAVAILABLEが同一の値になっており正常稼働しているこ�
     $ git clone https://github.com/tensorflow/models.git
     $ cd models/research
     $ protoc object_detection/protos/*.proto --python_out=.
-    $ PYTHONPATH=:${TF_MODELS}/models/research:${TF_MODELS}/models/research/slim:${PYTHONPATH}
+    $ export PYTHONPATH=:${TF_MODELS}/models/research:${TF_MODELS}/models/research/slim:${PYTHONPATH}
 
 ここまででクライアント側も準備完了です。
 
@@ -272,7 +285,7 @@ Kubernetes外部からモデルサーバにアクセスできるようにポー�
 
 .. code-block:: console
 
-    $ kubectl -n kubeflow port-forward serce/pets-model 9000:9000
+    $ kubectl -n kubeflow port-forward service/pets-model 9000:9000
 
 サンプルフォルダにある画像を推論させます。
 

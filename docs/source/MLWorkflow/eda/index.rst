@@ -33,15 +33,15 @@
 .. code-block:: console
 
     $ cd
-    $ git clone git@github.com:kubeflow/examples.git
+    $ git clone https://github.com/kubeflow/examples.git
 
 
 .. code-block:: console
 
-    $ cd exmaples/object_detection/ks-app
+    $ cd examples/object_detection/ks-app
     $ export ENV=default
-    $ ks ugprade
     $ ks env add ${ENV} --context=`kubectl config current-context`
+    $ ks upgrade
     $ ks env set ${ENV} --namespace kubeflow
 
 トレーニングデータの準備
@@ -222,7 +222,7 @@ image: "inutano/wget" から image: "makotow/wget:dns-fix-0.1.2"へ変更して�
               spec: {
                 containers: [{
                   name: "get-data",
-                  image: "makotow/wget:dns-fix-0.1.2", <- ここをこの用に変更します。
+                  image: "makotow/wget:dns-fix-0.1.2", <- このように変更します。
                   imagePullPolicy: "IfNotPresent",
                   command: ["wget",  url, "-P", mountPath, "--no-check-certificate"],
                   volumeMounts: [{

@@ -1,5 +1,5 @@
 =============================================================
-トレーニング: トレーングを行い推論モデルを作成する
+トレーニング: トレーニングを行い推論モデルを作成する
 =============================================================
 
 目的・ゴール: 推論モデルを作成、作成する一般的な手法を体験する
@@ -9,7 +9,7 @@
 
 #. これまでの構成を使用して分散TensorFlowオブジェクト検出トレーニングジョブを実行
 
-トレーングを実施
+トレーニングを実施
 ===================================================================
 
 トレーニング用のコンテナイメージを作成します。
@@ -160,7 +160,7 @@ XX: ユーザ番号
 
     $ PIPELINE_CONFIG_PATH="${MOUNT_PATH}/faster_rcnn_resnet101_pets.config"
     $ TRAINING_DIR="${MOUNT_PATH}/train"
-    $ OBJ_DETECTION_IMAGE="user[番号]/pets_object_detection:1.0"
+    $ OBJ_DETECTION_IMAGE="registry.ndxlab.net/user[番号]/pets_object_detection:1.0"
 
 .. code-block:: console
 
@@ -195,7 +195,6 @@ Exampleフォルダへ依存ライブラリをコピーします。
 .. code-block:: console
 
     $ cp -r ../../../kubeflow_src/kubeflow-deploy/ks_app/vendor/ ./vendor/
-
 
 tf-operatorをデプロイします。
 
@@ -254,6 +253,7 @@ tf-operator をデプロイします。
 
 .. code-block:: console
 
+    $ cd ~/examples/object_detection/ks-app
     $ vim components/tf-training-job.jsonnet
 
 編集後に7行目のようになっていれば完了です。
