@@ -285,7 +285,7 @@ Kubernetes外部からモデルサーバにアクセスできるようにポー�
 
 .. code-block:: console
 
-    $ kubectl -n kubeflow port-forward serce/pets-model 9000:9000
+    $ kubectl -n kubeflow port-forward service/pets-model 9000:9000
 
 サンプルフォルダにある画像を推論させます。
 
