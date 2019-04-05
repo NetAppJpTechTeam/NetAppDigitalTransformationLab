@@ -203,7 +203,7 @@ image: "inutano/wget" から image: "makotow/wget:dns-fix-0.1.2"へ変更して�
 
 最終的にファイル全体が以下のようになっていれば完了です。
 
-.. code-block:: js
+.. code-block:: javascript
 
     local env = std.extVar("__ksonnet/environments");
     local params = std.extVar("__ksonnet/params").components["get-data-job"];
