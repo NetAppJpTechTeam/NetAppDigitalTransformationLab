@@ -124,28 +124,29 @@ NFSバックエンドのONTAPでのStorageClass
     NAME         PROVISIONER         AGE
     ontap-gold   netapp.io/trident   10s
 
-同様にブロックデバイスバックエンドとして設定したSolidFireに対応するStorageClassを作成します。
-
-バックエンド登録時に３つの性能別のQoSを作成しました。
-
-それぞれに該当するStoageClassを作成します。StorageClassで指定されたIOPSを実現できるバックエンドのQoSがボリューム作成時に自動設定されます。
-
-.. literalinclude:: resources/sample-block-sf-bronze-sc.yaml
-    :language: yaml
-    :caption: 1000IOPSの性能が出せるStorageClass
-
-
-.. literalinclude:: resources/sample-block-sf-silver-sc.yaml
-    :language: yaml
-    :caption: 4000IOPSの性能が出せるStoageClass
-
-
-.. literalinclude:: resources/sample-block-sf-gold-sc.yaml
-    :language: yaml
-    :caption: 8000IOPSの性能が出せるStoageClass
-
-以降のセクションではここまでで作成したStorageClassを適切に使い分けてすすめましょう。
-
+.. todo:: 復活したらコメント解除
+.. 同様にブロックデバイスバックエンドとして設定したSolidFireに対応するStorageClassを作成します。
+..
+.. バックエンド登録時に３つの性能別のQoSを作成しました。
+..
+.. それぞれに該当するStoageClassを作成します。StorageClassで指定されたIOPSを実現できるバックエンドのQoSがボリューム作成時に自動設定されます。
+..
+.. .. literalinclude:: resources/sample-block-sf-bronze-sc.yaml
+..     :language: yaml
+..     :caption: 1000IOPSの性能が出せるStorageClass
+..
+..
+.. .. literalinclude:: resources/sample-block-sf-silver-sc.yaml
+..     :language: yaml
+..     :caption: 4000IOPSの性能が出せるStoageClass
+..
+..
+.. .. literalinclude:: resources/sample-block-sf-gold-sc.yaml
+..     :language: yaml
+..     :caption: 8000IOPSの性能が出せるStoageClass
+..
+.. 以降のセクションではここまでで作成したStorageClassを適切に使い分けてすすめましょう。
+..
 
 .. note:: デフォルトのStorageClassの設定
 

@@ -7,7 +7,7 @@ Trident のインストールでk8sクラスタの管理者権限が必要にな
 
     $ kubectl auth can-i '*' '*' --all-namespaces
 
-バックエンドに登録するマネジメントIPにk8sクラスタのコンテナから疎通が取れるかを確認します。
+バックエンドに登録するストレージのマネジメントIP（配布資料のsvmXXのIPHONE）にk8sクラスタのコンテナから疎通が取れるかを確認します。
 
 .. code-block:: console
 
@@ -90,8 +90,11 @@ Tridentのメタデータの保存先を定義した ``setup/backend.json`` を�
     DEBU PV does not exist.                            pv=trident
     - snip
     INFO Dry run completed, no problems found.
+    - snip
 
-ドライランモードで実施すると最後に問題ない旨(INFO Dry run completed, no problems found.) が表示されれば、インストールに必要な事前要件を満たしていることが確認できます。
+
+ドライランモードで実施すると問題ない旨(INFO Dry run completed, no problems found.) が表示されれば、インストールに必要な事前要件を満たしていることが確認できます。
+バージョン、実行モードによってはログの途中に出力されることもあるためログを確認しましょう。
 
 上記の状態まで確認できたら実際にインストールを実施します。
 
@@ -153,106 +156,107 @@ Trident 19.01 からはこれまでと挙動が変わっており、Tridentの�
     | NFS_ONTAP_Backend | ontap-nas      | true   |       0 |
     +-------------------+----------------+--------+---------+
 
-つづいて、iSCSI ブロック・ストレージバックエンドのSolidFireを登録します。
-
-NFSバックエンドストレージと同様に ``setup`` ディレクトリに ``solidfire-backend.json`` を作成します。
-
-基本的な設定項目としては以下の表の通りです。
-
-.. list-table:: solidfire-backend.jsonの設定パラメータ (iSCSI SolidFire バックエンド)
-    :header-rows: 1
-
-    * - パラメータ名
-      - 説明
-      - 設定内容
-    * - Endpoint
-      - SolidFire の管理用IPを設定(MVIP)、URL先頭にユーザーIDとパスワードを付与
-      - 10.128.223.240
-    * - SVIP
-      - データ通信のIPを設定（クラスタで１つ）
-      - 192.168.0.240:3260
-    * - TenantName
-      - 任意の名称を設定、SolidFire側でのテナントとなる。
-      - 今回は環境番号とする(userXX)
-    * - Types
-      - ストレージカタログとしてのQoSのリストを指定
-      - 1つ以上のminIOPS, maxIOPS, burstIOPSを指定
-
-
-テンプレートとなるSolidFireのバックエンド定義ファイルは以下の通りです。
-
-.. code-block:: json
-
-    {
-        "version": 1,
-        "storageDriverName": "solidfire-san",
-        "Endpoint": "https://ユーザ名:パスワード@マネジメント用IP/json-rpc/8.0",
-        "SVIP": "ストレージアクセス用IP:3260",
-        "TenantName": "ユーザ環境番号",
-        "backendName": "iSCSI_SF_Backend",
-        "InitiatorIFace": "default",
-        "UseCHAP": true,
-        "Types": [
-            {
-                "Type": "Bronze",
-                "Qos": {
-                    "minIOPS": 1000,
-                    "maxIOPS": 3999,
-                    "burstIOPS": 4500
-                }
-            },
-            {
-                "Type": "Silver",
-                "Qos": {
-                    "minIOPS": 4000,
-                    "maxIOPS": 5999,
-                    "burstIOPS": 6500
-                }
-            },
-            {
-                "Type": "Gold",
-                "Qos": {
-                    "minIOPS": 6000,
-                    "maxIOPS": 8000,
-                    "burstIOPS": 10000
-                }
-            }
-        ]
-    }
-
-
-
-同様にバックエンド登録を実施します。
-
-.. code-block:: console
-
-    $ ./tridentctl -n trident create backend -f setup/solidfire-backend.json
-
-    +------------------+----------------+--------+---------+
-    |       NAME       | STORAGE DRIVER | ONLINE | VOLUMES |
-    +------------------+----------------+--------+---------+
-    | iSCSI_SF_Backend | solidfire-san  | true   |       0 |
-    +------------------+----------------+--------+---------+
-
-今までに登録したストレージバックエンドを確認します。
-
-.. code-block:: console
-
-    $ ./tridentctl get backend -n trident
-
-    +-------------------+----------------+--------+---------+
-    |       NAME        | STORAGE DRIVER | ONLINE | VOLUMES |
-    +-------------------+----------------+--------+---------+
-    | NFS_ONTAP_Backend | ontap-nas      | true   |       0 |
-    | iSCSI_SF_Backend  | solidfire-san  | true   |       0 |
-    +-------------------+----------------+--------+---------+
+..  一旦削除
+..     つづいて、iSCSI ブロック・ストレージバックエンドのSolidFireを登録します。
+..
+.. NFSバックエンドストレージと同様に ``setup`` ディレクトリに ``solidfire-backend.json`` を作成します。
+..
+.. 基本的な設定項目としては以下の表の通りです。
+..
+.. .. list-table:: solidfire-backend.jsonの設定パラメータ (iSCSI SolidFire バックエンド)
+..     :header-rows: 1
+..
+..     * - パラメータ名
+..       - 説明
+..       - 設定内容
+..     * - Endpoint
+..       - SolidFire の管理用IPを設定(MVIP)、URL先頭にユーザーIDとパスワードを付与
+..       - 10.128.223.240
+..     * - SVIP
+..       - データ通信のIPを設定（クラスタで１つ）
+..       - 192.168.0.240:3260
+..     * - TenantName
+..       - 任意の名称を設定、SolidFire側でのテナントとなる。
+..       - 今回は環境番号とする(userXX)
+..     * - Types
+..       - ストレージカタログとしてのQoSのリストを指定
+..       - 1つ以上のminIOPS, maxIOPS, burstIOPSを指定
+..
+..
+.. テンプレートとなるSolidFireのバックエンド定義ファイルは以下の通りです。
+..
+.. .. code-block:: json
+..
+..     {
+..         "version": 1,
+..         "storageDriverName": "solidfire-san",
+..         "Endpoint": "https://ユーザ名:パスワード@マネジメント用IP/json-rpc/8.0",
+..         "SVIP": "ストレージアクセス用IP:3260",
+..         "TenantName": "ユーザ環境番号",
+..         "backendName": "iSCSI_SF_Backend",
+..         "InitiatorIFace": "default",
+..         "UseCHAP": true,
+..         "Types": [
+..             {
+..                 "Type": "Bronze",
+..                 "Qos": {
+..                     "minIOPS": 1000,
+..                     "maxIOPS": 3999,
+..                     "burstIOPS": 4500
+..                 }
+..             },
+..             {
+..                 "Type": "Silver",
+..                 "Qos": {
+..                     "minIOPS": 4000,
+..                     "maxIOPS": 5999,
+..                     "burstIOPS": 6500
+..                 }
+..             },
+..             {
+..                 "Type": "Gold",
+..                 "Qos": {
+..                     "minIOPS": 6000,
+..                     "maxIOPS": 8000,
+..                     "burstIOPS": 10000
+..                 }
+..             }
+..         ]
+..     }
+..
+..
+..
+.. 同様にバックエンド登録を実施します。
+..
+.. .. code-block:: console
+..
+..     $ ./tridentctl -n trident create backend -f setup/solidfire-backend.json
+..
+..     +------------------+----------------+--------+---------+
+..     |       NAME       | STORAGE DRIVER | ONLINE | VOLUMES |
+..     +------------------+----------------+--------+---------+
+..     | iSCSI_SF_Backend | solidfire-san  | true   |       0 |
+..     +------------------+----------------+--------+---------+
+..
+.. 今までに登録したストレージバックエンドを確認します。
+..
+.. .. code-block:: console
+..
+..     $ ./tridentctl get backend -n trident
+..
+..     +-------------------+----------------+--------+---------+
+..     |       NAME        | STORAGE DRIVER | ONLINE | VOLUMES |
+..     +-------------------+----------------+--------+---------+
+..     | NFS_ONTAP_Backend | ontap-nas      | true   |       0 |
+..     | iSCSI_SF_Backend  | solidfire-san  | true   |       0 |
+..     +-------------------+----------------+--------+---------+
 
 
 問題発生時に実施: Tridentをアンインストールする
 =======================================================================
 
 トラブルシューティング時にTridentをアンインストールする必要が出てくるケースがあります。
-その際には``tridentctl`` ユーティリティのアンインストール用のサブコマンドを使用してアンインストールします。。
+その際には ``tridentctl`` ユーティリティのアンインストール用のサブコマンドを使用してアンインストールします。。
 
 以下のように ``-a`` オプションを付与して実行すると生成した管理用のetcdのデータなどすべてを削除した上でアンインストールします。
 インストール実行時に失敗したときなど、クリーンに再インストールしたい場合に使います。

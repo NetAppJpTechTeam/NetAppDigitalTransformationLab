@@ -80,7 +80,7 @@ Kubeflowを導入するために使う ``ksonnet`` のバージョンを確認�
 
     $ ks version
 
-``ks version`` の結果が　``0.13.1``　であることを確認してください。
+``ks version`` の結果が ``0.13.1`` であることを確認してください。
 
 Kubeflowのインストールを開始します。
 
@@ -210,3 +210,36 @@ minio/mysql/vizier-dbはDB等の永続化ボリューム(Persistent Volume)を�
     を完了させてください。
 
 ここからは実際にKubeflowを使った一連の流れを実施していきます。
+
+
+なお、本ガイドではシェル内で変数を定義していきます。
+もし何らかの原因でシェルのセッションが切れるようなことがあった場合にはいかに一覧がありますので
+ここを参照してください。
+
+利用変数一覧
+----------------------------
+
+.. code-block:: bash
+
+    ENV=default
+    PVC="pets-pvc"
+    MOUNT_PATH="/pets_data"
+    DATASET_URL="http://www.robots.ox.ac.uk/~vgg/data/pets/data/images.tar.gz"
+    ANNOTATIONS_URL="http://www.robots.ox.ac.uk/~vgg/data/pets/data/annotations.tar.gz"
+    MODEL_URL="http://download.tensorflow.org/models/object_detection/faster_rcnn_resnet101_coco_2018_01_28.tar.gz"
+    PIPELINE_CONFIG_URL="https://raw.githubusercontent.com/kubeflow/examples/master/object_detection/conf/faster_rcnn_resnet101_pets.config"
+    ANNOTATIONS_PATH="${MOUNT_PATH}/annotations.tar.gz"
+    DATASET_PATH="${MOUNT_PATH}/images.tar.gz"
+    PRE_TRAINED_MODEL_PATH="${MOUNT_PATH}/faster_rcnn_resnet101_coco_2018_01_28.tar.gz"
+    OBJ_DETECTION_IMAGE="makotow/pets_object_detection:1.1-tensorflow1.13"
+    PIPELINE_CONFIG_PATH="${MOUNT_PATH}/faster_rcnn_resnet101_pets.config"
+    TRAINING_DIR="${MOUNT_PATH}/train"
+    CHECKPOINT="${TRAINING_DIR}/model.ckpt-687" #replace with your checkpoint number
+    INPUT_TYPE="image_tensor"
+    EXPORT_OUTPUT_DIR="${MOUNT_PATH}/exported_graphs"
+    DATA_DIR_PATH="${MOUNT_PATH}"
+    OUTPUT_DIR_PATH="${MOUNT_PATH}"
+    MODEL_COMPONENT=pets-model
+    MODEL_PATH=/mnt/exported_graphs/saved_model
+    MODEL_STORAGE_TYPE=nfs
+    NFS_PVC_NAME=pets-pvc
