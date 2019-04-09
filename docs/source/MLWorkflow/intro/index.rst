@@ -234,7 +234,7 @@ minio/mysql/vizier-dbはDB等の永続化ボリューム(Persistent Volume)を�
     OBJ_DETECTION_IMAGE="makotow/pets_object_detection:1.1-tensorflow1.13"
     PIPELINE_CONFIG_PATH="${MOUNT_PATH}/faster_rcnn_resnet101_pets.config"
     TRAINING_DIR="${MOUNT_PATH}/train"
-    CHECKPOINT="${TRAINING_DIR}/model.ckpt-687" #replace with your checkpoint number
+    CHECKPOINT="${TRAINING_DIR}/model.ckpt-<Number>" #replace with your checkpoint number
     INPUT_TYPE="image_tensor"
     EXPORT_OUTPUT_DIR="${MOUNT_PATH}/exported_graphs"
     DATA_DIR_PATH="${MOUNT_PATH}"
