@@ -149,27 +149,12 @@ Jobが完了すると以下の通りファイルが作成されています。
 今回はバックエンドのストレージはNFSを使用しているため、
 ``MODEL_STORAGE_TYPE`` はnfsを設定します。
 
-本日時点(2019/3/28時点)ではこのままだとServe時にエラーが出てしまうため、
-一部編集します。（TensorFlowのバージョンアップによりコマンドラインが一部変更による影響）
-
-編集対象のファイルは以下のUパスに存在刷るものです。  
-
 .. code-block:: console
 
-    $ vim ~/examples/object_detection/ks-app/vendor/kubeflow/tf-serving/tf-serving.libsonnet
-
-行数としては123行目を削除します。内容としては以下の行となります。
-
-.. code-block:: console
-
-    "/usr/bin/tensorflow_model_server"
-
-.. code-block:: console
-
-    MODEL_COMPONENT=pets-model
-    MODEL_PATH=/mnt/exported_graphs/saved_model
-    MODEL_STORAGE_TYPE=nfs
-    NFS_PVC_NAME=pets-pvc
+        MODEL_COMPONENT=pets-model
+        MODEL_PATH=/mnt/exported_graphs/saved_model
+        MODEL_STORAGE_TYPE=nfs
+        NFS_PVC_NAME=pets-pvc
 
 ksonnetに変数を反映します。
 
@@ -196,6 +181,23 @@ ksonnetに変数を反映します。
     pets-model modelStorageType 'nfs'
     pets-model name             'pets-model'
     pets-model nfsPVC           'pets-pvc'
+
+
+本日時点(2019/3/28時点)ではこのままだとServe時にエラーが出てしまうため、
+一部編集します。（TensorFlowのバージョンアップによりコマンドラインが一部変更による影響）
+
+編集対象のファイルは以下のパスに存在するものです。
+
+.. code-block:: console
+    $ cd ~/examples/object_detection/ks-app/
+    $ vim vendor/kubeflow/tf-serving[ランダム文字列]/tf-serving.libsonnet
+
+行数としては123行目を一行削除します。内容としては以下の行を削除します。
+
+.. code-block:: console
+
+    "/usr/bin/tensorflow_model_server"
+
 
 モデルをサーブします。
 
@@ -280,7 +282,7 @@ Kubernetes外部からモデルサーバにアクセスできるようにポー�
 .. code-block:: console
 
     $ cd ~/examples/object_detection/serving_script
-    $ OUT_DIR=`pwd`
+    $ OUT_DIR=.  <= カレントディレクトリとしましたが好きな場所に設定してください。
     $ INPUT_IMG="image1.jpg"
     $ sudo docker run --network=host \
         -v $(pwd):/examples/object_detection/serving_script --rm -it \

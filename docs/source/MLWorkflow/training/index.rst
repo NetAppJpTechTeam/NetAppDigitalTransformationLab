@@ -22,11 +22,11 @@
 
 ここでは ``Dockerfile.training`` を使用します。
 
-TensorFlowのバージョンを以下のように変更します。
+TensorFlowのバージョンを参考にしたリポジトリから以下のように変更しています。
 
 .. code-block:: console
 
-    $ vim Docerfile.training
+    $ cat Docerfile.training
 
 - 変更前:tensorflow==1.10.0
 - 変更後:tensorflow==1.13.1
@@ -180,7 +180,7 @@ XX: ユーザ環境番号
 
     COMPONENT       PARAM              VALUE
     =========       =====              =====
-    tf-training-job image              'user[番号]/pets_object_detection:1.0'
+    tf-training-job image              'registry.ndxlab.net/user[番号]/pets_object_detection:1.0'
     tf-training-job mountPath          '/pets_data'
     tf-training-job name               'tf-training-job'
     tf-training-job numGpu             0
