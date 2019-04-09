@@ -33,7 +33,7 @@
 .. code-block:: console
 
     $ cd
-    $ git clone https://github.com/kubeflow/examples.git
+    $ git clone https://github.com/NetAppJpTechTeam/examples.git
 
 
 .. code-block:: console
@@ -47,7 +47,7 @@
 トレーニングデータの準備
 ====================================================================================
 
-作業ディレクトリ pwd を実行し以下のディレクトリであることを確認しましょう。
+作業ディレクトリで ``pwd`` を実行し以下のディレクトリであることを確認しましょう。
 
 .. code-block:: console
 
@@ -71,8 +71,6 @@ ksonnet のコンポーネントを編集します。
     $ ks param set pets-pvc storage "20Gi"
     $ ks param set pets-pvc storageClassName "ontap-gold"
 
-
-
 .. todo::  ks param set pets-pvc cloneFromPVC "pets-org"
 
 ここまでで上記でセットしたパラメータを確認しましょう。
@@ -87,17 +85,18 @@ ksonnet のコンポーネントを編集します。
     pets-pvc  name             'pets-pvc'
     pets-pvc  storage          '20Gi'
     pets-pvc  storageClassName 'ontap-gold'
+    pets-pvc  volumeMode       'Filesystem'
 
-展開したファイルだと、StorageClassを定義する項目がないため追加します。
+展開したファイルだと、StorageClassを定義する項目を追加しています。
 
 .. code-block:: console
 
-    $ vim components/pets-pvc.jsonnet
+    $ cat components/pets-pvc.jsonnet
 
 
-``storageClassName: params.storageClassName`` を追記しましょう。
+``storageClassName: params.storageClassName`` が追記されている場所を確認し、この内容が追加されることで実現できることを考えてみましょう。
 
-追記後は以下のファイルとなっていれば完了です。
+以下のファイルとなっていれば完了です。
 
 .. code-block:: js
 
@@ -115,7 +114,7 @@ ksonnet のコンポーネントを編集します。
       },
       spec:{
         accessModes: [params.accessMode],
-        volumeMode: "Block",
+        volumeMode: params.volumeMode,
         resources: {
           requests: {
             storage: params.storage,
@@ -382,6 +381,21 @@ ksonnetにパラメータを指定します。
     $ ks param set create-pet-record-job outputDirPath ${OUTPUT_DIR_PATH}
     $ ks param set create-pet-record-job mountPath ${MOUNT_PATH}
     $ ks param set create-pet-record-job pvc ${PVC}
+
+パラメータの定義を確認します。
+
+.. code-block:: console
+
+    $ ks param list create-pet-record-job
+
+    COMPONENT             PARAM         VALUE
+    =========             =====         =====
+    create-pet-record-job dataDirPath   '/pets_data'
+    create-pet-record-job image         'lcastell/pets_object_detection'
+    create-pet-record-job mountPath     '/pets_data'
+    create-pet-record-job name          'create-pet-record-job'
+    create-pet-record-job outputDirPath '/pets_data'
+    create-pet-record-job pvc           'pets-pvc'
 
 kubernetesクラスタに適応します。
 
