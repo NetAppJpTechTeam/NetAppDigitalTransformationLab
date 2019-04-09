@@ -90,7 +90,7 @@ TensorFlowのバージョンを以下のように変更します。
 
     # Setup Universal Object Detection
     ENV MODELS_HOME "/models"
-    RUN git clone https://github.com/tensorflow/models.git $MODELS_HOME
+    RUN git clone https://github.com/NetAppJpTechTeam/models.git $MODELS_HOME
 
     RUN cd $MODELS_HOME/research && \
         wget -O protobuf.zip https://github.com/google/protobuf/releases/download/v3.0.0/protoc-3.0.0-linux-x86_64.zip && \
@@ -142,7 +142,7 @@ docker imageへタグ付けし、コンテナレジストリへpushします。
 - ユーザ名：user[XX]
 - パスワード: Netapp1!
 
-XX: ユーザ番号
+XX: ユーザ環境番号
 
 .. code-block:: console
 
@@ -196,60 +196,10 @@ Exampleフォルダへ依存ライブラリをコピーします。
 
     $ cp -r ../../../kubeflow_src/kubeflow-deploy/ks_app/vendor/ ./vendor/
 
-tf-operatorをデプロイします。
-
-デプロイする場所は ``kubeflow_src/kubeflow-deploy/ks_app`` となり、サンプルのディレクトリは異なるため注意してください。
-
-.. code-block:: console
-
-    $ cd ~/kubeflow_src/kubeflow-deploy/ks_app
-    $ ks param set tf-job-operator deploymentNamespace kubeflow
-    $ ks param list tf-job-operator
-
-    COMPONENT       PARAM               VALUE
-    =========       =====               =====
-    tf-job-operator cloud               'null'
-    tf-job-operator deploymentNamespace 'kubeflow'
-    tf-job-operator deploymentScope     'cluster'
-    tf-job-operator name                'tf-job-operator'
-    tf-job-operator tfDefaultImage      'null'
-    tf-job-operator tfJobImage          'gcr.io/kubeflow-images-public/tf_operator:v0.4.0'
-    tf-job-operator tfJobUiServiceType  'ClusterIP'
-    tf-job-operator tfJobVersion        'v1beta1'
-
-
-tf-operator をデプロイします。
-
-.. code-block:: console
-
-    $ ks apply ${ENV} -c tf-job-operator
-
-    INFO Applying customresourcedefinitions tfjobs.kubeflow.org
-    INFO Creating non-existent customresourcedefinitions tfjobs.kubeflow.org
-    INFO Applying serviceaccounts kubeflow.tf-job-dashboard
-    INFO Creating non-existent serviceaccounts kubeflow.tf-job-dashboard
-    INFO Applying configmaps kubeflow.tf-job-operator-config
-    INFO Creating non-existent configmaps kubeflow.tf-job-operator-config
-    INFO Applying serviceaccounts kubeflow.tf-job-operator
-    INFO Creating non-existent serviceaccounts kubeflow.tf-job-operator
-    INFO Applying clusterroles tf-job-operator
-    INFO Creating non-existent clusterroles tf-job-operator
-    INFO Applying clusterrolebindings tf-job-operator
-    INFO Creating non-existent clusterrolebindings tf-job-operator
-    INFO Applying services kubeflow.tf-job-dashboard
-    INFO Creating non-existent services kubeflow.tf-job-dashboard
-    INFO Applying clusterroles tf-job-dashboard
-    INFO Creating non-existent clusterroles tf-job-dashboard
-    INFO Applying clusterrolebindings tf-job-dashboard
-    INFO Creating non-existent clusterrolebindings tf-job-dashboard
-    INFO Applying deployments kubeflow.tf-job-operator-v1beta1
-    INFO Applying deployments kubeflow.tf-job-dashboard
-    INFO Creating non-existent deployments kubeflow.tf-job-dashboard
-
 続いてTensorFlowのジョブを実行します。
 一部分サンプルの内容だと動作しない箇所があるため、
 
-ファイルを編集しv1alpha1からv1beta1ヘ変更しましょう。
+ファイルを編集しv1alpha2からv1beta1ヘ変更しましょう。
 
 .. code-block:: console
 
@@ -463,13 +413,4 @@ Checkpointのファイル生成状況を確認します。
 
 model.ckpt-X というファイルがあれば完了です。
 
-CFJobsを削除します。
-
-
-.. code-block:: console
-
-    $ ks delete ${ENV} -c tf-training-job
-
 ここまででトレーニングが終了しました。
-
-

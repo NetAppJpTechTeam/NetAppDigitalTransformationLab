@@ -7,7 +7,7 @@ Trident のインストールでk8sクラスタの管理者権限が必要にな
 
     $ kubectl auth can-i '*' '*' --all-namespaces
 
-バックエンドに登録するストレージのマネジメントIP（配布資料のsvmXXのIPHONE）にk8sクラスタのコンテナから疎通が取れるかを確認します。
+バックエンドに登録するストレージのマネジメントIP（配布資料のsvmXXのIPアドレス）にk8sクラスタのコンテナから疎通が取れるかを確認します。
 
 .. code-block:: console
 
@@ -74,9 +74,18 @@ Tridentのメタデータの保存先を定義した ``setup/backend.json`` を�
 
 まずは、ドライランモードで実行し問題ないことを確認します。以下の出力結果はユーザ14で実施した場合です。
 
+Tridentをインストールするネームスペースを作成します。
+
 .. code-block:: console
 
     $ kubectl create ns trident
+
+    namespace/trident created
+
+Tridentのインストーラーをドライランモードで実行します。
+
+.. code-block:: console
+
     $ ./tridentctl install --dry-run -n trident -d
 
     DEBU Initialized logging.                          logLevel=debug

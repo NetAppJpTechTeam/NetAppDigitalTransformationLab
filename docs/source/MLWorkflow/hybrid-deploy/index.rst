@@ -45,6 +45,33 @@ GPUの活用は容易です。
 
 Nameの箇所でdgxが表示されていることを確認ください、これがGPUが搭載されたノードになります。
 
+GPUを活用するためのコンテナイメージが必要です。
+今回は事前にGPUを利用できるDockerfileを準備していますのでイメージのビルドを実行しましょう。
+
+作業ディレクトリへ移動します。
+
+.. code-block:: console
+
+    $ cd ~/examples/object_detection/docker
+    $ ls Dockerfile.training.gpu
+
+上記Dockerfile.training.gpuが存在することを確認してください。
+
+上位のイメージをビルドします。
+
+.. code-block:: console
+
+    $ docker build -t pets_object_detection:1.0-gpu -f Dockerfile.training.gpu .
+
+ビルドが終了したらリポジトリに登録します。
+
+.. code-block:: console
+
+    $ docker login https://registry.ndxlab.net
+    $ docker tag  pets_object_detection:1.0-gpu  registry.ndxlab.net/user[XX]/pets_object_detection:1.0
+    $ docker push registry.ndxlab.net/user[XX]/pets_object_detection:1.0
+
+
 ksonnetの環境にGPUクラスタを追加します。
 
     $ cd ~/examples/object_detection/ks-app
@@ -60,7 +87,7 @@ ksonnetの環境にGPUクラスタを追加します。
 
     COMPONENT       PARAM              VALUE
     =========       =====              =====
-    tf-training-job image              'user[番号]/pets_object_detection:1.0'
+    tf-training-job image              'registry.ndxlab.net/user[XX]/pets_object_detection:1.0'
     tf-training-job mountPath          '/pets_data'
     tf-training-job name               'tf-training-job'
     tf-training-job numGpu             0
@@ -70,10 +97,11 @@ ksonnetの環境にGPUクラスタを追加します。
     tf-training-job pvc                'pets-pvc'
     tf-training-job trainDir           '/pets_data/train'
 
-
+GPUを有効にするコンテナイメージの設定とGPU数を設定します。
 
 .. code-block:: console
 
+    $ ks param set tf-training-job image 'registry.ndxlab.net/user[XX]/pets_object_detection:1.0-gpu'
     $ ks param set tf-training-job numGpu 1
 
 これで tf-train-job を実行するとGPUが使用できるようになります。
@@ -97,4 +125,11 @@ tf-train-job を実行については :doc:`../training/index`  を参考に実�
     gke-ndxsharedcluster-standardpool01-8b5da289-ffws   Ready    <none>   4d11h   v1.12.5-gke.5
     gke-ndxsharedcluster-standardpool01-8b5da289-hs4b   Ready    <none>   4d11h   v1.12.5-gke.5
 
-ここからは最初から手順を実行しなにも変更することなく実現できることを確認ください。
+ここからは最初から手順を実行し、なにも変更することなく実現できることを確認ください。
+
+オペレーションとしては変更はありませんがデータをどこに置くかの検討が必要となってきます。
+
+例えば今回の例でいうと以下の検討が必要になります。
+
+- 生成したコンテナイメージの配置場所
+- 別のクラスタで作ったデータを別の環境で持っていく方法

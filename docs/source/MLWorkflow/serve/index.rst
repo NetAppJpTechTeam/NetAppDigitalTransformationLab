@@ -12,10 +12,7 @@
 アプリケーション適用の準備：グラフの生成
 =============================================================
 
-一つ前の手順でチェックポイントの存在を確認しました。
-
-もう一度確認して、チェックポイントの番号を確認しましょう。
-
+トレーニング中のチェックポイントの番号を確認しましょう。
 
 .. code-block:: console
 
@@ -23,11 +20,18 @@
 
 以下の形式のファイルを参照し変数にセットします。
 
-model.ckpt-<number> をCHECKPOINT変数にセットします。
+model.ckpt-[番号] をCHECKPOINT変数にセットします。
+
+ここで一旦CFJobsを削除します。
 
 .. code-block:: console
 
-    $ CHECKPOINT="${TRAINING_DIR}/model.ckpt-<番号>"
+    $ ks delete ${ENV} -c tf-training-job
+
+
+.. code-block:: console
+
+    $ CHECKPOINT="${TRAINING_DIR}/model.ckpt-[番号]"
     $ INPUT_TYPE="image_tensor"
     $ EXPORT_OUTPUT_DIR="${MOUNT_PATH}/exported_graphs"
 
@@ -51,7 +55,7 @@ ksonnetのパラメータに設定します。
 
     COMPONENT           PARAM              VALUE
     =========           =====              =====
-    export-tf-graph-job image              'makotow/pets_object_detection:1.1-tensorflow1.13'
+    export-tf-graph-job image              'makotow/pets_object_detection:1.0'
     export-tf-graph-job inputType          'image_tensor'
     export-tf-graph-job mountPath          '/pets_data'
     export-tf-graph-job name               'export-tf-graph-job'
@@ -254,29 +258,13 @@ DESIREDとAVAILABLEが同一の値になっており正常稼働しているこ�
 
 今回の生成したモデルを使用し推論を実行するためにgRPCクライントを使用することができます。
 
-以下の要領で必要パッケージを導入してみましょう。
+今回はオペレーション簡易化のため ``grpc-client-tf-serving`` というgrpcクライアントを含んだコンテナイメージを作成してあります。
+
+容量が大きいため事前に ``docker pull`` しましょう。
 
 .. code-block:: console
 
-    $ sudo apt install protobuf-compiler python-pil python-lxml python-tk python-pip
-    $ pip install tensorflow
-    $ pip install matplotlib
-    $ pip install tensorflow-serving-api
-    $ pip install numpy
-    $ pip install grpcio
-
-
-インストールが終わったら必要リソースをダウンロードします。
-
-.. code-block:: console
-
-    $ TF_MODELS=`pwd`
-    $ git clone https://github.com/tensorflow/models.git
-    $ cd models/research
-    $ protoc object_detection/protos/*.proto --python_out=.
-    $ export PYTHONPATH=:${TF_MODELS}/models/research:${TF_MODELS}/models/research/slim:${PYTHONPATH}
-
-ここまででクライアント側も準備完了です。
+    $ docker pull registry.ndxlab.net/library/grpc-client-tf-serving:1.0
 
 別コンソールから以下のコマンドを実行しましょう。
 
@@ -294,13 +282,14 @@ Kubernetes外部からモデルサーバにアクセスできるようにポー�
     $ cd ~/examples/object_detection/serving_script
     $ OUT_DIR=`pwd`
     $ INPUT_IMG="image1.jpg"
-    $ python object_detection_grpc_client.py \
+    $ sudo docker run --network=host \
+        -v $(pwd):/examples/object_detection/serving_script --rm -it \
+        registry.ndxlab.net/library/grpc-client-tf-serving:1.0 \
         --server=localhost:9000 \
+        --model=pets-model \
         --input_image=${INPUT_IMG} \
         --output_directory=${OUT_DIR} \
-        --label_map=${TF_MODELS}/models/research/object_detection/data/pet_label_map.pbtxt  \
-        --model_name=pets-model
-
+        --label_map=${TF_MODELS}/models/research/object_detection/data/pet_label_map.pbtxt
 
 実行が完了すると ``OUT_DIR`` で指定した箇所に ``image1-output.jpg`` というファイル名で物体が四角で囲われた画像になっている状態で保存されています。
 
