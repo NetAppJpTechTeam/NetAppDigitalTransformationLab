@@ -26,7 +26,7 @@ TensorFlowのバージョンを参考にしたリポジトリから以下のよ�
 
 .. code-block:: console
 
-    $ cat Docerfile.training
+    $ cat Dockerfile.training
 
 - 変更前:tensorflow==1.10.0
 - 変更後:tensorflow==1.13.1
