@@ -189,6 +189,7 @@ ksonnetに変数を反映します。
 編集対象のファイルは以下のパスに存在するものです。
 
 .. code-block:: console
+
     $ cd ~/examples/object_detection/ks-app/
     $ vim vendor/kubeflow/tf-serving[ランダム文字列]/tf-serving.libsonnet
 
