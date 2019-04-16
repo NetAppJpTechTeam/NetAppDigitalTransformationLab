@@ -22,7 +22,7 @@
 - Kubernetes 1.13 オンプレミス（構築済み）
 - Kubernetes 1.13 GPU クラスタ（構築済み）: 主にトレーング時にクラスタを切り替えて利用
 - **Kubeflow オンプレミス: ハンズオンでインストール**
-- Kubernetes 1.12 Google Cloud Platform : Kubeflowをインストール済み、GPU 枯渇時にクラスタを切り替えて使用、アプリケーションのサーブ時に使用
+- Kubernetes 1.12 Google Cloud Platform : Kubeflowをインストール済み、アプリケーションのサーブ時に使用
 
 環境の確認
 ==================================================================================
@@ -143,7 +143,7 @@ kubeflow-deployディレクトリが作成されました。
     $ ks param set jupyter serviceType NodePort
     $ cd ..
 
-設定が出来たら適用してKubernetesに投入します。
+設定が完了したら適用してKubernetesに投入します。
 
 .. code-block:: console
 
@@ -152,6 +152,8 @@ kubeflow-deployディレクトリが作成されました。
 ここまででデプロイが完了です。
 
 どのようなコンポーネントがデプロイされたかを確認しましょう。
+
+``DESIRED`` 列と ``AVAILABLE`` 列の数字が同一であれば正常に可動している状況です。
 
 .. code-block:: console
 
@@ -185,6 +187,10 @@ kubeflow-deployディレクトリが作成されました。
 minio/mysql/vizier-dbはDB等の永続化ボリューム(Persistent Volume)を必要とします。
 ボリュームの状態を確認します。
 
+``STATUS`` 列が ``Bound`` と表示されていることを確認してください。
+
+また、バージョンによっては出力結果が異なる可能性があります。
+
 .. code-block:: console
 
     $ kubectl get pvc -n kubeflow
@@ -201,22 +207,32 @@ minio/mysql/vizier-dbはDB等の永続化ボリューム(Persistent Volume)を�
     vol2   10Gi       RWO            Retain           Bound    kubeflow/mysql-pv-claim                           3m17s
     vol3   10Gi       RWO            Retain           Bound    kubeflow/katib-mysql                              3m17s
 
-.. todo:: tridentのlog貼り付ける
-
 .. note::
 
     Tridentの設定が終わっていない場合、永続化ボリュームがプロビジョニングされず
     コンテナが起動できません。Tridentの導入と、デフォルトストレージクラスの設定まで
     を完了させてください。
 
-ここからは実際にKubeflowを使った一連の流れを実施していきます。
+まとめ
+==========================================================================================================================
 
+ここまでの手順で今回のハンズオンで使うkubeflow環境の構築を完了しました。
 
-なお、本ガイドではシェル内で変数を定義していきます。
+kubeflowはマシンラーニングのためのプラットフォームです。
+マシンラーニングを実行するためのパイプラインをkubernetes上で実行するためのコンポーネント群を提供します。
+シンプル、ポータブル、スケーラブルという特徴があり、Kubernetes上であればどこでも稼働させることができます。
+
+KubeflowにはJupyterNotebook、Katib(ハイパーパラメタチューニング)、
+バッチ処理のためのフレームワーク、エンドツーエンドのパイプライン、様々なフレームワーク（PyTorch、MXNet、Chainer、TensorFlow）が含まれており、
+マシンラーニングを実行するための基盤を提供しています。
+
+本ハンズオンではコマンドラインからフェーズごとにコンテナを活用してジョブ投入を行い一連ワークフローを体験いただきます。
+
+なお、本ハンズオンではシェル内で変数を定義していきます。
 もし何らかの原因でシェルのセッションが切れるようなことがあった場合にはいかに一覧がありますので
 ここを参照してください。
 
-利用変数一覧
+補足：利用変数一覧
 ----------------------------
 
 .. code-block:: bash
@@ -231,7 +247,7 @@ minio/mysql/vizier-dbはDB等の永続化ボリューム(Persistent Volume)を�
     ANNOTATIONS_PATH="${MOUNT_PATH}/annotations.tar.gz"
     DATASET_PATH="${MOUNT_PATH}/images.tar.gz"
     PRE_TRAINED_MODEL_PATH="${MOUNT_PATH}/faster_rcnn_resnet101_coco_2018_01_28.tar.gz"
-    OBJ_DETECTION_IMAGE="makotow/pets_object_detection:1.1-tensorflow1.13"
+    OBJ_DETECTION_IMAGE="userXX/pets_object_detection:1.0"
     PIPELINE_CONFIG_PATH="${MOUNT_PATH}/faster_rcnn_resnet101_pets.config"
     TRAINING_DIR="${MOUNT_PATH}/train"
     CHECKPOINT="${TRAINING_DIR}/model.ckpt-<Number>" #replace with your checkpoint number

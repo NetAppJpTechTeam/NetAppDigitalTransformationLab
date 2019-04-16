@@ -26,7 +26,7 @@ TensorFlowのバージョンを参考にしたリポジトリから以下のよ�
 
 .. code-block:: console
 
-    $ cat Docerfile.training
+    $ cat Dockerfile.training
 
 - 変更前:tensorflow==1.10.0
 - 変更後:tensorflow==1.13.1
@@ -138,8 +138,7 @@ docker imageへタグ付けし、コンテナレジストリへpushします。
 コンテナレジストへのpush時に認証が求められます。
 その際には以下のID、パスワードを入力してください。
 
-
-- ユーザ名：user[XX]
+- ユーザ名：userXX
 - パスワード: Netapp1!
 
 XX: ユーザ環境番号
@@ -147,8 +146,8 @@ XX: ユーザ環境番号
 .. code-block:: console
 
     $ docker login https://registry.ndxlab.net
-    $ docker tag  pets_object_detection  registry.ndxlab.net/user[XX]/pets_object_detection:1.0
-    $ docker push registry.ndxlab.net/user[XX]/pets_object_detection:1.0
+    $ docker tag  pets_object_detection  registry.ndxlab.net/user[番号]/pets_object_detection:1.0
+    $ docker push registry.ndxlab.net/user[番号]/pets_object_detection:1.0
 
 .. code-block:: console
 
@@ -161,6 +160,8 @@ XX: ユーザ環境番号
     $ PIPELINE_CONFIG_PATH="${MOUNT_PATH}/faster_rcnn_resnet101_pets.config"
     $ TRAINING_DIR="${MOUNT_PATH}/train"
     $ OBJ_DETECTION_IMAGE="registry.ndxlab.net/user[番号]/pets_object_detection:1.0"
+
+トレーニングに関連するパラメータを設定します。
 
 .. code-block:: console
 
@@ -197,7 +198,7 @@ Exampleフォルダへ依存ライブラリをコピーします。
     $ cp -r ../../../kubeflow_src/kubeflow-deploy/ks_app/vendor/ ./vendor/
 
 続いてTensorFlowのジョブを実行します。
-一部分サンプルの内容だと動作しない箇所があるため、
+サンプルの内容だと動作しない箇所があるため修正します。
 
 ファイルを編集しv1alpha2からv1beta1ヘ変更しましょう。
 
@@ -223,13 +224,13 @@ Exampleフォルダへ依存ライブラリをコピーします。
      11     namespace: env.namespace,
      12   },
 
+kubernetesクラスタへ反映します。
 
 .. code-block:: console
 
     ks apply ${ENV} -c tf-training-job
 
 ここまででトレーニングを開始することができました。
-
 
 モニタリングする
 ----------------------------------
@@ -398,11 +399,12 @@ tfjobsというCustomerResouceDefinition(CRD)で定義しています。
 
 今回のサンプルは200000回ステップを実行します。
 
-現在の実行数を確認してみましょう。
+現在の実行数を確認し、以下の項目を確認してみましょう。
 
-CPUだと非常に時間がかかってしまうためGPUが必要になります。
-GPUの活用は今後実施します。
+- 1ステップあたりどれくらいの時間がかかっているか？
+- 200000回実施するまでどれくらいの時間がかかるか？
 
+なぜGPUが必要になるかを実感いただけたのではないでしょうか。CPUだと非常に時間がかかってしまうためGPUが必要になります。
 Checkpoint が生成されていることを確認して、一旦CFJobsを削除し作成されているモデルを使いアプリケーションを作成しましょう。
 
 Checkpointのファイル生成状況を確認します。
@@ -411,6 +413,17 @@ Checkpointのファイル生成状況を確認します。
 
     $ kubectl -n kubeflow exec tf-training-job-master-0 -- ls ${MOUNT_PATH}/train
 
-model.ckpt-X というファイルがあれば完了です。
+model.ckpt-X というファイルがあれば完了です。（Xは0以上のものであることを確認ください。）
 
-ここまででトレーニングが終了しました。
+まとめ
+==========================================================================================================================
+
+ここでは準備したデータをマシンラーニングを実行し、生成されたモデルを確認刷るところまで実施しました。
+
+#. トレーニング用のコンテナイメージの作成
+#. 作成したイメージをコンテナレジストリへの登録
+#. Tensorflowをジョブとして実行
+#. チェックポイントの確認
+
+トレーニングが終了したので、次は生成されたモデルをアプリケーションから使用するため、
+サーブするというオペレーションを行います。
