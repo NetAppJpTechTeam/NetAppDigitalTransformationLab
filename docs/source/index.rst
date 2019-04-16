@@ -69,6 +69,7 @@ Contents
    MLWorkflow/eda/index
    MLWorkflow/training/index
    MLWorkflow/serve/index
+   MLWorkflow/serve/pre-trained
    MLWorkflow/hybrid-deploy/index
 
 References
