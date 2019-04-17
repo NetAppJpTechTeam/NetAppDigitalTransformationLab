@@ -33,7 +33,7 @@ init:
 	--rm -it \
 	$(REGISTRY):$(TAG) \
 	sphinx-quickstart
-	
+
 .PHONY: auto-build-sphinx
 auto-build-sphinx:
 	docker run -p $(PORT):$(CONTAINER_PORT) \
@@ -57,3 +57,16 @@ clean:
 	--rm -it \
 	$(REGISTRY):$(TAG) \
 	make clean
+
+
+TOPIC_BRANCH = hot-fix-`date +%Y%m%d`
+.PHONY: new-topic
+new-topic:
+	git checkout -b ${TOPIC_BRANCH}
+
+.PHONY: merge-upstream
+merge-upstream:
+	git fetch upstream
+	git checkout master
+	git merge upstream/master --no-edit
+	git push origin master
