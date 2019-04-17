@@ -244,7 +244,8 @@ tfjobsというCustomerResouceDefinition(CRD)で定義しています。
 
 .. code-block:: console
 
-    kubectl -n kubeflow describe tfjobs tf-training-job
+    $ kubectl -n kubeflow describe tfjobs tf-training-job
+
     Name:         tf-training-job
     Namespace:    kubeflow
     Labels:       app.kubernetes.io/deploy-manager=ksonnet
@@ -405,7 +406,7 @@ tfjobsというCustomerResouceDefinition(CRD)で定義しています。
 - 200000回実施するまでどれくらいの時間がかかるか？
 
 なぜGPUが必要になるかを実感いただけたのではないでしょうか。CPUだと非常に時間がかかってしまうためGPUが必要になります。
-Checkpoint が生成されていることを確認して、一旦CFJobsを削除し作成されているモデルを使いアプリケーションを作成しましょう。
+Checkpoint が生成されていることを確認して、一旦TFJobsを削除し作成されたモデルを使いアプリケーションを作成しましょう。
 
 Checkpointのファイル生成状況を確認します。
 
@@ -422,7 +423,7 @@ model.ckpt-X というファイルがあれば完了です。（Xは0以上の�
 
 #. トレーニング用のコンテナイメージの作成
 #. 作成したイメージをコンテナレジストリへの登録
-#. Tensorflowをジョブとして実行
+#. Tensorlowをジョブとして実行
 #. チェックポイントの確認
 
 トレーニングが終了したので、次は生成されたモデルをアプリケーションから使用するため、

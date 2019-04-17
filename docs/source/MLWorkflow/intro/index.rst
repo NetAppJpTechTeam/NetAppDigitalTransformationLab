@@ -51,7 +51,6 @@ Tridentのインストール
 
 - NetApp Tridentのインストール
 - StorageClassの定義
-- NFSバックエンドのONTAPでのStorageClass
 
 ハンズオン簡易化のため作成したストレージクラスをデフォルトとします。
 
@@ -80,7 +79,7 @@ Kubeflowを導入するために使う ``ksonnet`` のバージョンを確認�
 
     $ ks version
 
-``ks version`` の結果が ``0.13.1`` であることを確認してください。
+``ks version`` の結果が ``ksonnet version: 0.13.1`` であることを確認してください。
 
 Kubeflowのインストールを開始します。
 
@@ -90,6 +89,7 @@ Kubeflowのインストールユーティリティである ``kfctl.sh`` をダ�
 
 .. code-block:: console
 
+    $ cd
     $ mkdir kubeflow_src
     $ cd kubeflow_src
     $ export KUBEFLOW_TAG=v0.4.1

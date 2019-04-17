@@ -118,17 +118,15 @@ tf-train-job を実行については :doc:`../training/index`  を参考に実�
     $ kubectl get node
 
     NAME                                                STATUS   ROLES    AGE     VERSION
-    gke-ndxsharedcluster-gpu-pool-2-8d5049c9-r35b       Ready    <none>   7h48m   v1.12.5-gke.5
-    gke-ndxsharedcluster-gpu-pool-83731492-tvqx         Ready    <none>   18h     v1.12.5-gke.5
     gke-ndxsharedcluster-standardpool01-8b5da289-2pw3   Ready    <none>   4d11h   v1.12.5-gke.5
     gke-ndxsharedcluster-standardpool01-8b5da289-ffws   Ready    <none>   4d11h   v1.12.5-gke.5
-    gke-ndxsharedcluster-standardpool01-8b5da289-hs4b   Ready    <none>   4d11h   v1.12.5-gke.5
+
 
 ここからは最初から手順を実行し、なにも変更することなく実現できることを確認ください。
 
 オペレーションとしては変更はありませんがデータをどこに置くかの検討が必要となってきます。
 
-例えば今回の例でいうと以下の検討が必要になります。
+例えば今回の例だと以下の検討が必要になります。
 
 - 生成したコンテナイメージの配置場所
 - 別のクラスタで作ったデータを別の環境で持っていく方法
