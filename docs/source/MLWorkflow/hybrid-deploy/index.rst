@@ -73,6 +73,8 @@ GPUを活用するためのコンテナイメージが必要です。
 
 ksonnetの環境にGPUクラスタを追加します。
 
+.. code-block:: console
+
     $ cd ~/examples/object_detection/ks-app
     $ ks env add gpu --kubeconfig config.gpu
 
