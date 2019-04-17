@@ -22,7 +22,7 @@
 
 model.ckpt-[番号] をCHECKPOINT変数にセットします。
 
-ここで一旦CFJobsを削除します。
+ここで一旦TFJobsを削除します。
 
 .. code-block:: console
 
@@ -141,25 +141,26 @@ Jobが完了すると以下の通りファイルが作成されています。
 
 ここまででモデルの準備ができました。
 
-実際にモデルをサーブしてみましょう。
+モデルをサーブするため変数の定義をします。
 
-変数の定義をします。
 上記で定義したモデルのパスを設定します。
 
 今回はバックエンドのストレージはNFSを使用しているため、
+
 ``MODEL_STORAGE_TYPE`` はnfsを設定します。
 
 .. code-block:: console
 
-        MODEL_COMPONENT=pets-model
-        MODEL_PATH=/mnt/exported_graphs/saved_model
-        MODEL_STORAGE_TYPE=nfs
-        NFS_PVC_NAME=pets-pvc
+    $ MODEL_COMPONENT=pets-model
+    $ MODEL_PATH=/mnt/exported_graphs/saved_model
+    $ MODEL_STORAGE_TYPE=nfs
+    $ NFS_PVC_NAME=pets-pvc
 
 ksonnetに変数を反映します。
 
 .. code-block:: console
 
+    $ cd ~/examples/object_detection/ks-app
     $ ks param set ${MODEL_COMPONENT} modelPath ${MODEL_PATH}
     $ ks param set ${MODEL_COMPONENT} modelStorageType ${MODEL_STORAGE_TYPE}
     $ ks param set ${MODEL_COMPONENT} nfsPVC ${NFS_PVC_NAME}
@@ -183,7 +184,7 @@ ksonnetに変数を反映します。
     pets-model nfsPVC           'pets-pvc'
 
 
-本日時点(2019/3/28時点)ではこのままだとServe時にエラーが出てしまうため、
+2019/3/28時点ではこのままだとServe時にエラーが出てしまうため、
 一部編集します。（TensorFlowのバージョンアップによりコマンドラインが一部変更による影響）
 
 編集対象のファイルは以下のパスに存在するものです。
@@ -256,7 +257,7 @@ DESIREDとAVAILABLEが同一の値になっており正常稼働しているこ�
     Pod＝１つ以上のコンテナの集まりのためこのような構成をとることもできます。
 
 
-アプリケーション適用：実際にAPI経由で推論してみる
+アプリケーション適用：API経由で推論してみる
 =============================================================
 
 今回の生成したモデルを使用し推論を実行するためにgRPCクライントを使用することができます。

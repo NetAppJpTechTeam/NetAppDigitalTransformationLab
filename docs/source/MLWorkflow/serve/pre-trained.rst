@@ -8,7 +8,7 @@
 ここでは事前のステップで精度が足りなかった推論モデルの替わりにトレーニング済みのモデルをアプリケーションに組み込み画像判定を実施します。
 流れとしては以下の通りです。
 
-#. トレーニング済みのモデルをTF-Servingを使用してサーブ
+#. トレーニング済みのモデルをTFServingを使用してサーブ
 #. 事前のステップと同様にアプリケーションにgrpcクライアントから画像を送り判定を行う
 
 
@@ -28,7 +28,7 @@
 
 .. code-block:: console
 
-    $ cd ~/models/rcnn_resnet101_coco_2018_01_28/saved_model
+    $ cd ~/models/faster_rcnn_resnet101_coco_2018_01_28/saved_model
     $ sudo mkdir 1
     $ sudo cp * 1
 
