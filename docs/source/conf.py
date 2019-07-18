@@ -367,3 +367,4 @@ intersphinx_mapping = {'https://docs.python.org/': None}
 
 def setup(app):
     app.add_stylesheet('custom-width.css')
+    app.add_stylesheet('console.css')

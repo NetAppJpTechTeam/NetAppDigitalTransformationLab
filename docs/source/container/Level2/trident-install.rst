@@ -22,9 +22,9 @@ Tridentのメタデータの保存先を定義した ``setup/backend.json`` を�
 
 .. code-block:: console
 
-    $ wget https://github.com/NetApp/trident/releases/download/v19.01.0/trident-installer-19.01.0.tar.gz
+    $ wget https://github.com/NetApp/trident/releases/download/v19.04.1/trident-installer-19.04.1.tar.gz
 
-    $ tar -xf trident-installer-19.01.0.tar.gz
+    $ tar -xf trident-installer-19.04.1.tar.gz
 
     $ cd trident-installer
 
