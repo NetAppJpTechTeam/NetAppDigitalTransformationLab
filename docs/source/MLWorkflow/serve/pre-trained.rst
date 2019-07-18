@@ -39,14 +39,14 @@
 .. code-block:: console
 
     $ cd ~/examples/object_detection/ks-app
-    $ ks delete default -c pets_model
+    $ ks delete ${ENV} -c pets_model
 
 
 上記コマンドの実行が成功しても削除・停止処理が実行中の可能性があるため、Podが削除されたことを確認後以下のコマンドを実行してください。
 
 .. code-block:: console
 
-    $ ks apply default -c pets_model
+    $ ks apply ${ENV} -c pets_model
 
 ここまででトレーニング済みモデルのデプロイが完了です。
 
@@ -85,5 +85,5 @@ port-forward を実施済みであれば **Ctrl-C** で停止します、次の�
 
 ここではトレーニング済みモデルを適応して再度サーブするということを行いました。
 
-確認いただけたのは一部のパラメータを変更刷るだけで容易にモデルを変更することができ、
+確認いただけたのは一部のパラメータを変更するだけで容易にモデルを変更することができ、
 実際に精度が変わるところを体験いただきました。

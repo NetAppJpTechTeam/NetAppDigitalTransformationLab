@@ -58,7 +58,7 @@ Kubernets Network (Expose application for external)
 Kubernetes Security
 =============================================================
 
-- https://www.cncf.io/blog/2018/08/01/demystifying-rbac-in-kubernetes/
+* https://www.cncf.io/blog/2018/08/01/demystifying-rbac-in-kubernetes/
 
 
 NetApp demo
