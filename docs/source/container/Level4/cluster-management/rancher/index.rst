@@ -49,13 +49,13 @@ Rancherをインストールする
 
   https://hub.docker.com/r/rancher/rancher/tags/
 
-今回は、v2.0.8 をインストールします。
+今回は、v2.2.6 をインストールします。
 
 .. code-block:: console
 
     docker run -d --restart=unless-stopped \
     -p 80:80 -p 443:443 \
-    rancher/rancher:v2.0.8
+    rancher/rancher:v2.2.6
 
 
 Rancher へログイン
