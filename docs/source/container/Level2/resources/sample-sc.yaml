@@ -3,6 +3,7 @@ kind: StorageClass
 metadata:
   name: ontap-gold
 provisioner: netapp.io/trident
+reclaimPolicy: Retain
 parameters:
   backendType: "ontap-nas"
   media: "ssd"
