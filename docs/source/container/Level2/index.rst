@@ -338,7 +338,7 @@ kubernetesのバージョンにサポートの有無があります。
 
 バージョンに対応したTridentを確認するには以下のページを参照ください。
 
-https://netapp-trident.readthedocs.io/en/stable-v19.01/support/requirements.html
+https://netapp-trident.readthedocs.io/en/stable-v19.07/support/requirements.html
 
 すでにインストールされているTridentをアップグレードするには以下のようにアンインストール、インストールをくりかえすことで実現できます。
 
