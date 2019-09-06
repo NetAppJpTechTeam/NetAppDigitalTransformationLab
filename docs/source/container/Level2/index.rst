@@ -73,7 +73,7 @@ StorageClassの定義
 
 StorageClassを定義して、ストレージのサービスカタログを作りましょう。
 
-Trident v18.07 ではStorageClassを作成するときに以下の属性を設定できます。
+Trident v19.07 ではStorageClassを作成するときに以下の属性を設定できます。
 これらの属性のパラメータを組み合わせてストレージサービスをデザインします。
 
 .. list-table:: StorageClass の parameters に設定可能な属性
