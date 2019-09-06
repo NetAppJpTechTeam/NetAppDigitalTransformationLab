@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: clone-of-pvc-1
+  namespace: myns
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+  dataSource: (このフィールドにオブジェクトの種類と名前を記述)
+    kind: PersistentVolumeClaim
+    name: pvc-1
+
