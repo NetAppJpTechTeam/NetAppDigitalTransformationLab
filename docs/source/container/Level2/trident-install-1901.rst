@@ -1,11 +1,11 @@
-NetApp Tridentのインストール
+NetApp Tridentのインストール(19.01以前)
 =============================================================
 
 Dynamic storage provisioningを実現するためNetApp Tridentを導入します。
 TridentはPodとしてデプロイされ通常のアプリケーションと同様に稼働します。
 
-インストール事前準備
--------------------------------------------------------------
+Tridentインストール事前準備
+=============================================================
 
 Trident のインストールでk8sクラスタの管理者権限が必要になります。
 
@@ -17,27 +17,67 @@ Trident のインストールでk8sクラスタの管理者権限が必要にな
 
 .. code-block:: console
 
-    $ kubectl run -i --tty ping --image=busybox --restart=Never --rm --  ping [マネジメントIP]
+    $ kubectl run -i --tty ping --image=busybox --restart=Never --rm --  ping [ipアドレス]
 
-Tridentインストール(19.07〜)
--------------------------------------------------------------
+Tridentインストール
+=============================================================
 
-バイナリをダウンロードしてインストールします。(例はバージョン19.07.0)
+バイナリをダウンロードしてインストールします。(例はバージョン19.01.0)
+Tridentのメタデータの保存先を定義した ``setup/backend.json`` を編集します。
 
 .. code-block:: console
 
-    $ wget https://github.com/NetApp/trident/releases/download/v19.07.0/trident-installer-19.07.0.tar.gz
+    $ wget https://github.com/NetApp/trident/releases/download/v19.01.0/trident-installer-19.01.0.tar.gz
 
-    $ tar -xf trident-installer-19.07.0.tar.gz
+    $ tar -xf trident-installer-19.01.0.tar.gz
 
     $ cd trident-installer
 
-Tridentの制御にはtridentctlを使います。
+    $ cp sample-input/backend-ontap-nas.json setup/backend.json
+
+.. list-table:: backend.jsonの設定パラメータ (NFS ONTAPバックエンド)
+    :header-rows: 1
+
+    * - パラメータ名
+      - 説明
+      - 設定内容
+    * - managementLIF
+      - ONTAPのクラスタ管理LIFまたはSVM管理LIFを設定
+      - 192.168.XX.200
+    * - dataLIF
+      - データ通信LIF
+      - 192.168.XX.200
+    * - svm
+      - tridentから使用するSVM
+      - svmXX
+    * - username/password
+      - クラスタ管理者またはSVM管理者のクレデンシャル
+      - SVM管理者を設定: vsadmin/netapp123
+
+「XX」はユーザ環境番号になります。
+
+編集後は以下の通りとなります。
+疎通が取れないIPを設定するとtridentデプロイが失敗します。
+
+.. code-block:: console
+
+    $ cat setup/backend.json
+
+    {
+        "version": 1,
+        "storageDriverName": "ontap-nas",
+        "backendName": "userXXBackendName",
+        "managementLIF": "192.168.XX.200",
+        "dataLIF": "192.168.XX.200",
+        "svm": "svmXX",
+        "username": "vsadmin",
+        "password": "netapp123"
+    }
 
 ``tridentctl`` ユーティリティではドライランモードとデバッグモードがオプションで指定できます。
 ２つを設定し、実行すると以下のように必要事項を事前チェックし、その内容をすべて標準出力にプリントします。
 
-まずは、ドライランモードで実行し問題ないことを確認します。
+まずは、ドライランモードで実行し問題ないことを確認します。以下の出力結果はユーザ14で実施した場合です。
 
 Tridentをインストールするネームスペースを作成します。
 
@@ -101,82 +141,26 @@ Tridentのインストーラーをドライランモードで実行します。
     time="2018-02-15T03:32:35Z" level=info msg="API server REST call." duration=2m10.64501326s method=POST route=AddBackend uri=/trident/v1/backend
 
 
-Tridentのバージョン確認
--------------------------------------------------------------
+Tridentへバックエンドストレージの登録
+=============================================================
 
 インストールが完了したらtridentのバージョンを確認します。
 
 .. code-block:: console
 
-    $ ./tridentctl version -n trident
+    $ ./tridentctl  version -n trident
 
     +----------------+----------------+
     | SERVER VERSION | CLIENT VERSION |
     +----------------+----------------+
-    | 19.07.0        | 19.07.0        |
+    | 19.01.0        | 19.01.0        |
     +----------------+----------------+
 
 バージョンが表示されていればインストール成功です。
 
-.. hint::
+続いてPersistent VolumeをProvisioningするために使う バックエンドストレージを登録します。
 
-    tridentctl は tridentの podと通信をして制御を行います。
-    このため、各コマンドは tridentの podが存在するネームスペースを
-    指定する必要があります。
-
-Tridentへのバックエンド登録
--------------------------------------------------------------
-
-Tridentが、その背後で制御するストレージ(バックエンドストレージ)を登録します。
-
-.. hint::
-
-    `サポートしているストレージ一覧(19.07) <https://netapp-trident.readthedocs.io/en/stable-v19.07/support/requirements.html#supported-backends-storage>`_ 
-
-バックエンドストレージを設定するためにjsonファイルを用意します。
-サンプルファイルがsample-inputディレクトリにあり、ここではONTAPのNASを設定しますので
-backend-ontap-nas.jsonをコピーして使います。
-
-.. list-table:: backend.jsonの設定パラメータ (NFS ONTAPバックエンド)
-    :header-rows: 1
-
-    * - パラメータ名
-      - 説明
-      - 設定内容
-    * - managementLIF
-      - ONTAPのクラスタ管理LIFまたはSVM管理LIFを設定
-      - 192.168.XX.200
-    * - dataLIF
-      - データ通信LIF
-      - 192.168.XX.200
-    * - svm
-      - tridentから使用するSVM
-      - svmXX
-    * - username/password
-      - クラスタ管理者またはSVM管理者のクレデンシャル
-      - SVM管理者を設定: vsadmin/netapp123
-
-編集後は以下の通りとなります。
-疎通が取れないIPを設定するとバックエンド登録に失敗します。
-
-.. code-block:: console
-
-    $ cat setup/backend.json
-
-    {
-        "version": 1,
-        "storageDriverName": "ontap-nas",
-        "backendName": "userXXBackendName",
-        "managementLIF": "192.168.XX.200",
-        "dataLIF": "192.168.XX.200",
-        "svm": "svmXX",
-        "username": "vsadmin",
-        "password": "netapp123"
-    }
-
-**「XX」はラボ環境にあわせて設定してください。**
-
-編集したjsonファイルと``tridentctl create backend``を使ってバックエンドを登録します。
+ここでは Trident インストール時に指定したバックエンド構成をそのまま使います。
 
 .. code-block:: console
 
@@ -185,7 +169,7 @@ backend-ontap-nas.jsonをコピーして使います。
     +-------------------+----------------+--------+---------+
     |       NAME        | STORAGE DRIVER | ONLINE | VOLUMES |
     +-------------------+----------------+--------+---------+
-    | userXXBackendName | ontap-nas      | true   |       0 |
+    | NFS_ONTAP_Backend | ontap-nas      | true   |       0 |
     +-------------------+----------------+--------+---------+
 
 ..  一旦削除
@@ -285,52 +269,14 @@ backend-ontap-nas.jsonをコピーして使います。
 
 
 問題発生時に実施: Tridentをアンインストールする
--------------------------------------------------------------
+=======================================================================
 
 トラブルシューティング時にTridentをアンインストールする必要が出てくるケースがあります。
-その際には ``tridentctl`` ユーティリティのアンインストール用のサブコマンドを使用してアンインストールします。
+その際には ``tridentctl`` ユーティリティのアンインストール用のサブコマンドを使用してアンインストールします。。
 
+以下のように ``-a`` オプションを付与して実行すると生成した管理用のetcdのデータなどすべてを削除した上でアンインストールします。
 インストール実行時に失敗したときなど、クリーンに再インストールしたい場合に使います。
 
 .. code-block:: console
 
-    $ ./tridentctl uninstall -n trident
-
-.. hint::
-
-    続けて trident namespaceも削除したい場合は、trident namespace 内に残るオブジェクトが完全になくなった事を確認する事をおすすめします。
-
-    `Related Issue <https://github.com/kubernetes/kubernetes/issues/60807>`_
-
-Tridentインストールのバージョン間の差異
--------------------------------------------------------------
-
-インストール時の動作が19.0xで何度か変化しているので整理しておきます。
-
-=======  ==========================  ====================
-Version  インストール時backend.json  初回バックエンド登録
--------  --------------------------  --------------------
-〜19.01   必要                        されない
-19.04     必要                        **される**
-19.07〜   **不要**                    されない
-=======  ==========================  ====================
-
-
-インストール時のbackend.json
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-19.01/04では Tridentが構成情報を保存する Persistent Volumeを Provisioningするために
-setup/backend.jsonファイルを作成してから ``tridentctl install`` をする必要があります。
-
-19.01では Trident Install後に改めて バックエンド登録をする必要がありました。
-19.04では Trident Install時点で backend.jsonで指定したストレージがバックエンド登録されます。
-
-19.07では インストール時に setup/backend.jsonが不要になりました。これはCustom Resource Definition
-を利用してTridentの構成情報を保存するように変更になった事によります。
-ただし、これにより 19.07では インストール完了後にバックエンドの自動登録がされないため注意してください。
-また、tridentctl installを実行するときのカレントパスに setup ディレクトリが必要なため注意してください。
-
-過去のバージョンのインストール手順は下記を参考にしてください。
-
-* :doc:`trident-install-1901`
-* :doc:`trident-install-1904`
+    $ ./tridentctl uninstall -n trident -a

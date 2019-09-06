@@ -52,16 +52,19 @@ StorageClassオブジェクトで指定したプロビジョナを使用し、�
 
 StorageClassには様々なパラメータを指定することができアプリケーションに適したストレージカタログ、プロファイルを作成することができ、物理的なストレージを抽象化するレイヤとなります。
 
+Dynamic Provisioningを実現するために ストレージを制御する Provisioner
+が必要になります。その標準的なインターフェースとして 2019/1からContainer Storage InterfaceがGAになり、
+Kubernetes 1.14からは CSI 1.1がサポートされています。
+
 ネットアップはDynamic provisioningを実現するためのNetApp Tridentというprovisionerを提供しています。
+
+Tridentは CSIを使わない従来同様のTridentと CSIを使う CSI Tridentが提供されていますが、
+19.07からは CSI Tridentがデフォルトでインストールされるようになりました。
 
 このレベルではTridentでDynamic provisioningを行い、アプリケーションのデータ永続化を実現します。
 
-
-NetApp Tridentのインストール
-=============================================================
-
-Dynamic storage provisioningを実現するためNetApp Tridentを導入します。
-TridentはPodとしてデプロイされ通常のアプリケーションと同様に稼働します。
+..  NetApp Tridentのインストール
+    ============================
 
 .. include:: trident-install.rst
 

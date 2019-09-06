@@ -38,10 +38,10 @@ kubernetes基本操作
 
     $ kubectl version --short
 
-    Client Version: v1.13.X
-    Server Version: v1.13.X
+    Client Version: v1.15.X
+    Server Version: v1.15.X
 
-v1.13系で有ることを確認ください。
+Client(kubectl)と Server(cluster)で同じ Versionが動いている事を確認してください。
 
 次にクラスタを形成するノードを確認します。
 
@@ -49,11 +49,14 @@ v1.13系で有ることを確認ください。
 
     $ kubectl get nodes
 
-    NAME      STATUS    ROLES     AGE       VERSION
-    master    Ready     master    1d        v1.13.X
-    node0     Ready     <none>    1d        v1.13.X
-    node1     Ready     <none>    1d        v1.13.X
-    node2     Ready     <none>    1d        v1.13.X
+    NAME     STATUS   ROLES    AGE     VERSION
+    master   Ready    master   3h56m   v1.15.3
+    node0    Ready    <none>   3h56m   v1.15.3
+    node1    Ready    <none>   3h55m   v1.15.3
+    node2    Ready    <none>   3h55m   v1.15.3
+
+STATUSが Readyになっている事を確認してください。
+※ Labのリソースによりノード数は増減する場合があります。
 
 デプロイメント
 -------------------------------------------------------------
