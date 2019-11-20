@@ -276,6 +276,17 @@ NetAppのストレージOSは FlexCloneや Cloneと呼ばれるストレージ�
 CSI Tridentでは PersistentVolumeClaimの dataSourceにコピー元となる PVC/Snapshotを指定する事で
 **巨大なボリュームでも容量消費せずに超高速にデータをコピーする** クローニングテクノロジーが使用されます。
 
+.. note:: Volume Data Source Feature Gate
+    Kubernetesで CSI Tridentを使って dataSourceを指定してCloningをするには featuregateを有効にする必要があります。
+
+    ==========================  ========================================  ==============================  ==================  =================  
+     Feature Gates               機能                                      Kubernetes Support              Feature Gate指定    Trident Support
+    --------------------------  ----------------------------------------  ------------------------------  ------------------  -----------------
+     VolumePVCDataSource         PersistentVolumeClaimを指定してClone      | Kubernetes 1.15 αサポート    | 必要              | 19.10〜
+                                                                           | Kubernetes 1.16 βサポート    | 不要              | 19.10〜
+     VolumeSnapshotDataSource    VolumeSnapshotを指定してClone             Kubernetes 1.12 αサポート      必要                19.07〜
+    ==========================  ========================================  ==============================  ==================  =================
+
 kindにデータソースの種類(VolumeSnapshot/PersistentVolumeClaim)とnameにデータソースの名前を指定します。
 
 .. literalinclude:: resources/sample-csidatasource.yaml
